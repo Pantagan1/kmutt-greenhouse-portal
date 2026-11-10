@@ -3,6 +3,7 @@
 
 # Whitelist ONLY the website portal, reports, presentations, and publisher script
 !.gitignore
+!.nojekyll
 !index.html
 !publish_web.bat
 !reports/

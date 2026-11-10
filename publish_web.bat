@@ -61,7 +61,7 @@ if errorlevel 1 (
 
 :: 3. Stage web files, commit, and push to GitHub
 echo [2/3] Staging website files (index.html, reports/, presentations/)...
-git add .gitignore index.html publish_web.bat reports presentations
+git add .gitignore .nojekyll index.html publish_web.bat reports presentations
 
 set "COMMIT_MSG=%~1"
 if "%COMMIT_MSG%"=="" set "COMMIT_MSG=Update KMUTT Greenhouse reports and presentations (%DATE% %TIME%)"
