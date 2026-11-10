@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMUTT Greenhouse Digital Twin — ศูนย์รวมรายงานทางเทคนิค สไลด์นำเสนอ และวิทยานิพนธ์</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --kmutt-orange: #ea580c;
+      --kmutt-orange-light: #ffedd5;
+      --emerald: #059669;
+      --violet: #7c3aed;
+      --cyan: #0891b2;
+      --rose: #be123c;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.14);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --font-sans: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0b1120;
+      --bg-card: #1e293b;
+      --bg-subtle: #0f172a;
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-light: #94a3b8;
+      --border: #334155;
+      --primary-light: rgba(2, 132, 199, 0.2);
+      --kmutt-orange-light: rgba(234, 88, 12, 0.2);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    .hidden { display: none !important; }
+
+    /* Top Sticky Header */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--kmutt-orange), #c2410c);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(234, 88, 12, 0.35);
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .brand-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-light);
+    }
+
+    /* Unified Top Report Tabs */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .nav-tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-card);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-input {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      width: 190px;
+    }
+    .search-input:focus {
+      outline: 2px solid var(--primary);
+      background: var(--bg-card);
+    }
+    .btn-icon {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      padding: 6px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Container */
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 26px 22px 64px;
+    }
+
+    /* Hero Banner */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #0284c7 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 32px 34px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+    .hero h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 0.98rem;
+      color: #e2e8f0;
+      max-width: 920px;
+      margin-bottom: 20px;
+    }
+    .hero-jump-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .btn-jump {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-jump:hover { transform: translateY(-2px); }
+    .btn-jump.primary {
+      background: #f97316;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+    }
+    .btn-jump.secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+    .kpi-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 11px;
+      padding: 12px 16px;
+    }
+    .kpi-val {
+      font-size: 1.28rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .kpi-lbl {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+    }
+
+    /* Section Headings */
+    .sec-block {
+      margin-bottom: 38px;
+    }
+    .sec-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .sec-title {
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-sub {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    /* Reports Grid */
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .report-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .report-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+    .rc-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .rc-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+    .rc-file {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-light);
+      background: var(--bg-subtle);
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .rc-title {
+      font-size: 1.06rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    .rc-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+    .rc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rc-tag {
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .rc-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Presentations & PDF Viewer Center */
+    .pdf-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    @media (max-width: 980px) {
+      .pdf-layout { grid-template-columns: 1fr; }
+    }
+    .pdf-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pdf-item {
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pdf-item:hover {
+      border-color: var(--primary);
+    }
+    .pdf-item.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px var(--primary);
+    }
+    .pdf-item-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .pdf-item-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .pdf-item-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .btn-sm.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .pdf-stage {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #0f172a;
+      min-height: 540px;
+    }
+    .pdf-stage-bar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .pdf-iframe {
+      width: 100%;
+      height: 540px;
+      border: none;
+      background: #334155;
+    }
+
+    /* High-Res Gallery */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .filter-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-pill.active, .filter-pill:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .gallery-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .gallery-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .gallery-thumb-wrap {
+      height: 195px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+    }
+    .gallery-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+    .gallery-card:hover .gallery-thumb-wrap img {
+      transform: scale(1.04);
+    }
+    .gallery-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .gallery-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .gallery-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .gallery-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Team Sync Info Box */
+    .sync-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--emerald);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sync-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .sync-step {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .sync-step strong {
+      display: block;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .sync-step code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .lightbox-bar {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .lightbox-img {
+      max-width: 95vw;
+      max-height: 82vh;
+      border-radius: 8px;
+      background: #fff;
+      object-fit: contain;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Navigation Bar -->
+  <header class="top-header">
+    <a href="index.html" class="brand-group">
+      <div class="brand-logo">KMUTT</div>
+      <div>
+        <div class="brand-title">Greenhouse Digital Twin Portal</div>
+        <div class="brand-subtitle">U Thong, Suphan Buri (6×12×5.5 m) — Reports &amp; Presentations Hub</div>
+      </div>
+    </a>
+
+    <nav class="nav-tabs" aria-label="Portal Navigation">
+      <a href="index.html" class="nav-tab-btn active" title="หน้าหลักพอร์ทัล รายงาน &amp; สื่อนำเสนอทั้งหมด">
+        <span>🏠</span> หน้าหลัก
+      </a>
+      <a href="reports/Report_1_Project_Overview.html" class="nav-tab-btn" title="รายงานที่ 1: ภาพรวมโครงการและระบบโรงเรือน">
+        <span>📑</span> 1.ภาพรวม
+      </a>
+      <a href="reports/Report_2_Modelica_Code_LineByLine.html" class="nav-tab-btn" title="รายงานที่ 2: ปูพื้นฐาน Modelica &amp; เจาะลึกโค้ด Line-by-Line">
+        <span>💻</span> 2.โค้ดระบบ
+      </a>
+      <a href="reports/Report_3_Model_Validation_Guide.html" class="nav-tab-btn" title="รายงานที่ 3: กระบวนการและผลการ Validate เซนเซอร์ 15 จุด">
+        <span>📊</span> 3.Validate
+      </a>
+      <a href="reports/Report_4_Modelica_CFD_Framework.html" class="nav-tab-btn" title="รายงานที่ 4: สถาปัตยกรรม Modelica &amp; 3D CFD Coupling Framework">
+        <span>🔄</span> 4.CFD
+      </a>
+      <a href="reports/Report_5_Modelica_Equations_Parameters_Reference.html" class="nav-tab-btn" title="รายงานที่ 5: คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์">
+        <span>📐</span> 5.สมการ
+      </a>
+      <a href="reports/Report_6_StepByStep_Model_Creation_Guide.html" class="nav-tab-btn" title="รายงานที่ 6: คู่มือสร้างแบบจำลองโรงเรือนสุพรรณบุรีทีละขั้นตอน">
+        <span>🛠️</span> 6.สร้างโมเดล
+      </a>
+      <a href="reports/Modelica_Code_Categories_Slides.html" class="nav-tab-btn" title="สรุปแยก 8 หมวดหมู่โค้ด Modelica พร้อมสไลด์นำเสนอ 16:9">
+        <span>🎬</span> สไลด์โค้ด
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <input type="search" id="portal-search" class="search-input" placeholder="🔍 ค้นหารายงาน / สไลด์ / รูป..." oninput="filterPortal(this.value)">
+      <button class="btn-icon" id="theme-btn" onclick="toggleTheme()">🌙 โหมดมืด</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-badge-row">
+        <span class="hero-pill">🌱 KMUTT Smart Greenhouse Digital Twin</span>
+        <span class="hero-pill">📍 อ.อู่ทอง จ.สุพรรณบุรี (6 × 12 × 5.5 m)</span>
+        <span class="hero-pill">🕸️ มุ้งกันแมลง 16-Mesh + มะเขือเทศเชอร์รี่</span>
+        <span class="hero-pill">🔄 ซิงก์อัปเดตอัตโนมัติผ่าน GitHub Pages</span>
+      </div>
+      <h1>ศูนย์รวมรายงานทางเทคนิค สไลด์นำเสนอ และวิทยานิพนธ์ (Team Knowledge &amp; Presentation Portal)</h1>
+      <p>
+        พอร์ทัลกลางสำหรับทีมวิจัยรวบรวมรายงานวิศวกรรมฉบับสมบูรณ์ทั้ง 6 ฉบับ, สไลด์สรุปโครงสร้างโค้ด Modelica 8 หมวดหมู่ (16:9),
+        ไฟล์นำเสนอ PDF, เล่มวิทยานิพนธ์ และแผนภาพสถาปัตยกรรมความละเอียดสูง 300 DPI พร้อมผลการเทียบเซนเซอร์จริง 15 จุด
+      </p>
+
+      <div class="hero-jump-bar">
+        <a href="#reports-sec" class="btn-jump primary">📚 เปิดชุดรายงานทั้ง 7 ฉบับ</a>
+        <a href="#presentations-sec" class="btn-jump secondary">🎞️ เปิดดูสไลด์ PDF &amp; วิทยานิพนธ์</a>
+        <a href="#gallery-sec" class="btn-jump secondary">🖼️ คลังภาพสถาปัตยกรรม 300 DPI &amp; กราฟ Validate</a>
+        <a href="reports/Modelica_Code_Categories_Slides.html" class="btn-jump secondary">🎬 โหมดพรีเซนต์โค้ด 16:9 (9 แผ่น)</a>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-val">6 รายงาน + 1 สไลด์เว็บ</div>
+          <div class="kpi-lbl">เอกสาร HTML อินเทอร์แอคทีฟเชื่อมโยงครบวงจร</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val">3 ไฟล์ PDF หลัก</div>
+          <div class="kpi-lbl">Presentation1.pdf, Thesis.pdf &amp; เอกสารอ้างอิงวิจัย</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val">12 แผนภาพ 300-DPI</div>
+          <div class="kpi-lbl">สถาปัตยกรรม Modelica, โปสเตอร์โค้ด &amp; เซนเซอร์ 15 จุด</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val">612 บรรทัด / 8,760 ชม.</div>
+          <div class="kpi-lbl">ซอร์สโค้ด Modelica &amp; ผลจำลอง ERA5 รอบปี 365 วัน</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: 7 INTERACTIVE REPORTS & CODE SLIDES -->
+    <section id="reports-sec" class="sec-block">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">📚 1. ชุดรายงานทางเทคนิคและสไลด์โค้ดอินเทอร์แอคทีฟ (Reports &amp; Interactive Slide Deck)</h2>
+          <div class="sec-sub">คลิกที่การ์ดเพื่อเปิดอ่านรายงานฉบับเต็ม ทุกหน้ามีแถบเมนูด้านบนสำหรับสลับข้ามรายงานได้ทันที</div>
+        </div>
+      </div>
+
+      <div class="report-grid">
+        <!-- Report 1 -->
+        <a href="reports/Report_1_Project_Overview.html" class="report-card searchable-item" style="border-top: 4px solid #0284c7;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#0284c7;">REPORT 01</span>
+              <span class="rc-file">reports/Report_1_Project_Overview.html</span>
+            </div>
+            <div class="rc-title">📑 รายงานที่ 1: ภาพรวมโครงการและระบบโรงเรือน</div>
+            <div class="rc-desc">
+              ข้อมูลพื้นที่ศึกษา อ.อู่ทอง จ.สุพรรณบุรี, เรขาคณิตโรงเรือนหลังคาโค้งกลาย 6×12×5.5 ม.,
+              สมดุลความร้อนและมวล 4 โหนดหลัก (Cover, Air, Canopy, Floor), พืชมะเขือเทศเชอร์รี่ และสรุปผลจำลองเบื้องต้น
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">Project Overview</span>
+              <span class="rc-tag">4-Node Physics</span>
+              <span class="rc-tag">Cherry Tomato</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 1</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Report 2 -->
+        <a href="reports/Report_2_Modelica_Code_LineByLine.html" class="report-card searchable-item" style="border-top: 4px solid #2563eb;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#2563eb;">REPORT 02 ★</span>
+              <span class="rc-file">reports/Report_2_Modelica_Code_LineByLine.html</span>
+            </div>
+            <div class="rc-title">💻 รายงานที่ 2: ปูพื้นฐาน Modelica &amp; เจาะลึกโค้ดรายบรรทัด</div>
+            <div class="rc-desc">
+              Modelica Masterclass ปูพื้นฐาน Acausal Modeling และคำอธิบายซอร์สโค้ดทุกบรรทัดในแพ็กเกจ
+              <code>Greenhouse_DigitalTwin_KMUTT</code> ทั้ง 5 ไฟล์ (รวม 612 บรรทัด) แบบ Line-by-Line
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">Line-by-Line Code</span>
+              <span class="rc-tag">Suphanburi_Greenhouse.mo</span>
+              <span class="rc-tag">InsectScreen_16Mesh.mo</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 2</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Report 3 -->
+        <a href="reports/Report_3_Model_Validation_Guide.html" class="report-card searchable-item" style="border-top: 4px solid #059669;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#059669;">REPORT 03</span>
+              <span class="rc-file">reports/Report_3_Model_Validation_Guide.html</span>
+            </div>
+            <div class="rc-title">📊 รายงานที่ 3: กระบวนการและผลการ Validate เซนเซอร์ 15 จุด</div>
+            <div class="rc-desc">
+              ระเบียบวิธีเทียบผลจำลองกับเซนเซอร์จริง 15 จุด (5 เสา A–E × 3 ความสูง), ข้อมูลอากาศ ERA5,
+              ตัวชี้วัดความแม่นยำ RMSE / MAE / R² (Base Day 13 เม.ย. 2569) และคู่มือตอบคำถามกรรมการสอบ
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">15 IoT Sensors</span>
+              <span class="rc-tag">RMSE / MAE / R²</span>
+              <span class="rc-tag">Defense Q&amp;A</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 3</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Report 4 -->
+        <a href="reports/Report_4_Modelica_CFD_Framework.html" class="report-card searchable-item" style="border-top: 4px solid #7c3aed;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#7c3aed;">REPORT 04</span>
+              <span class="rc-file">reports/Report_4_Modelica_CFD_Framework.html</span>
+            </div>
+            <div class="rc-title">🔄 รายงานที่ 4: สถาปัตยกรรม Modelica &amp; 3D CFD Coupling Framework</div>
+            <div class="rc-desc">
+              แผนผังสถาปัตยกรรม Input → Equation → Output เชื่อมโยงผลจำลองสมการอนุพันธ์เชิงพีชคณิต (DAE 365 วัน)
+              เข้าสู่การจำลองพลศาสตร์ของไหล 3D CFD CHT และสมการพรุนมุ้ง Darcy-Forchheimer
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">Modelica-CFD Coupling</span>
+              <span class="rc-tag">Darcy-Forchheimer</span>
+              <span class="rc-tag">Boundary Conditions</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 4</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Report 5 -->
+        <a href="reports/Report_5_Modelica_Equations_Parameters_Reference.html" class="report-card searchable-item" style="border-top: 4px solid #0891b2;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#0891b2;">REPORT 05</span>
+              <span class="rc-file">reports/Report_5_Modelica_Equations_Parameters_Reference.html</span>
+            </div>
+            <div class="rc-title">📐 รายงานที่ 5: ดัชนีสมการ คุณสมบัติวัสดุ และพารามิเตอร์อ้างอิง</div>
+            <div class="rc-desc">
+              คู่มืออ้างอิงสมการฟิสิกส์ครบทุกบรรทัดในโมเดล, ตารางตัวแปร, หน่วยวัด SI,
+              คุณสมบัติวัสดุฟิล์ม PE 200 µm, มุ้งกันแมลง 16-Mesh, แผ่นมัลช์ขาว และพารามิเตอร์พืชทั้งหมด
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">Equations Reference</span>
+              <span class="rc-tag">53 Parameters</span>
+              <span class="rc-tag">SI Units Dictionary</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 5</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Report 6 -->
+        <a href="reports/Report_6_StepByStep_Model_Creation_Guide.html" class="report-card searchable-item" style="border-top: 4px solid #ea580c;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#ea580c;">REPORT 06</span>
+              <span class="rc-file">reports/Report_6_StepByStep_Model_Creation_Guide.html</span>
+            </div>
+            <div class="rc-title">🛠️ รายงานที่ 6: คู่มือสร้างแบบจำลองทีละขั้นตอน (OMEdit GUI &amp; Code)</div>
+            <div class="rc-desc">
+              คู่มือภาคปฏิบัติสำหรับทีมงานในการสร้างและรันโมเดลในโปรแกรม OpenModelica (OMEdit)
+              แบบ Dual-Track ทั้งการลากวางบล็อก GUI และการเขียนโค้ด พร้อมวิธีตั้งค่า Solver และส่งออก CSV
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">Step-by-Step Tutorial</span>
+              <span class="rc-tag">OMEdit GUI</span>
+              <span class="rc-tag">Simulation Setup</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดอ่านรายงานฉบับที่ 6</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Slides 7 -->
+        <a href="reports/Modelica_Code_Categories_Slides.html" class="report-card searchable-item" style="border-top: 4px solid #be123c;">
+          <div>
+            <div class="rc-top">
+              <span class="rc-badge" style="background:#be123c;">INTERACTIVE SLIDES</span>
+              <span class="rc-file">reports/Modelica_Code_Categories_Slides.html</span>
+            </div>
+            <div class="rc-title">🎬 สรุปแยก 8 หมวดหมู่โค้ด Modelica &amp; สไลด์นำเสนอ 16:9 (9 แผ่น)</div>
+            <div class="rc-desc">
+              สรุปจัดกลุ่มโค้ดทั้ง 612 บรรทัดออกเป็น 8 หมวดหมู่วิศวกรรม พร้อมสวิตช์ซ่อนพิกัดกราฟิก <code>annotation()</code>
+              และโหมดสไลด์พรีเซนต์ 16:9 จำนวน 9 แผ่นที่กดลูกศรเลื่อนสไลด์หรือสั่งพิมพ์เป็น PDF ได้ทันที
+            </div>
+          </div>
+          <div>
+            <div class="rc-tags">
+              <span class="rc-tag">8 Code Categories</span>
+              <span class="rc-tag">16:9 Slide Deck</span>
+              <span class="rc-tag">Annotation Filter</span>
+            </div>
+            <div class="rc-footer" style="margin-top:10px;">
+              <span>เปิดสไลด์โค้ด 8 หมวดหมู่</span>
+              <span>→</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PRESENTATIONS, THESIS & RESEARCH PDF VIEWER -->
+    <section id="presentations-sec" class="sec-block">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">🎞️ 2. สไลด์นำเสนอ วิทยานิพนธ์ และเอกสารอ้างอิง (Presentations &amp; Thesis PDF Center)</h2>
+          <div class="sec-sub">คลิกเลือกไฟล์ด้านซ้ายเพื่อเปิดดูตัวอย่าง PDF บนหน้าเว็บ หรือกดปุ่มเปิดเต็มจอ / ดาวน์โหลดไฟล์ได้ทันที</div>
+        </div>
+      </div>
+
+      <div class="pdf-layout">
+        <div class="pdf-sidebar">
+          <!-- Presentation 1 -->
+          <div class="pdf-item active searchable-item" onclick="selectPdf('presentations/Presentation1.pdf', 'สไลด์นำเสนอโครงการ (Presentation1.pdf)', this)">
+            <div class="pdf-item-title">📊 1. สไลด์นำเสนอหลัก (Presentation1.pdf)</div>
+            <div class="pdf-item-desc">สไลด์นำเสนอสรุปโครงการจำลองโรงเรือนอัจฉริยะ KMUTT Digital Twin และผลการวิเคราะห์ทางวิศวกรรม</div>
+            <div class="pdf-item-actions" onclick="event.stopPropagation();">
+              <button class="btn-sm primary" onclick="selectPdf('presentations/Presentation1.pdf', 'สไลด์นำเสนอโครงการ (Presentation1.pdf)', this.closest('.pdf-item'))">👁️ แสดงในหน้าต่างพรีวิว</button>
+              <a href="presentations/Presentation1.pdf" target="_blank" rel="noopener" class="btn-sm">↗ เปิดเต็มจอ</a>
+              <a href="presentations/Presentation1.pdf" download class="btn-sm">⬇ ดาวน์โหลด</a>
+            </div>
+          </div>
+
+          <!-- Thesis PDF -->
+          <div class="pdf-item searchable-item" onclick="selectPdf('presentations/Thesis.pdf', 'เล่มวิทยานิพนธ์ (Thesis.pdf)', this)">
+            <div class="pdf-item-title">📘 2. เล่มวิทยานิพนธ์ (Thesis.pdf)</div>
+            <div class="pdf-item-desc">เอกสารวิทยานิพนธ์ฉบับสมบูรณ์ครอบคลุมทฤษฎีการถ่ายเทความร้อน-มวล สมการมุ้งกันแมลง และการตรวจสอบความถูกต้อง</div>
+            <div class="pdf-item-actions" onclick="event.stopPropagation();">
+              <button class="btn-sm primary" onclick="selectPdf('presentations/Thesis.pdf', 'เล่มวิทยานิพนธ์ (Thesis.pdf)', this.closest('.pdf-item'))">👁️ แสดงในหน้าต่างพรีวิว</button>
+              <a href="presentations/Thesis.pdf" target="_blank" rel="noopener" class="btn-sm">↗ เปิดเต็มจอ</a>
+              <a href="presentations/Thesis.pdf" download class="btn-sm">⬇ ดาวน์โหลด</a>
+            </div>
+          </div>
+
+          <!-- Research References PDF -->
+          <div class="pdf-item searchable-item" onclick="selectPdf('reports/OpenModelica_Greenhouse_Research_References.pdf', 'เอกสารอ้างอิงงานวิจัย (OpenModelica_Greenhouse_Research_References.pdf)', this)">
+            <div class="pdf-item-title">📑 3. เอกสารอ้างอิงงานวิจัย (Research References PDF)</div>
+            <div class="pdf-item-desc">รวบรวมเปเปอร์และงานวิจัยอ้างอิงด้าน OpenModelica Greenhouse Library, สมการมุ้งพรุน และการคายน้ำของพืช</div>
+            <div class="pdf-item-actions" onclick="event.stopPropagation();">
+              <button class="btn-sm primary" onclick="selectPdf('reports/OpenModelica_Greenhouse_Research_References.pdf', 'เอกสารอ้างอิงงานวิจัย (OpenModelica_Greenhouse_Research_References.pdf)', this.closest('.pdf-item'))">👁️ แสดงในหน้าต่างพรีวิว</button>
+              <a href="reports/OpenModelica_Greenhouse_Research_References.pdf" target="_blank" rel="noopener" class="btn-sm">↗ เปิดเต็มจอ</a>
+              <a href="reports/OpenModelica_Greenhouse_Research_References.pdf" download class="btn-sm">⬇ ดาวน์โหลด</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdf-stage">
+          <div class="pdf-stage-bar">
+            <span id="pdf-stage-title">📊 กำลังแสดงผล: สไลด์นำเสนอโครงการ (Presentation1.pdf)</span>
+            <div style="display:flex; gap:8px;">
+              <a id="pdf-open-btn" href="presentations/Presentation1.pdf" target="_blank" rel="noopener" class="btn-sm">↗ เปิดไฟล์เต็มจอในแท็บใหม่</a>
+              <a id="pdf-dl-btn" href="presentations/Presentation1.pdf" download class="btn-sm primary">⬇ ดาวน์โหลด PDF</a>
+            </div>
+          </div>
+          <iframe id="pdf-frame" class="pdf-iframe" src="presentations/Presentation1.pdf" title="PDF Presentation Viewer"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: HIGH-RES 300-DPI ARCHITECTURE, CODE & VALIDATION GALLERY -->
+    <section id="gallery-sec" class="sec-block">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">🖼️ 3. คลังภาพสถาปัตยกรรม 300-DPI โปสเตอร์โค้ด และผล Validate เซนเซอร์ 15 จุด</h2>
+          <div class="sec-sub">คลิกที่ภาพเพื่อขยายเต็มจอ (Lightbox) หรือดาวน์โหลดไฟล์ความละเอียดสูงสำหรับนำไปใส่สไลด์และรายงาน</div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-pill active" onclick="filterGallery('all', this)">ทั้งหมด (11 รายการ)</button>
+        <button class="filter-pill" onclick="filterGallery('arch', this)">🏗️ สถาปัตยกรรม &amp; โซนฟิสิกส์ (300 DPI)</button>
+        <button class="filter-pill" onclick="filterGallery('code', this)">💻 โปสเตอร์โค้ด Modelica</button>
+        <button class="filter-pill" onclick="filterGallery('validation', this)">📈 กราฟ Validate &amp; ภาพติดตั้งเซนเซอร์จริง</button>
+      </div>
+
+      <div class="gallery-grid">
+        <!-- Gallery 1: Modelica Architecture 300DPI (PNG + SVG + PDF) -->
+        <article class="gallery-card searchable-item" data-cat="arch">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('presentations/KMUTT_Greenhouse_Modelica_Architecture_300DPI.png', 'สถาปัตยกรรมระบบ Modelica Digital Twin (300 DPI)')">
+            <img src="presentations/KMUTT_Greenhouse_Modelica_Architecture_300DPI.png" alt="KMUTT Greenhouse Modelica Architecture 300DPI" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">🏗️ สถาปัตยกรรมระบบ Modelica Digital Twin (300 DPI)</div>
+            <div class="gallery-desc">แผนผังการเชื่อมโยงบล็อกฟิสิกส์ 16 ชิ้นส่วน, แหล่งข้อมูลอากาศ ERA5 9 ช่องสัญญาณ และพอร์ตความร้อน/ไอน้ำ</div>
+            <div class="gallery-links">
+              <a href="presentations/KMUTT_Greenhouse_Modelica_Architecture_300DPI.png" target="_blank" rel="noopener" class="btn-sm primary">PNG 300-DPI</a>
+              <a href="presentations/KMUTT_Greenhouse_Modelica_Architecture.svg" target="_blank" rel="noopener" class="btn-sm">SVG Vector</a>
+              <a href="presentations/KMUTT_Greenhouse_Modelica_Architecture.pdf" target="_blank" rel="noopener" class="btn-sm">PDF Vector</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 2: Physical Zones 300DPI -->
+        <article class="gallery-card searchable-item" data-cat="arch">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('presentations/KMUTT_Greenhouse_Physical_Zones_300DPI.png', 'โซนฟิสิกส์โรงเรือน 4 โหนด และการแลกเปลี่ยนพลังงาน (300 DPI)')">
+            <img src="presentations/KMUTT_Greenhouse_Physical_Zones_300DPI.png" alt="KMUTT Greenhouse Physical Zones 300DPI" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">🌡️ โซนฟิสิกส์โรงเรือน 4 โหนด &amp; มุ้ง 16-Mesh (300 DPI)</div>
+            <div class="gallery-desc">แสดงกลไกการแผ่รังสี การพาความร้อน การคายน้ำของชั้นใบมะเขือเทศ และการระบายอากาศผ่านมุ้ง 16-Mesh</div>
+            <div class="gallery-links">
+              <a href="presentations/KMUTT_Greenhouse_Physical_Zones_300DPI.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="presentations/KMUTT_Greenhouse_Physical_Zones_300DPI.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 3: 15 Sensors Telemetry 300DPI -->
+        <article class="gallery-card searchable-item" data-cat="arch">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('presentations/KMUTT_Greenhouse_15Sensors_Telemetry_300DPI.png', 'โครงข่ายเซนเซอร์ 3 มิติ 15 จุด และระบบ Telemetry (300 DPI)')">
+            <img src="presentations/KMUTT_Greenhouse_15Sensors_Telemetry_300DPI.png" alt="KMUTT Greenhouse 15 Sensors Telemetry 300DPI" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📡 โครงข่ายเซนเซอร์ 3 มิติ 15 จุด &amp; Telemetry (300 DPI)</div>
+            <div class="gallery-desc">ผังการกระจายตัวของเสาเซนเซอร์ A, B, C, D, E ทั้ง 3 ระดับความสูง (1.2, 2.0, 2.5 ม.) และพินส่งออก 46 ช่อง</div>
+            <div class="gallery-links">
+              <a href="presentations/KMUTT_Greenhouse_15Sensors_Telemetry_300DPI.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="presentations/KMUTT_Greenhouse_15Sensors_Telemetry_300DPI.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 4: Code Slide 16x9 -->
+        <article class="gallery-card searchable-item" data-cat="code">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('presentations/Suphanburi_Greenhouse_Code_Slide_16x9.png', 'สไลด์สรุปโครงสร้างโค้ด Suphanburi_Greenhouse (16:9)')">
+            <img src="presentations/Suphanburi_Greenhouse_Code_Slide_16x9.png" alt="Suphanburi Greenhouse Code Slide 16x9" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">💻 สไลด์สรุปโครงสร้างโค้ด Modelica 16:9</div>
+            <div class="gallery-desc">ภาพสไลด์อัตราส่วน 16:9 สรุปโครงสร้างโค้ดหลักของ <code>Suphanburi_Greenhouse.mo</code> สำหรับใช้ในงานนำเสนอ</div>
+            <div class="gallery-links">
+              <a href="presentations/Suphanburi_Greenhouse_Code_Slide_16x9.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="presentations/Suphanburi_Greenhouse_Code_Slide_16x9.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 5: Code Full Poster -->
+        <article class="gallery-card searchable-item" data-cat="code">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('presentations/Suphanburi_Greenhouse_Code_Full.png', 'โปสเตอร์ซอร์สโค้ดฉบับเต็ม Suphanburi_Greenhouse')">
+            <img src="presentations/Suphanburi_Greenhouse_Code_Full.png" alt="Suphanburi Greenhouse Code Full" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📜 โปสเตอร์ซอร์สโค้ดฉบับเต็ม (Full Code Overview)</div>
+            <div class="gallery-desc">ภาพรวมซอร์สโค้ด Modelica ทั้งระบบความละเอียดสูงสำหรับซูมดูความเชื่อมโยงของพารามิเตอร์และสมการ</div>
+            <div class="gallery-links">
+              <a href="presentations/Suphanburi_Greenhouse_Code_Full.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="presentations/Suphanburi_Greenhouse_Code_Full.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 6: Validation Day 103 Diurnal -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/validation_day103_diurnal.png', 'กราฟเปรียบเทียบผลจำลองกับเซนเซอร์จริงรายชั่วโมง (Base Day 103 — 13 เม.ย.)')">
+            <img src="reports/assets/validation_day103_diurnal.png" alt="Validation Day 103 Diurnal Plot" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📈 กราฟ Validate รายชั่วโมง (Day 103 — 13 เม.ย.)</div>
+            <div class="gallery-desc">เปรียบเทียบอุณหภูมิและความชื้นสัมพัทธ์จากโมเดล Modelica กับค่าเฉลี่ยเซนเซอร์จริง 15 จุดตลอด 24 ชั่วโมง</div>
+            <div class="gallery-links">
+              <a href="reports/assets/validation_day103_diurnal.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/validation_day103_diurnal.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 7: Validation Day 105 Diurnal -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/validation_day105_diurnal.png', 'กราฟเปรียบเทียบผลจำลองกับเซนเซอร์จริงรายชั่วโมง (Day 105 — 15 เม.ย.)')">
+            <img src="reports/assets/validation_day105_diurnal.png" alt="Validation Day 105 Diurnal Plot" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📈 กราฟ Validate รายชั่วโมง (Day 105 — 15 เม.ย.)</div>
+            <div class="gallery-desc">ผลการทดสอบความแม่นยำต่อเนื่องในวันที่ 15 เมษายน แสดงความสอดคล้องของแอมพลิจูดอุณหภูมิและความชื้น</div>
+            <div class="gallery-links">
+              <a href="reports/assets/validation_day105_diurnal.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/validation_day105_diurnal.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 8: Validation Spatial 15 Sensors -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/validation_spatial_15sensors.png', 'กราฟเปรียบเทียบการกระจายตัวเชิงพื้นที่ครบทั้ง 15 จุดเซนเซอร์ (A–E × Top/Mid/Bot)')">
+            <img src="reports/assets/validation_spatial_15sensors.png" alt="Validation Spatial 15 Sensors" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📊 การกระจายตัวเชิงพื้นที่ครบ 15 จุด (Spatial Validation)</div>
+            <div class="gallery-desc">เปรียบเทียบค่าจำลองกับค่าจริงแยกตามเสา A–E และระดับความสูง Top (2.5m), Mid (2.0m), Bot (1.2m)</div>
+            <div class="gallery-links">
+              <a href="reports/assets/validation_spatial_15sensors.png" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/validation_spatial_15sensors.png" download class="btn-sm">⬇ ดาวน์โหลด PNG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 9: Sensor Layout Horizontal -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/sensor_layout_horizontal.jpg', 'ผังตำแหน่งการติดตั้งเซนเซอร์ในแนวระนาบ (Top View — เสา A, B, C, D, E)')">
+            <img src="reports/assets/sensor_layout_horizontal.jpg" alt="Sensor Layout Horizontal Plan" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📐 ผังตำแหน่งเซนเซอร์แนวระนาบ (Horizontal Layout)</div>
+            <div class="gallery-desc">แผนผังระยะการติดตั้งเสาเซนเซอร์ทั้ง 5 ต้น (A–E) ภายในโรงเรือนขนาด 6 × 12 เมตร ณ อ.อู่ทอง จ.สุพรรณบุรี</div>
+            <div class="gallery-links">
+              <a href="reports/assets/sensor_layout_horizontal.jpg" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/sensor_layout_horizontal.jpg" download class="btn-sm">⬇ ดาวน์โหลด JPG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 10: Sensor Layout Vertical -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/sensor_layout_vertical.jpg', 'ผังตำแหน่งการติดตั้งเซนเซอร์ในแนวดิ่ง (Elevation View — 1.2, 2.0, 2.5 ม.)')">
+            <img src="reports/assets/sensor_layout_vertical.jpg" alt="Sensor Layout Vertical Elevation" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📏 ผังตำแหน่งเซนเซอร์แนวดิ่ง (Vertical Layout)</div>
+            <div class="gallery-desc">ระยะความสูงของหัววัดเซนเซอร์ทั้ง 3 ระดับ (1.2 ม., 2.0 ม., 2.5 ม.) เทียบกับความสูงทรงพุ่มและหลังคา 5.5 ม.</div>
+            <div class="gallery-links">
+              <a href="reports/assets/sensor_layout_vertical.jpg" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/sensor_layout_vertical.jpg" download class="btn-sm">⬇ ดาวน์โหลด JPG</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Gallery 11: Sensor Installation Field Photo -->
+        <article class="gallery-card searchable-item" data-cat="validation">
+          <div class="gallery-thumb-wrap" onclick="openLightbox('reports/assets/sensor_installation_example.jpg', 'ภาพถ่ายการติดตั้งเซนเซอร์ตรวจวัดจริงภายในโรงเรือน')">
+            <img src="reports/assets/sensor_installation_example.jpg" alt="Field Sensor Installation Example" loading="lazy">
+          </div>
+          <div class="gallery-body">
+            <div class="gallery-title">📷 ภาพการติดตั้งเซนเซอร์จริงในโรงเรือน</div>
+            <div class="gallery-desc">ตัวอย่างการติดตั้งชุดเซนเซอร์วัดอุณหภูมิและความชื้นสัมพัทธ์ในสภาพแวดล้อมจริงภายในโรงเรือน</div>
+            <div class="gallery-links">
+              <a href="reports/assets/sensor_installation_example.jpg" target="_blank" rel="noopener" class="btn-sm primary">เปิดภาพเต็ม</a>
+              <a href="reports/assets/sensor_installation_example.jpg" download class="btn-sm">⬇ ดาวน์โหลด JPG</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 4: TEAM UPDATE WORKFLOW -->
+    <section id="sync-sec" class="sec-block">
+      <div class="sync-card">
+        <h2 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">🔄 วิธีอัปเดตเนื้อหารายงานและสไลด์ให้ทีมเห็นเวอร์ชันล่าสุดอัตโนมัติ (Team Auto-Sync Guide)</h2>
+        <p style="font-size:0.88rem; color:var(--text-muted);">
+          เว็บไซต์นี้ตั้งค่า <code>.gitignore</code> ให้ติดตามเฉพาะไฟล์เว็บ (<code>index.html</code>, <code>reports/</code>, <code>presentations/</code>)
+          ขนาดรวมเพียง ~21 MB เมื่อแก้ไขรายงานหรือเปลี่ยนไฟล์สไลด์เสร็จ สามารถซิงก์ขึ้น GitHub Pages ได้ในคลิกเดียว:
+        </p>
+        <div class="sync-steps">
+          <div class="sync-step">
+            <strong>1. แก้ไขรายงานหรืออัปเดตสไลด์</strong>
+            แก้ไขไฟล์ในโฟลเดอร์ <code>reports/</code> หรือวางไฟล์นำเสนอใหม่ใน <code>presentations/</code> ตามโครงสร้างเดิมโดยไม่ต้องย้ายโฟลเดอร์
+          </div>
+          <div class="sync-step">
+            <strong>2. ดับเบิลคลิก <code>publish_web.bat</code></strong>
+            สคริปต์จะซิงก์แถบเมนู ตรวจสอบลิงก์ทั้งหมด และสั่ง <code>git commit</code> + <code>git push</code> ขึ้น GitHub อัตโนมัติ
+          </div>
+          <div class="sync-step">
+            <strong>3. ทีมงานเปิดลิงก์เห็นของใหม่ทันที</strong>
+            GitHub Pages จะอัปเดตเว็บไซต์ภายใน 30–60 วินาที ทุกคนในทีมเพียงกด Refresh หน้าเว็บก็จะได้รับเวอร์ชันล่าสุดทันที
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
+    <div class="lightbox-bar" onclick="event.stopPropagation();">
+      <strong id="lightbox-caption">พรีวิวแผนภาพความละเอียดสูง</strong>
+      <div style="display:flex; gap:8px;">
+        <a id="lightbox-open" href="#" target="_blank" rel="noopener" class="btn-sm">↗ เปิดไฟล์ต้นฉบับ</a>
+        <button class="btn-sm primary" onclick="closeLightbox()">✕ ปิดหน้าต่าง (ESC)</button>
+      </div>
+    </div>
+    <img id="lightbox-img" class="lightbox-img" src="presentations/KMUTT_Greenhouse_Modelica_Architecture_300DPI.png" alt="Preview" onclick="event.stopPropagation();">
+  </div>
+
+  <script>
+    function selectPdf(url, title, itemEl) {
+      document.querySelectorAll('.pdf-item').forEach(el => el.classList.remove('active'));
+      if (itemEl) itemEl.classList.add('active');
+      document.getElementById('pdf-frame').src = url;
+      document.getElementById('pdf-stage-title').textContent = '📊 กำลังแสดงผล: ' + title;
+      document.getElementById('pdf-open-btn').href = url;
+      document.getElementById('pdf-dl-btn').href = url;
+    }
+
+    function filterGallery(cat, btnEl) {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      document.querySelectorAll('.gallery-card').forEach(card => {
+        const match = (cat === 'all' || card.dataset.cat === cat);
+        card.classList.toggle('hidden', !match);
+      });
+    }
+
+    function filterPortal(query) {
+      const q = query.trim().toLowerCase();
+      document.querySelectorAll('.searchable-item').forEach(item => {
+        const hit = !q || item.innerText.toLowerCase().includes(q);
+        item.classList.toggle('hidden', !hit);
+      });
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('lightbox-open').href = src;
+      document.getElementById('lightbox').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️ โหมดสว่าง' : '🌙 โหมดมืด';
+      localStorage.setItem('kmutt_portal_theme', next);
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('kmutt_portal_theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-btn').textContent = '☀️ โหมดสว่าง';
+      }
+    })();
+  </script>
+</body>
+</html>

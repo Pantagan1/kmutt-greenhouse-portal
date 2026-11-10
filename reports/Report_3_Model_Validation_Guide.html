@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานฉบับที่ 3: กระบวนการและผลการตรวจสอบความถูกต้องของแบบจำลองดิจิทัลทวิน (Validation & Empirical Verification Report)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Mermaid JS for Flowcharts -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad: true, theme: 'neutral'});</script>
+
+  <style>
+
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      --kmutt-orange: #ea580c;
+      --kmutt-orange-light: #ffedd5;
+      --accent: #059669;
+      --accent-light: #ecfdf5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #ffffff;
+      --bg-code: #0f172a;
+      --border-color: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--kmutt-orange), #c2410c);
+      color: white;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.5px;
+      box-shadow: 0 2px 4px rgba(234, 88, 12, 0.3);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+    }
+
+    .nav-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-print:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #a7f3d0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    /* Layout Container */
+    .app-container {
+      display: flex;
+      max-width: 1480px;
+      margin: 0 auto;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* Left Sticky Sidebar */
+    .sidebar {
+      width: 310px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      padding: 24px 18px;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .sidebar-search {
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      outline: none;
+      background: #f8fafc;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      background: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .toc-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+
+    .toc-list {
+      list-style: none;
+    }
+
+    .toc-item {
+      margin-bottom: 3px;
+    }
+
+    .toc-link {
+      display: block;
+      padding: 6px 10px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+
+    .toc-link:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    .toc-link.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .toc-num {
+      display: inline-block;
+      width: 22px;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 40px 48px;
+      background: var(--bg-surface);
+    }
+
+    .doc-article {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    h1.doc-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .doc-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 48px;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-top: 28px;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #334155;
+      font-size: 15px;
+    }
+
+    ul, ol {
+      margin-bottom: 18px;
+      padding-left: 24px;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Cards & Grids */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .info-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .info-card-header {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-card-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .info-card-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    /* Callout Alerts */
+    .callout {
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 22px 0;
+      border-left: 4px solid;
+      background: white;
+    }
+
+    .callout-note {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .callout-tip {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .callout-warning {
+      border-color: var(--warning);
+      background: var(--warning-light);
+    }
+
+    .callout-danger {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .callout-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .callout-note .callout-title { color: var(--primary-hover); }
+    .callout-tip .callout-title { color: var(--accent); }
+    .callout-warning .callout-title { color: var(--warning); }
+    .callout-danger .callout-title { color: var(--danger); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 22px 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    thead {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      padding: 11px 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: #334155;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* Math & Equations */
+    .math-block {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .math-caption {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    /* Code Blocks */
+    pre.code-block {
+      background: var(--bg-code);
+      color: #f8fafc;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    code:not(pre code) {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Diagram & Visual Layout Box */
+    .diagram-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #1e293b;
+      overflow-x: auto;
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      .header-bar, .sidebar, .sidebar-search, .btn-print, .nav-tabs {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        font-size: 12pt;
+        color: black !important;
+      }
+      .app-container {
+        display: block !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      .main-content {
+        padding: 0 !important;
+        background: white !important;
+      }
+      .doc-article {
+        max-width: 100% !important;
+      }
+      h2 {
+        page-break-before: always;
+        margin-top: 24pt;
+        border-bottom: 2px solid #333;
+      }
+      h2:first-of-type {
+        page-break-before: avoid;
+      }
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        page-break-inside: avoid;
+      }
+      .info-card, .callout, .math-block, .table-container, pre.code-block, .diagram-box {
+        page-break-inside: avoid;
+        border: 1px solid #aaa !important;
+        box-shadow: none !important;
+      }
+      a {
+        text-decoration: none !important;
+        color: black !important;
+      }
+    }
+  
+
+    /* Additional Styles for Report 3 */
+    .mermaid {
+      background: white;
+      padding: 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      margin: 20px 0;
+      text-align: center;
+    }
+    .qa-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .qa-q {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qa-q-badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .qa-a {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .kpi-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .kpi-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 6px 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .kpi-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .fx-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .cell-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+    }
+
+  
+    /* === UNIFIED PORTAL NAV & HUB CSS === */
+    .header-bar, .top-header {
+      gap: 10px !important;
+      padding: 0 16px !important;
+    }
+    .brand-group, .header-brand, .header-actions {
+      flex-shrink: 0 !important;
+    }
+    @media (max-width: 1520px) {
+      .brand-subtitle, .badge-status, .header-badge { display: none !important; }
+      .brand-title, .header-title { font-size: 0.9rem !important; }
+    }
+    .nav-tabs {
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      background: var(--bg-secondary, #f1f5f9) !important;
+      padding: 3px !important;
+      border-radius: var(--radius-md, 10px) !important;
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      flex: 0 1 auto !important;
+      margin: 0 auto !important;
+      justify-content: flex-start !important;
+      min-width: 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 5px 8px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: var(--text-secondary, var(--text-muted, #475569)) !important;
+      text-decoration: none !important;
+      border-radius: var(--radius-sm, 6px) !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      transition: all 0.15s ease !important;
+    }
+    .nav-tab-btn:hover {
+      color: var(--text-primary, var(--text-main, #0f172a)) !important;
+      background: var(--bg-card, var(--bg-surface, rgba(255, 255, 255, 0.7))) !important;
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-primary, #ffffff) !important;
+      color: var(--accent-primary, var(--primary, #0284c7)) !important;
+      box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.08)) !important;
+    }
+    .cross-report-hub {
+      margin-top: 2.75rem;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg, 14px);
+      background: var(--bg-card, var(--bg-surface, #ffffff));
+      border: 1px solid var(--border-color, #e2e8f0);
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
+    }
+    .cross-report-hub h2 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      margin: 0 0 14px 0;
+      padding: 0;
+      border: none;
+    }
+    .cross-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+    .cross-hub-card {
+      display: block;
+      padding: 12px 14px;
+      border-radius: var(--radius-md, 10px);
+      border: 1px solid var(--border-color, #e2e8f0);
+      background: var(--bg-secondary, #f8fafc);
+      text-decoration: none;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      transition: all 0.15s ease;
+    }
+    .cross-hub-card:hover {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+    }
+    .cross-hub-card.current-doc {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      background: var(--accent-light, #eff6ff);
+      box-shadow: inset 0 0 0 1px var(--accent-primary, var(--primary, #0284c7));
+    }
+    .cross-hub-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--text-primary, var(--text-main, #0f172a));
+    }
+    .cross-hub-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary, var(--text-muted, #475569));
+      line-height: 1.45;
+    }
+    @media print {
+      .header-bar, .top-header, .nav-tabs, .cross-report-hub {
+        display: none !important;
+      }
+    }
+    /* === END UNIFIED PORTAL NAV & HUB CSS === */
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="header-bar">
+    <a href="#" class="brand-group">
+      <div class="brand-logo">KMUTT</div>
+      <div class="brand-text">
+        <span class="brand-title">KMUTT GREENHOUSE DIGITAL TWIN</span>
+        <span class="brand-subtitle">ภาควิชาวิศวกรรมเครื่องกล มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี</span>
+      </div>
+    </a>
+
+                                    <!-- Navigation Tabs between Reports -->
+    <nav class="nav-tabs">
+      <a href="../index.html" class="nav-tab-btn" title="กลับสู่หน้าหลักพอร์ทัล รายงาน &amp; สื่อนำเสนอทั้งหมด">
+        <span>🏠</span> หน้าหลัก
+      </a>
+      <a href="Report_1_Project_Overview.html" class="nav-tab-btn" title="รายงานที่ 1: ภาพรวมโครงการและระบบโรงเรือน">
+        <span>📑</span> 1.ภาพรวม
+      </a>
+      <a href="Report_2_Modelica_Code_LineByLine.html" class="nav-tab-btn" title="รายงานที่ 2: ปูพื้นฐาน Modelica &amp; เจาะลึกโค้ด Line-by-Line">
+        <span>💻</span> 2.โค้ดระบบ
+      </a>
+      <a href="Report_3_Model_Validation_Guide.html" class="nav-tab-btn active" title="รายงานที่ 3: กระบวนการและผลการ Validate เซนเซอร์ 15 จุด">
+        <span>📊</span> 3.Validate
+      </a>
+      <a href="Report_4_Modelica_CFD_Framework.html" class="nav-tab-btn" title="รายงานที่ 4: สถาปัตยกรรม Modelica &amp; 3D CFD Coupling Framework">
+        <span>🔄</span> 4.CFD
+      </a>
+      <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="nav-tab-btn" title="รายงานที่ 5: คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์">
+        <span>📐</span> 5.สมการ
+      </a>
+      <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="nav-tab-btn" title="รายงานที่ 6: คู่มือสร้างแบบจำลองโรงเรือนสุพรรณบุรีทีละขั้นตอน (OMEdit GUI &amp; Code)">
+        <span>🛠️</span> 6.สร้างโมเดล
+      </a>
+      <a href="Modelica_Code_Categories_Slides.html" class="nav-tab-btn" title="สรุปแยก 8 หมวดหมู่โค้ด Modelica พร้อมสไลด์นำเสนอ 16:9 (9 แผ่น)">
+        <span>🎬</span> สไลด์โค้ด
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-print" onclick="window.print()">
+        <span>🖨️ พิมพ์ / บันทึกเป็น PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- Left Sticky Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="search-input" placeholder="🔍 ค้นหาหัวข้อในรายงาน...">
+      </div>
+
+      <nav class="sidebar-toc">
+        <div class="toc-group-title">สารบัญรายงานที่ 3</div>
+        <a href="#sec1" class="toc-link active"><span class="toc-num">1</span> ภาพรวมวิวัฒนาการโครงการ</a>
+        <a href="#sec2" class="toc-link"><span class="toc-num">2</span> หลักการฟิสิกส์ & ไซโครเมตริกส์</a>
+        <a href="#sec2_5" class="toc-link" style="padding-left:2.5rem; font-size:0.85rem;"><span class="toc-num">2.5</span> สูตรคำนวณทางสถิติ (RMSE, R², r)</a>
+        <a href="#sec3" class="toc-link"><span class="toc-num">3</span> สถาปัตยกรรม Validation & Excel</a>
+        <a href="#sec3_2" class="toc-link" style="padding-left:2.5rem; font-size:0.85rem;"><span class="toc-num">3.2</span> ผังสูตรสดในช่อง Formula Bar (fx)</a>
+        <a href="#sec4" class="toc-link"><span class="toc-num">4</span> ผลวิเคราะห์สถิติ & ASHRAE 14</a>
+        <a href="#sec5" class="toc-link"><span class="toc-num">5</span> คู่มือเตรียมสอบป้องกันวิทยานิพนธ์</a>
+        <a href="#sec6" class="toc-link"><span class="toc-num">6</span> สรุปผลวิจัย & ข้อเสนอแนะ</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="article-wrapper">
+
+        <!-- Title Banner -->
+        <div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border-color);">
+          <div style="display:inline-block; font-size:0.8rem; font-weight:700; color:var(--primary); background:var(--primary-light); padding:4px 12px; border-radius:20px; margin-bottom:10px;">
+            TECHNICAL & EMPIRICAL VALIDATION REPORT (มจธ. KMUTT)
+          </div>
+          <h1 style="font-size:2.2rem; font-weight:800; color:var(--text-main); line-height:1.3; margin-bottom:12px;">
+            รายงานฉบับที่ 3: กระบวนการและผลการตรวจสอบความถูกต้องของแบบจำลองดิจิทัลทวิน (Validation & Empirical Verification)
+          </h1>
+          <p style="font-size:1.05rem; color:var(--text-muted);">
+            การวิเคราะห์ความถูกต้องของแบบจำลองพลศาสตร์สภาพอากาศจุลภาคเชิงพื้นที่ 15 จุด และ 3 ระยะความสูง เทียบกับข้อมูลตรวจวัดจริงของโรงเรือนเกษตรอัจฉริยะ อ.อู่ทอง จ.สุพรรณบุรี ครบทั้ง 365 วัน (8,760 ชั่วโมง) ตามเกณฑ์มาตรฐาน ASHRAE Guideline 14 และ IPMVP พร้อมคู่มือโครงสร้างสูตรคำนวณสดใน Excel ครบถ้วน
+          </p>
+        </div>
+
+        <!-- Section 1 -->
+        <section id="sec1">
+          <h2><span class="toc-num">1</span> บทนำและภาพรวมวิวัฒนาการโครงการ (Project Overview & Evolution)</h2>
+          <p>
+            การทำเกษตรกรรมแม่นยำสูงในเขตร้อนชื้น (Tropical Precision Agriculture) สำหรับการเพาะปลูกมะเขือเทศเชอร์รี่ (<em>Solanum lycopersicum var. cerasiforme</em>) ณ ศูนย์เรียนรู้นวัตกรรมการเกษตร อ.อู่ทอง จ.สุพรรณบุรี อาศัยโครงสร้างโรงเรือนทรงโค้งพลาสติก PE กว้าง 6.0 ม. ยาว 12.0 ม. สูง 5.5 ม. พร้อมผนังมุ้งกันแมลง 16 เมช (16-Mesh Screen) เพื่อการระบายอากาศธรรมชาติ
+          </p>
+
+          <div class="mermaid">
+flowchart LR
+    A["ข้อมูลสภาพอากาศ ERA5<br>(รังสี, ลม, อุณหภูมิภายนอก)"] --> B["แบบจำลอง Modelica Digital Twin<br>(Suphanburi_Greenhouse.mo)"]
+    C["ข้อมูลเซนเซอร์จริง IoT<br>(GH4_all.xlsx: 15 เสา x 3 ระดับ)"] --> D["ระบบเปรียบเทียบและวิเคราะห์สถิติ<br>(Python & Excel 18 Sheets)"]
+    B --> D
+    D --> E["การประเมินมาตรฐานสากล<br>(ASHRAE 14 / IPMVP)"]
+    E --> F["การควบคุมโรงเรือนอัจฉริยะ<br>& การแจ้งเตือนความเครียดความร้อน"]
+          </div>
+
+          <h3>ลำดับวิวัฒนาการการพัฒนาแบบจำลอง (Chronological Evolution)</h3>
+          <div class="callout callout-info">
+            <div class="callout-title">สรุป 5 ขั้นตอนสำคัญในการพัฒนาแบบจำลองสู่ความสมบูรณ์แบบ</div>
+            <ol style="margin-left: 20px; margin-top: 8px;">
+              <li><strong>แบบจำลองก้อนอากาศเดียว (Lumped Bulk Node):</strong> เริ่มต้นจากการจำลองอุณหภูมิและความชื้นเฉลี่ยจุดเดียว ซึ่งยังไม่สามารถสะท้อนความแตกต่างเชิงพื้นที่หัวลม-ท้ายลมได้</li>
+              <li><strong>การค้นพบและแก้ปัญหาความชื้นสัมพัทธ์ตัน 100%:</strong> ปรับปรุงโมเดลมุ้งกันแมลงใน <code>InsectScreen_16Mesh.mo</code> โดยเพิ่ม <code>WaterMassPort_a</code> เชื่อมกับ <code>air.massPort</code> เพื่อระบายมวลไอน้ำ $\dot{M}_{vent}$ ออกสู่ภายนอก ส่งผลให้ค่าความชื้นลดลงมาสอดคล้องกับความเป็นจริงที่ 25% – 35% ในช่วงบ่าย</li>
+              <li><strong>การกระจายตัวเชิงพื้นที่ 3 มิติ 15 จุด (15 Spatial Sensors):</strong> พัฒนาสมการเกรเดียนต์แนวดิ่ง (Buoyancy), แนวยาว (Windward/Leeward), และแนวขวาง (Solar Asymmetry) จำลองทั้ง 5 เสา $\times$ 3 ระดับความสูง</li>
+              <li><strong>การจัดระเบียบตัวแปรและตัด Alias ซ้ำซ้อน (Removal of GH4-a-mid):</strong> ตัดตัวแปร <code>GH4_a_mid</code> ออก โดยเชื่อมตรงสู่ <code>T_sensor_A_Mid</code> และ <code>RH_sensor_A_Mid</code> ลดสมการลงเหลือ 479 สมการ สมดุล 100%</li>
+              <li><strong>การจำลองรอบปี 365 วัน (8,760 ชม.) และสมุดงาน Excel 18 ชีตฝังสูตรสด:</strong> สกัดข้อมูลเปรียบเทียบครบทุกชั่วโมงในไฟล์ <code>Suphanburi_Greenhouse_Validation_365Days.xlsx</code> (ขนาด 12.82 MB รวมชีตตัวแทนฐาน <code>Base_Day103_Apr13</code>) พร้อมระบบสูตรสดในช่อง Formula Bar (fx) ทั้งหมด</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="sec2">
+          <h2><span class="toc-num">2</span> หลักการทางฟิสิกส์ ไซโครเมตริกส์ และสูตรการคำนวณทางสถิติ (Formulations)</h2>
+          <p>
+            แบบจำลองดิจิทัลทวิน มจธ. ทำงานด้วยระบบสมการเชิงอนุพันธ์พีชคณิต (DAE Index-1) บนพื้นฐานกฎการอนุรักษ์พลังงานและมวล:
+          </p>
+
+          <h3>1) สมการสมดุลความร้อน 4 โหนดหลัก (Energy Balances)</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>โหนดระบบ</th>
+                  <th>สมการอนุพันธ์อุณหพลศาสตร์ (Differential Formulation)</th>
+                  <th>ความหมายเชิงวิศวกรรม</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>เปลือกคลุม PE ($T_{cov}$)</strong></td>
+                  <td>$$\rho_{cov} c_{p,cov} V_{cov} \frac{dT_{cov}}{dt} = Q_{solar} + Q_{conv,in} + Q_{conv,out} + Q_{rad,sky}$$</td>
+                  <td>สมดุลความร้อนของแผ่นฟิล์มพลาสติก PE หนา 200 ไมครอน รับรังสีตรงและแผ่รังสีอินฟราเรดสู่ท้องฟ้า</td>
+                </tr>
+                <tr>
+                  <td><strong>อากาศภายใน ($T_{air}$)</strong></td>
+                  <td>$$\rho_{air} c_{p,air} V_{gh} \frac{dT_{air}}{dt} = Q_{cov\to air} + Q_{can\to air} + Q_{flr\to air} + Q_{vent}$$</td>
+                  <td>สมดุลความร้อนของปริมาตรอากาศ $349.65\text{ m}^3$ ถ่ายเทความร้อนกับการระบายอากาศธรรมชาติ</td>
+                </tr>
+                <tr>
+                  <td><strong>ทรงพุ่มพืช ($T_{can}$)</strong></td>
+                  <td>$$C_{leaf} A_{flr} \frac{dT_{can}}{dt} = Q_{solar,can} - Q_{conv} - Q_{transpiration} - Q_{rad}$$</td>
+                  <td>สมดุลพลังงานใบมะเขือเทศเชอร์รี่ ระบายความร้อนแฝงผ่านการคายน้ำ (Latent Heat of Transpiration)</td>
+                </tr>
+                <tr>
+                  <td><strong>ผิวดินคลุมพลาสติก ($T_{flr}$)</strong></td>
+                  <td>$$\rho_{soil} c_{p,soil} d_{soil} A_{flr} \frac{dT_{flr}}{dt} = Q_{solar,flr} - Q_{conv} - Q_{cond,soil}$$</td>
+                  <td>สมดุลความร้อนผิวดินชั้นบนหนา 5 ซม. รับความร้อนและการนำลงสู่ดินลึก</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2) สมการสมดุลมวลไอน้ำและไซโครเมตริกส์ (Tetens Moisture Balance)</h3>
+          <p>
+            ความชื้นสัมพัทธ์ภายในคำนวณจากสมดุลระหว่างการคายน้ำของมะเขือเทศกับอัตราการระบายอากาศผ่านมุ้ง:
+          </p>
+          $$\rho_{air} V_{gh} \frac{d(x_{air})}{dt} = \dot{M}_{transpiration} - \dot{M}_{vent,moisture}$$
+          $$P_{sat}(T) = 0.61078 \exp\left(\frac{17.27 T}{T + 237.3}\right) \quad [\text{kPa}], \quad VPD = P_{sat}(T)(1 - RH)$$
+
+          <h3>3) สมการการแบ่งชั้นความชื้นสัมพัทธ์ 15 จุด (15 Spatial RH Formulation)</h3>
+          $$RH_i = \max\left(5.0, \, \min\left(100.0, \, RH_{bulk} \times \frac{P_{sat}(T_{air})}{P_{sat}(T_i)} + \Delta RH_{canopy, i}\right)\right)$$
+          <p>
+            เมื่ออุณหภูมิ $T_i$ สูงขึ้นที่ชั้นบน ($z = 2.5\text{ m}$) ค่า $P_{sat}(T_i)$ จะสูงขึ้น ส่งผลให้ $RH_i$ ลดลงอย่างเป็นธรรมชาติ ขณะที่ในชั้นทรงพุ่ม ($z = 2.0\text{ m}$ และ $1.2\text{ m}$) จะได้รับไอน้ำเสริมจากการคายน้ำของใบมะเขือเทศ $+1.5(GHI/950)$
+          </p>
+
+          <!-- Subsection 2.5: Statistical Metrics Formulations -->
+          <div id="sec2_5" style="margin-top: 35px;">
+            <h3>4) สูตรคณิตศาสตร์ทางสถิติในการประเมินความถูกต้อง (Statistical Metrics Formulations)</h3>
+            <p>
+              การประเมินความสอดคล้องระหว่างข้อมูลตรวจวัดจริง ($y_{meas}$) กับผลจำลองแบบจำลอง ($y_{sim}$) ตลอดรอบปี 8,760 ชั่วโมง ใช้ดัชนีชี้วัดสถิติวิศวกรรมมาตรฐาน 5 ดัชนีหลัก:
+            </p>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ดัชนีชี้วัด (Metric)</th>
+                    <th>สมการคณิตศาสตร์ (Mathematical Formulation)</th>
+                    <th>หน่วย</th>
+                    <th>ความหมายเชิงวิศวกรรม</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>RMSE</strong><br>Root Mean Square Error</td>
+                    <td>$$\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_{sim, i} - y_{meas, i})^2}$$</td>
+                    <td>$^\circ\text{C}$ หรือ %</td>
+                    <td>ขนาดความคลาดเคลื่อนเฉลี่ย โดยให้น้ำหนักกับความคลาดเคลื่อนสูง (Penalize large errors)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>MAE</strong><br>Mean Absolute Error</td>
+                    <td>$$\text{MAE} = \frac{1}{N} \sum_{i=1}^{N} |y_{sim, i} - y_{meas, i}|$$</td>
+                    <td>$^\circ\text{C}$ หรือ %</td>
+                    <td>ความคลาดเคลื่อนเฉลี่ยสัมบูรณ์ ไม่ขยายผลจุดผิดปกติ (Robust against outliers)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>MBE</strong><br>Mean Bias Error</td>
+                    <td>$$\text{MBE} = \frac{1}{N} \sum_{i=1}^{N} (y_{sim, i} - y_{meas, i})$$</td>
+                    <td>$^\circ\text{C}$ หรือ %</td>
+                    <td>ทิศทางการเอนเอียง: ค่าลบแสดงว่าแบบจำลองทำนายต่ำกว่าจริง (Under-prediction)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pearson $r$</strong><br>Correlation Coefficient</td>
+                    <td>$$r = \frac{\sum_{i=1}^{N} (y_{meas, i} - \bar{y}_{meas})(y_{sim, i} - \bar{y}_{sim})}{\sqrt{\sum_{i=1}^{N} (y_{meas, i} - \bar{y}_{meas})^2 \sum_{i=1}^{N} (y_{sim, i} - \bar{y}_{sim})^2}}$$</td>
+                    <td>-1 ถึง +1</td>
+                    <td>ความสัมพันธ์เชิงเส้นและการตอบสนองตามพลวัตเวลา (Temporal Phase Agreement)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>$R^2$</strong><br>Coefficient of Determination</td>
+                    <td>$$R^2 = 1 - \frac{\sum_{i=1}^{N} (y_{meas, i} - y_{sim, i})^2}{\sum_{i=1}^{N} (y_{meas, i} - \bar{y}_{meas})^2}$$</td>
+                    <td>0 ถึง 1</td>
+                    <td>สัดส่วนความผันแปรของข้อมูลตรวจวัดจริงที่แบบจำลองสามารถอธิบายได้ (Goodness of Fit)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="sec3">
+          <h2><span class="toc-num">3</span> กระบวนการ สถาปัตยกรรมสมุดงาน และสูตรคำนวณสดใน Excel (Validation Pipeline & Live Excel fx Architecture)</h2>
+          <p>
+            การตรวจสอบความถูกต้องได้รับการสร้างเป็นสมุดงาน Excel ครบถ้วนสมบูรณ์ในชื่อ <code>Suphanburi_Greenhouse_Validation_365Days.xlsx</code> (18 ชีต, ขนาด <strong>12.82 MB</strong>) โดยเชื่อมต่อข้อมูลดิบจาก <code>GH4_all.xlsx</code> และฝังสูตรคำนวณสดในช่อง Formula Bar (`fx`) ทุกเซลล์:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ลำดับชีต</th>
+                  <th>ชื่อชีต (Sheet Name)</th>
+                  <th>บทบาทและรายละเอียดข้อมูล</th>
+                  <th>จำนวนแถว</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ชีตที่ 1</strong></td>
+                  <td><code>Overview_Validation</code></td>
+                  <td><strong>Executive Master Dashboard:</strong> สรุปผล Validation ทั้ง 15 จุด + บล็อก Base Day 103 (13 เม.ย. 2569) เชื่อมโยงสูตรสดข้ามแผ่นงาน (e.g. <code>='Pole_A_Top'!E10</code>) พร้อม Hyperlink นำทาง และเทียบเกณฑ์ ASHRAE 14</td>
+                  <td>35 แถว</td>
+                </tr>
+                <tr>
+                  <td><strong>ชีตที่ 2</strong></td>
+                  <td><code>Base_Day103_Apr13</code></td>
+                  <td><strong>Base Case Representative Day (13 เม.ย. 2569):</strong> สรุป 24 ชม. ของวันตัวแทนฤดูร้อนอันดับ 1 (Phase 3 Score <code>1.8961</code>, GHI Peak <code>1,051.84 W/m²</code> @ 13:00 น.) เชื่อมสูตรสดตรงจาก <code>Pole_*</code> แถว <code>2463:2486</code> ครบ 24/24 ชม. ทั้ง 15 จุด</td>
+                  <td>62 แถว</td>
+                </tr>
+                <tr>
+                  <td><strong>ชีตที่ 3–17</strong></td>
+                  <td><code>Pole_A_Top</code> ถึง <code>Pole_E_Bot</code><br>(15 ชีตเฉพาะจุด)</td>
+                  <td><strong>แยกเฉพาะจุดตรวจวัด 15 จุด (5 เสา x 3 ระดับ):</strong><br>• การ์ดสรุปสถิติ KPI รายจุด ($N$, Mean, MBE, MAE, RMSE, Pearson $r$, $R^2$) ฝังสูตรสดในช่อง fx<br>• ข้อมูลเปรียบเทียบรายชั่วโมง 365 วัน ฝังสูตรคำนวณผลต่าง ($T_{diff}, T_{abs\_diff}, RH_{diff}, RH_{abs\_diff}$) ทุกแถว</td>
+                  <td>8,774 แถว / ชีต</td>
+                </tr>
+                <tr>
+                  <td><strong>ชีตที่ 18</strong></td>
+                  <td><code>Summary_3_Levels</code></td>
+                  <td><strong>แผ่นสรุปค่าเฉลี่ยของทั้ง 3 ระยะความสูง:</strong><br>1) สถิติเฉลี่ย 3 ระยะความสูง (Top, Mid, Bot)<br>2) สถิติเฉลี่ย 3 ฤดูกาล (Summer, Rainy, Winter)<br>3) ตารางเปรียบเทียบรายชั่วโมง 8,760 แถว ฝังสูตรเฉลี่ยสด</td>
+                  <td>8,777 แถว</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Subsection 3.2: Live Excel Formula Architecture -->
+          <div id="sec3_2" style="margin-top: 35px;">
+            <h3>ผังโครงสร้างสูตรคำนวณสดในช่อง Formula Bar (fx) ของสมุดงาน Excel</h3>
+            <p>
+              ทุกเซลล์ในการ์ด KPI Summary Cards (แถว 5–12) และตารางข้อมูลรายชั่วโมง (แถว 15–8774) ของทั้ง 15 ชีตเซนเซอร์ ถูกฝังด้วยสูตรคำนวณสดแบบไดนามิก ดังแสดงในผังด้านล่าง:
+            </p>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ตัวแปร</th>
+                    <th>ดัชนีชี้วัด (Metric)</th>
+                    <th>ตำแหน่งเซลล์</th>
+                    <th>สูตร Excel ที่แสดงในช่อง <code>fx</code></th>
+                    <th>หลักการทำงานและเหตุผลทางเทคนิค</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td>จำนวนข้อมูลจริง ($N_T$)</td>
+                    <td><span class="cell-badge">E5</span></td>
+                    <td><span class="fx-pill">=COUNT(F15:F8774)</span></td>
+                    <td>นับเฉพาะเซลล์ที่มีตัวเลข ข้ามช่องว่าง Missing Data อัตโนมัติ</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td>อุณหภูมิวัดจริงเฉลี่ย</td>
+                    <td><span class="cell-badge">E6</span></td>
+                    <td><span class="fx-pill">=AVERAGE(F15:F8774)</span></td>
+                    <td>เฉลี่ยเฉพาะชั่วโมงที่มีข้อมูลตรวจวัดจริง ไม่นำค่าว่างมารวม</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td>อุณหภูมิโมเดลเฉลี่ย</td>
+                    <td><span class="cell-badge">E7</span></td>
+                    <td><span class="fx-pill">=AVERAGE(G15:G8774)</span></td>
+                    <td>เฉลี่ยผลการทำนายของแบบจำลองดิจิทัลทวิน Modelica</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td>Mean Bias Error (MBE)</td>
+                    <td><span class="cell-badge">E8</span></td>
+                    <td><span class="fx-pill">=AVERAGE(H15:H8774)</span></td>
+                    <td>เฉลี่ยผลต่าง $T_{diff}$ ชี้บอกทิศทางทำนายเกิน/ต่ำจริง</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td>Mean Absolute Error (MAE)</td>
+                    <td><span class="cell-badge">E9</span></td>
+                    <td><span class="fx-pill">=AVERAGE(I15:I8774)</span></td>
+                    <td>เฉลี่ยผลต่างสัมบูรณ์ $T_{abs\_diff}$</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td><strong>Root Mean Square Error (RMSE)</strong></td>
+                    <td><span class="cell-badge">E10</span></td>
+                    <td><span class="fx-pill">=SQRT(SUMSQ(H15:H8774)/COUNT(H15:H8774))</span></td>
+                    <td>ใช้ <code>SUMSQ</code> รวมกำลังสองของผลต่าง และ <code>COUNT</code> นับตัวหารจริง ป้องกัน #VALUE!</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td><strong>Pearson Correlation (r)</strong></td>
+                    <td><span class="cell-badge">E11</span></td>
+                    <td><span class="fx-pill">=CORREL(F15:F8774, G15:G8774)</span></td>
+                    <td>หาค่าสหสัมพันธ์ของคู่ข้อมูลจริงเทียบจำลองแบบ Pairwise</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#dc2626;">อุณหภูมิ (T)</strong></td>
+                    <td><strong>Determination ($R^2$)</strong></td>
+                    <td><span class="cell-badge">E12</span></td>
+                    <td><span class="fx-pill">=RSQ(F15:F8774, G15:G8774)</span></td>
+                    <td>คำนวณกำลังสองของสัมประสิทธิ์สหสัมพันธ์เพียร์สันโดยตรง</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td>จำนวนข้อมูลจริง ($N_{RH}$)</td>
+                    <td><span class="cell-badge">I5</span></td>
+                    <td><span class="fx-pill">=COUNT(J15:J8774)</span></td>
+                    <td>นับจำนวนชั่วโมงที่มีข้อมูลความชื้นตรวจวัดจริง</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td>ความชื้นวัดจริงเฉลี่ย</td>
+                    <td><span class="cell-badge">I6</span></td>
+                    <td><span class="fx-pill">=AVERAGE(J15:J8774)</span></td>
+                    <td>ค่าเฉลี่ยความชื้นสัมพัทธ์ตรวจวัดจริง</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td>ความชื้นโมเดลเฉลี่ย</td>
+                    <td><span class="cell-badge">I7</span></td>
+                    <td><span class="fx-pill">=AVERAGE(K15:K8774)</span></td>
+                    <td>ค่าเฉลี่ยความชื้นสัมพัทธ์ของแบบจำลอง</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td>Mean Bias Error (MBE)</td>
+                    <td><span class="cell-badge">I8</span></td>
+                    <td><span class="fx-pill">=AVERAGE(L15:L8774)</span></td>
+                    <td>เฉลี่ยผลต่างความชื้น $RH_{diff}$</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td>Mean Absolute Error (MAE)</td>
+                    <td><span class="cell-badge">I9</span></td>
+                    <td><span class="fx-pill">=AVERAGE(M15:M8774)</span></td>
+                    <td>เฉลี่ยผลต่างสัมบูรณ์ความชื้น $RH_{abs\_diff}$</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td><strong>Root Mean Square Error (RMSE)</strong></td>
+                    <td><span class="cell-badge">I10</span></td>
+                    <td><span class="fx-pill">=SQRT(SUMSQ(L15:L8774)/COUNT(L15:L8774))</span></td>
+                    <td>คำนวณ RMSE ความชื้นสัมพัทธ์ในหน่วย %</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td><strong>Pearson Correlation (r)</strong></td>
+                    <td><span class="cell-badge">I11</span></td>
+                    <td><span class="fx-pill">=CORREL(J15:J8774, K15:K8774)</span></td>
+                    <td>หาค่าสหสัมพันธ์ของพลวัตความชื้นสัมพัทธ์ตลอดทั้งปี</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:#0284c7;">ความชื้น (RH)</strong></td>
+                    <td><strong>Determination ($R^2$)</strong></td>
+                    <td><span class="cell-badge">I12</span></td>
+                    <td><span class="fx-pill">=RSQ(J15:J8774, K15:K8774)</span></td>
+                    <td>คำนวณค่า $R^2$ ความชื้นสัมพัทธ์</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>สูตรในตารางข้อมูลรายชั่วโมง (Hourly Rows 15–8774 รวม 8,760 แถว):</h4>
+            <div class="callout callout-info">
+              <div class="callout-title">สูตรตรรกะแบบมีเงื่อนไขในแต่ละแถว</div>
+              <ul style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>คอลัมน์ H ($T_{diff}$):</strong> <code class="fx-pill">=IF(ISNUMBER(F15), G15-F15, "")</code> — ตรวจสอบว่ามีข้อมูลวัดจริงหรือไม่ หากมี ให้หาผลต่างโมเดลลบวัดจริง หากไม่มี ให้ส่งค่าสตริงว่าง <code>""</code></li>
+                <li><strong>คอลัมน์ I ($T_{abs\_diff}$):</strong> <code class="fx-pill">=IF(ISNUMBER(H15), ABS(H15), "")</code> — หาค่าสัมบูรณ์ของผลต่างเพื่อคำนวณ MAE</li>
+                <li><strong>คอลัมน์ L ($RH_{diff}$):</strong> <code class="fx-pill">=IF(ISNUMBER(J15), K15-J15, "")</code> — หาผลต่างความชื้นสัมพัทธ์</li>
+                <li><strong>คอลัมน์ M ($RH_{abs\_diff}$):</strong> <code class="fx-pill">=IF(ISNUMBER(L15), ABS(L15), "")</code> — หาค่าสัมบูรณ์ของผลต่างความชื้นสัมพัทธ์</li>
+                <li><strong>คอลัมน์ N (สถานะข้อมูล Data Status):</strong> <code class="fx-pill">=IF(ISNUMBER(F15), "Normal", "Missing")</code> — แสดงสถานะความสมบูรณ์ของจุดตรวจวัด</li>
+              </ul>
+            </div>
+
+            <h4>การจัดการ Missing Data ใน Excel เพื่อความเที่ยงตรง 100%:</h4>
+            <p>
+              สูตร <code>=SQRT(SUMSQ(H15:H8774)/COUNT(H15:H8774))</code> ได้รับการคัดเลือกแทนการใช้ Array Formula <code>{=SQRT(AVERAGE((G15:G8774-F15:F8774)^2))}</code> เนื่องจากฟังก์ชัน <code>SUMSQ</code> และ <code>COUNT</code> ใน Excel มีคุณสมบัติพิเศษตามมาตรฐานสากลคือ <strong>"ข้ามเซลล์สตริงว่าง <code>""</code> โดยอัตโนมัติ"</strong> ทำให้ตัวหาร $N$ ตรงกับจำนวนชั่วโมงที่มีข้อมูลตรวจวัดจริงอย่างแม่นยำ ไม่เกิด Error <code>#VALUE!</code> หรือ <code>#DIV/0!</code> และเมื่อผู้ใช้แก้ไขข้อมูลในตารางรายชั่วโมง ค่า KPI ทั้งหมดจะ Recalculate สดทันที
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="sec4">
+          <h2><span class="toc-num">4</span> ผลลัพธ์การตรวจสอบความถูกต้องและการวิเคราะห์เปรียบเทียบ (Validation Results)</h2>
+
+          <!-- KPI Summary Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-title">อุณหภูมิเฉลี่ย RMSE</div>
+              <div class="kpi-val">2.66 – 3.04 °C</div>
+              <div class="kpi-sub">CV(RMSE) ~ 9.1% – 10.4% (เกณฑ์ ASHRAE &lt; 30%)</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">สหสัมพันธ์อุณหภูมิ (r)</div>
+              <div class="kpi-val">0.881 – 0.895</div>
+              <div class="kpi-sub">สอดคล้องระดับสูงมาก (15 จุด r = 0.848 – 0.907)</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">ความชื้นสัมพัทธ์ชั้นพุ่ม RMSE</div>
+              <div class="kpi-val">10.85% – 12.47%</div>
+              <div class="kpi-sub">แม่นยำสูงในชั้นพุ่มใบมะเขือเทศเชอร์รี่</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-title">จำนวนชั่วโมงจำลอง</div>
+              <div class="kpi-val">8,760 ชม.</div>
+              <div class="kpi-sub">365 วันเต็ม 18 ชีต ฝังสูตรสดครบ 100%</div>
+            </div>
+          </div>
+
+          <h3>1) ตารางสรุปผลค่าเฉลี่ยของทั้ง 3 ระยะความสูง (3 Height Strata Summary)</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ระยะความสูง (Strata)</th>
+                  <th>ระดับ $z$</th>
+                  <th>$T$ วัดจริง</th>
+                  <th>$T$ โมเดล</th>
+                  <th>$T$ MBE</th>
+                  <th>$T$ RMSE</th>
+                  <th>$T$ Pearson $r$</th>
+                  <th>$T$ $R^2$</th>
+                  <th>$RH$ วัดจริง</th>
+                  <th>$RH$ โมเดล</th>
+                  <th>$RH$ MBE</th>
+                  <th>$RH$ RMSE</th>
+                  <th>$RH$ Pearson $r$</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Top (ชั้นบน ใต้หลังคา)</strong></td>
+                  <td>2.50 m</td>
+                  <td>29.30 °C</td>
+                  <td>28.47 °C</td>
+                  <td>-0.83 °C</td>
+                  <td><strong style="color:var(--accent);">3.04 °C</strong></td>
+                  <td><strong style="color:var(--accent);">0.881</strong></td>
+                  <td>0.776</td>
+                  <td>79.5 %</td>
+                  <td>72.2 %</td>
+                  <td>-7.3 %</td>
+                  <td><strong style="color:var(--accent);">14.44 %</strong></td>
+                  <td>0.806</td>
+                </tr>
+                <tr>
+                  <td><strong>Mid (ชั้นกลาง ยอดพุ่ม)</strong></td>
+                  <td>2.00 m</td>
+                  <td>29.34 °C</td>
+                  <td>28.75 °C</td>
+                  <td>-0.59 °C</td>
+                  <td><strong style="color:var(--accent);">2.71 °C</strong></td>
+                  <td><strong style="color:var(--accent);">0.892</strong></td>
+                  <td>0.795</td>
+                  <td>73.7 %</td>
+                  <td>71.7 %</td>
+                  <td>-2.1 %</td>
+                  <td><strong style="color:var(--accent);">10.85 %</strong></td>
+                  <td>0.835</td>
+                </tr>
+                <tr>
+                  <td><strong>Bot (ชั้นล่าง โคนต้น)</strong></td>
+                  <td>1.20 m</td>
+                  <td>29.27 °C</td>
+                  <td>28.70 °C</td>
+                  <td>-0.56 °C</td>
+                  <td><strong style="color:var(--accent);">2.66 °C</strong></td>
+                  <td><strong style="color:var(--accent);">0.895</strong></td>
+                  <td>0.800</td>
+                  <td>78.8 %</td>
+                  <td>71.7 %</td>
+                  <td>-7.1 %</td>
+                  <td><strong style="color:var(--accent);">12.47 %</strong></td>
+                  <td>0.838</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>2) ตารางสรุปผลเปรียบเทียบตาม 3 ช่วงฤดูกาล (Seasonal Validation)</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ฤดูกาล (Season)</th>
+                  <th>ช่วงเดือน</th>
+                  <th>$T$ วัดจริง</th>
+                  <th>$T$ โมเดล</th>
+                  <th>$T$ MBE</th>
+                  <th>$T$ RMSE</th>
+                  <th>$T$ Pearson $r$</th>
+                  <th>$RH$ วัดจริง</th>
+                  <th>$RH$ โมเดล</th>
+                  <th>$RH$ MBE</th>
+                  <th>$RH$ RMSE</th>
+                  <th>$RH$ Pearson $r$</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Summer (ฤดูร้อน)</strong></td>
+                  <td>มี.ค. – พ.ค. (Mar – May)</td>
+                  <td>31.46 °C</td>
+                  <td>31.08 °C</td>
+                  <td>-0.38 °C</td>
+                  <td><strong>2.83 °C</strong></td>
+                  <td><strong>0.877</strong></td>
+                  <td>73.1 %</td>
+                  <td>65.5 %</td>
+                  <td>-7.6 %</td>
+                  <td><strong>14.62 %</strong></td>
+                  <td><strong>0.848</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Rainy (ฤดูฝน)</strong></td>
+                  <td>มิ.ย. – ต.ค. (Jun – Oct)</td>
+                  <td>30.26 °C</td>
+                  <td>29.20 °C</td>
+                  <td>-1.06 °C</td>
+                  <td><strong>2.80 °C</strong></td>
+                  <td><strong>0.877</strong></td>
+                  <td>81.6 %</td>
+                  <td>76.6 %</td>
+                  <td>-5.0 %</td>
+                  <td><strong>10.47 %</strong></td>
+                  <td><strong>0.826</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Winter (ฤดูหนาว)</strong></td>
+                  <td>พ.ย. – ก.พ. (Nov – Feb)</td>
+                  <td>26.66 °C</td>
+                  <td>26.37 °C</td>
+                  <td>-0.30 °C</td>
+                  <td><strong>2.70 °C</strong></td>
+                  <td><strong>0.886</strong></td>
+                  <td>74.7 %</td>
+                  <td>70.0 %</td>
+                  <td>-4.7 %</td>
+                  <td><strong>10.83 %</strong></td>
+                  <td><strong>0.854</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>3) แผนภาพกราฟผลการตรวจสอบความถูกต้องความละเอียดสูง</h3>
+          <div style="text-align:center; margin:24px 0;">
+            <img src="assets/validation_day103_diurnal.png" alt="Base Day 103 Diurnal Validation" style="max-width:100%; border-radius:8px; border:1px solid var(--border-color); box-shadow:var(--shadow-md);">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;"><em>รูปที่ 1: วงรอบอุณหภูมิ ความชื้นสัมพัทธ์ และแสงสว่างตลอด 24 ชั่วโมงของวันฐานตัวแทนฤดูร้อนอันดับ 1 Base Day 103 (13 เม.ย. 2569 / 2026 — GHI Peak 1,051.84 W/m²) เทียบข้อมูลเซนเซอร์ Pole A Mid (gh4amid)</em></p>
+          </div>
+
+          <div style="text-align:center; margin:24px 0;">
+            <img src="assets/validation_spatial_15sensors.png" alt="15-Sensor Spatial Validation" style="max-width:100%; border-radius:8px; border:1px solid var(--border-color); box-shadow:var(--shadow-md);">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;"><em>รูปที่ 2: การกระจายตัวเชิงพื้นที่ 15 จุด และ 1:1 Parity Scatter Plot ตลอดรอบปี</em></p>
+          </div>
+
+          <h3>4) การประเมินเทียบเกณฑ์มาตรฐานวิศวกรรมสากล (ASHRAE Guideline 14-2014)</h3>
+          <div class="callout callout-success">
+            <div class="callout-title">สรุปผลการเทียบเคียงมาตรฐานระดับสากล</div>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+              <li><strong>CV(RMSE) อุณหภูมิ:</strong> อยู่ที่ $9.1\% - 10.4\%$ ผ่านเกณฑ์ ASHRAE (&lt; 30%) ได้อย่างโดดเด่น เหนือกว่าเกณฑ์ถึง 3 เท่า</li>
+              <li><strong>NMBE อุณหภูมิ:</strong> อยู่ที่ $-1.9\% \text{ ถึง } -2.8\%$ อยู่ในกรอบเกณฑ์สากล $\pm 10\%$ อย่างสมบูรณ์</li>
+              <li><strong>Pearson Correlation (r):</strong> สูงถึง $0.848 – 0.907$ ทั่วทั้งโรงเรือน บ่งชี้ว่าแบบจำลองจับพลวัตการเปลี่ยนแปลงสภาพอากาศได้อย่างแม่นยำ</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="sec5">
+          <h2><span class="toc-num">5</span> คู่มือเตรียมสอบป้องกันวิทยานิพนธ์และข้ออภิปรายเชิงวิชาการ (Oral Defense Guide)</h2>
+          <p>
+            ชุดคำถาม-คำตอบเชิงลึกที่คณะกรรมการสอบหรืออาจารย์ที่ปรึกษามักจะซักถาม พร้อมหลักการทางฟิสิกส์และตัวเลขอ้างอิง:
+          </p>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q1</span>
+              <span>ผลการจำลองมีความน่าเชื่อถือเพียงใด และใช้เกณฑ์มาตรฐานใดในการยอมรับในระดับงานวิจัย?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> แบบจำลองผ่านการตรวจสอบความถูกต้องตามเกณฑ์มาตรฐานสากล <strong>ASHRAE Guideline 14-2014</strong> และ <strong>IPMVP</strong> โดยมีค่าสัมประสิทธิ์ความแปรปรวนของความคลาดเคลื่อน $CV(\text{RMSE})$ ของอุณหภูมิอยู่ที่เพียง <strong>9.1% – 10.4%</strong> ซึ่งดีกว่าเกณฑ์มาตรฐานที่กำหนดไม่เกิน 30% ถึง 3 เท่าตัว และมีค่าความเอนเอียงเฉลี่ย $NMBE$ อยู่ที่ <strong>-1.9% ถึง -2.8%</strong> (เกณฑ์กำหนดไม่เกิน $\pm 10\%$) ในขณะที่ค่าสหสัมพันธ์เพียร์สัน $r$ อยู่ในระดับสูงมาก <strong>0.848 – 0.907</strong> ตลอดทั้ง 365 วัน ยืนยันว่าโมเดลมีความน่าเชื่อถือและสามารถนำไปใช้ทำนายเพื่อควบคุมโรงเรือนได้จริงครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q2</span>
+              <span>ทำไมค่าความชื้นสัมพัทธ์ (RH) ถึงมีค่าความคลาดเคลื่อน (RMSE ~11-18%) สูงกว่าอุณหภูมิ (RMSE ~2.6-3.4 °C)?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> เกิดจากธรรมชาติทางฟิสิกส์ของสมการไซโครเมตริกส์ครับ ความชื้นสัมพัทธ์คำนวณจาก $RH = P_v / P_{sat}(T)$ ซึ่ง $P_{sat}(T)$ มีความสัมพันธ์แบบเอกซ์โพเนนเชียลรุนแรงตามสมการเตเตนส์ การคลาดเคลื่อนของอุณหภูมิเพียง $1^\circ\text{C}$ ในช่วงอากาศร้อน ($38^\circ\text{C} - 42^\circ\text{C}$) จะขยายผลให้ $P_{sat}$ เปลี่ยนแปลงและกระทบต่อ RH ถึง $4\% - 6\%$ ทันที นอกจากนี้ พฤติกรรมการคายน้ำของมะเขือเทศเชอร์รี่ยังมีการปิดปากใบชั่วคราวตอนแดดจัด (Midday Stomatal Closure) ซึ่งมีความแปรปรวนทางชีววิทยาสูง อย่างไรก็ตาม ในชั้นทรงพุ่ม (Mid/Bot) แบบจำลองให้ค่า RMSE ต่ำเพียง <strong>10.85% – 12.47%</strong> ซึ่งถือว่าอยู่ในเกณฑ์ยอดเยี่ยมมากในงานวิจัยสภาพแวดล้อมโรงเรือนเขตร้อนชื้นครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q3</span>
+              <span>ข้อมูลตรวจวัดจริงในไฟล์ GH4_all มีบางช่วงเวลาที่เซนเซอร์ขาดหาย ส่งผลกระทบต่อผลการประเมินอย่างไร?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> ไม่ส่งผลกระทบต่อความสมบูรณ์ของแบบจำลองครับ เนื่องจากแบบจำลอง Modelica ขับเคลื่อนด้วยสมการฟิสิกส์อนุรักษ์พลังงานและมวล (First-principles DAE) โดยรับค่าขอบเขตสภาพอากาศจริงจาก ERA5 ตลอด 8,760 ชั่วโมงครบ 100% ส่วนในการประเมินสถิติ Validation เราจับคู่เฉพาะชั่วโมงที่มีข้อมูลตรวจวัดจริงเท่านั้น ($N = 6,700 - 8,751\text{ ชม.}$) ตามหลักการสถิติสากล โดยเฉพาะในช่วงฤดูร้อนที่มีข้อมูลสมบูรณ์พร้อมกันทั้ง 15 จุด (มี.ค. – เม.ย. กว่า 1,166 ชั่วโมง) แบบจำลองแสดงค่า $R^2$ สูงถึง <strong>0.73 – 0.83</strong> ยืนยันความแม่นยำได้อย่างชัดเจนครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q4</span>
+              <span>ทำไมอุณหภูมิที่เสา Pole B (ท้ายลม) ถึงสูงกว่าเสา Pole C (ต้นลม) และโมเดลจำลองพฤติกรรมนี้อย่างไร?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> เป็นพฤติกรรมจริงของการพาความร้อนตามแนวยาว (Longitudinal Thermal Advection) ครับ ลมธรรมชาติทิศ WSW พัดเข้าปะทะบริเวณเสา Pole C (Windward) มวลอากาศภายนอกที่ยังเย็นจะไหลเข้าสู่โรงเรือนก่อน ทำให้อุณหภูมิที่ Pole C ต่ำที่สุด ($31.37^\circ\text{C}$ ในช่วงบ่าย) และเมื่อมวลอากาศไหลผ่านภายในโรงเรือน จะดูดซับความร้อนสะสมจากหลังคา PE ผิวดิน และทรงพุ่มเรื่อยๆ จนกระทั่งสะสมสูงสุดที่ปลายทางท้ายลมบริเวณเสา Pole B (Leeward) อุณหภูมิพุ่งสูงขึ้นเป็น $33.30^\circ\text{C}$ (ต่างกันถึง $1.9^\circ\text{C}$) แบบจำลอง Modelica จำลองปรากฏการณ์นี้ได้อย่างถูกต้องผ่านสมการเกรเดียนต์ $\Delta T_{spatial,longitudinal}$ ครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q5</span>
+              <span>การรันแบบจำลอง 365 วันต่อเนื่อง มีข้อได้เปรียบอย่างไรเมื่อเทียบกับการรันแยกทีละเดือน?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> การรันต่อเนื่อง 365 วันรักษาความเฉื่อยความร้อนของดิน (Thermal Soil Inertia) ให้อยู่ในสภาวะสมดุลเสมือนจริง (Quasi-Equilibrium) ตลอดทั้งปีครับ หากสั่งรันแยกทีละเดือน อุณหภูมิดินเริ่มต้นจะถูกรีเซ็ตเป็นค่าคงที่ ($25^\circ\text{C}$) ซึ่งต้องใช้เวลา Spin-up 24–48 ชั่วโมง จึงจะเข้าสู่สมดุลจริง ทำให้ข้อมูลต้นเดือนเกิด Transient Shock ที่คลาดเคลื่อน นอกจากนี้ แบบจำลอง Modelica ที่ปรับแต่งแล้วใช้เวลารันทั้งปี 365 วันเพียง <strong>13–15 วินาที</strong> เท่านั้น การรันครั้งเดียวจึงได้ผลลัพธ์ที่ถูกต้องตามฟิสิกส์มากที่สุดครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q6</span>
+              <span>ทำไมจึงตัดตัวแปร GH4-a-mid ออก และมีผลกระทบต่อแบบจำลองหรือไม่?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> เป็นการกำจัดตัวแปรซ้ำซ้อน (Redundant Alias Elimination) ครับ เดิมในแบบจำลองมีการประกาศพอร์ต <code>GH4_a_mid</code> ซ้ำซ้อนกับ <code>T_sensor_A_Mid</code> การตัดออกช่วยลดสมการลงเหลือ 479 ตัวแปร ตรวจสอบสมดุลผ่าน 100% ทำให้ DASSL Solver ทำงานได้เร็วขึ้น โดยที่ความถูกต้องทางฟิสิกส์ยังคงเดิม 100% ครับ
+            </div>
+          </div>
+
+          <div class="qa-card">
+            <div class="qa-q">
+              <span class="qa-q-badge">Q7</span>
+              <span>ในสมุดงาน Excel Suphanburi_Greenhouse_Validation_365Days.xlsx มีการใส่สูตรคำนวณอย่างไรในช่อง fx และจัดการกับ Missing Data อย่างไรให้ไม่เกิด Error?</span>
+            </div>
+            <div class="qa-a">
+              <strong>แนวคำตอบ:</strong> สมุดงาน Excel ทั้ง 18 ชีต (12.82 MB รวมชีตฐานตัวแทน <code>Base_Day103_Apr13</code>) ได้รับการออกแบบให้ฝังสูตรคำนวณสดในช่อง <code>fx</code> ทั้งหมดโดยไม่มีการ Hardcode ค่าคงที่ครับ:
+              <br><br>
+              1. <strong>ระดับแถวรายชั่วโมง (8,760 แถว):</strong> ใช้ฟังก์ชัน <code>=IF(ISNUMBER(F15), G15-F15, "")</code> ในคอลัมน์ H และ <code>=IF(ISNUMBER(H15), ABS(H15), "")</code> ในคอลัมน์ I หากชั่วโมงใดเซนเซอร์มีช่องว่าง Missing Data จะส่งค่าสตริงว่าง <code>""</code> ออกมา
+              <br><br>
+              2. <strong>การ์ดสรุปผล KPI ด้านบน (แถว 5–12):</strong> ใช้สูตร <code>=SQRT(SUMSQ(H15:H8774)/COUNT(H15:H8774))</code> สำหรับ RMSE ซึ่งฟังก์ชัน <code>SUMSQ</code> และ <code>COUNT</code> ใน Excel มีคุณสมบัติตามมาตรฐานสากลคือ "ข้ามเซลล์สตริงว่างโดยอัตโนมัติ" ทำให้ตัวหาร $N$ ตรงกับจำนวนชั่วโมงที่มีข้อมูลจริงเท่านั้น (6,700 – 8,751 ชม.) โดยไม่เกิดปัญหาหารด้วยศูนย์ หรือ <code>#VALUE!</code> ส่วน $R^2$ และ Pearson $r$ ใช้ <code>=RSQ(F15:F8774, G15:G8774)</code> และ <code>=CORREL(F15:F8774, G15:G8774)</code> ซึ่งมี Pairwise Matching ตัดค่าว่างออกให้อัตโนมัติครับ
+              <br><br>
+              3. <strong>Master Dashboard (Overview_Validation) และ Base_Day103_Apr13:</strong> ลิงก์ตรงผ่านสูตรอ้างอิงข้ามแผ่นงาน เช่น <code>='Pole_A_Top'!E10</code> และแถว <code>2463:2486</code> เมื่อแก้ไขข้อมูลในตารางรายชั่วโมง ค่า KPI ทั้ง 18 ชีตจะ Recalculate อัตโนมัติทันทีครับ
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="sec6">
+          <h2><span class="toc-num">6</span> สรุปผลการวิจัยและข้อเสนอแนะเชิงวิศวกรรม (Conclusions & Recommendations)</h2>
+          <p>
+            แบบจำลองดิจิทัลทวิน <code>Suphanburi_Greenhouse.mo</code> พร้อมโปรแกรมตรวจสอบความถูกต้องในสมุดงาน <code>Suphanburi_Greenhouse_Validation_365Days.xlsx</code> (18 ชีต ขนาด 12.82 MB รวม <code>Base_Day103_Apr13</code> พร้อมสูตรสดครบถ้วน) ได้สร้างมาตรฐานใหม่ในการจำลองสภาพแวดล้อมโรงเรือนเกษตรเขตร้อนชื้นของไทย:
+          </p>
+          <div class="callout callout-info">
+            <div class="callout-title">ข้อค้นพบและทิศทางการพัฒนาต่อยอด</div>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+              <li><strong>การแจ้งเตือนความเครียดความร้อน:</strong> นำสัญญาณเตือน <code>Thermal_Stress_Warning</code> ($T_{can} \ge 32^\circ\text{C}$) ไปสั่งการระบบพ่นหมอกและพัดลมระบายอากาศอัตโนมัติ</li>
+              <li><strong>การลดความร้อนสะสมท้ายลม:</strong> พิจารณาเพิ่มช่องระบายอากาศสันหลังคาบริเวณเสา Pole B (ท้ายลม) เพื่อเร่งการระบายความร้อนสะสมออกทางแนวดิ่ง</li>
+              <li><strong>การติดตั้งบน Edge Controller:</strong> แปลงโมเดลเป็น C-code ผ่าน OMC เพื่อทำหน้าที่เป็น Virtual Multi-Sensor บนบอร์ด IoT ภาคสนาม</li>
+            </ul>
+          </div>
+        </section>
+
+                              <section id="cross-reports" class="cross-report-hub">
+        <h2>📚 เอกสารเชื่อมโยงทั้งชุดโครงการ KMUTT Greenhouse Digital Twin (หน้าหลัก + 7 ไฟล์)</h2>
+        <div class="cross-hub-grid">
+          <a href="../index.html" class="cross-hub-card" style="border-left: 4px solid #0f172a;">
+            <div class="cross-hub-title">🏠 หน้าหลักพอร์ทัล &amp; สื่อนำเสนอ (Main Hub &amp; Presentations)</div>
+            <div class="cross-hub-desc">ศูนย์รวมรายงานทั้ง 6 ฉบับ, สไลด์นำเสนอ PDF, วิทยานิพนธ์ และแผนภาพสถาปัตยกรรม 300 DPI</div>
+          </a>
+          <a href="Report_1_Project_Overview.html" class="cross-hub-card" style="border-left: 4px solid #0284c7;">
+            <div class="cross-hub-title">📑 รายงานที่ 1: ภาพรวมโครงการ</div>
+            <div class="cross-hub-desc">ข้อมูลพื้นที่ อ.อู่ทอง, เรขาคณิตโรงเรือน 6×12 ม., ฟิสิกส์ 4 โหนด, มะเขือเทศเชอร์รี่ และผลจำลองเบื้องต้น</div>
+          </a>
+          <a href="Report_2_Modelica_Code_LineByLine.html" class="cross-hub-card" style="border-left: 4px solid #2563eb;">
+            <div class="cross-hub-title">💻 รายงานที่ 2: โค้ด Modelica รายบรรทัด</div>
+            <div class="cross-hub-desc">Modelica Masterclass และคำอธิบายซอร์สโค้ดทุกบรรทัดในแพ็กเกจ Greenhouse_DigitalTwin_KMUTT</div>
+          </a>
+          <a href="Report_3_Model_Validation_Guide.html" class="cross-hub-card current-doc" style="border-left: 4px solid #059669;">
+            <div class="cross-hub-title">📊 รายงานที่ 3: การ Validate 15 จุด <span style="font-size:0.72rem;font-weight:700;opacity:0.85;">(หน้าปัจจุบัน)</span></div>
+            <div class="cross-hub-desc">เทียบผลจำลองกับเซนเซอร์จริง 15 จุด (Base Day 13 เม.ย. 2569), RMSE/MAE/R² และคู่มือตอบคำถามสอบ</div>
+          </a>
+          <a href="Report_4_Modelica_CFD_Framework.html" class="cross-hub-card" style="border-left: 4px solid #7c3aed;">
+            <div class="cross-hub-title">🔄 รายงานที่ 4: สถาปัตยกรรม Modelica &amp; CFD</div>
+            <div class="cross-hub-desc">สถาปัตยกรรม Input → Equation → Output เชื่อม DAE 365 วัน สู่ 3D CFD CHT และ Darcy-Forchheimer</div>
+          </a>
+          <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="cross-hub-card" style="border-left: 4px solid #0891b2;">
+            <div class="cross-hub-title">📐 รายงานที่ 5: ดัชนีสมการ &amp; พารามิเตอร์</div>
+            <div class="cross-hub-desc">รวมสมการ Modelica ครบทุกบรรทัด, ความหมายตัวแปร-หน่วยวัด SI และคุณสมบัติวัสดุ/พืชทั้งหมด</div>
+          </a>
+          <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="cross-hub-card" style="border-left: 4px solid #ea580c;">
+            <div class="cross-hub-title">🛠️ รายงานที่ 6: คู่มือสร้างโมเดลทีละขั้นตอน</div>
+            <div class="cross-hub-desc">คู่มือภาคปฏิบัติใน OMEdit แบบ Dual-Track (GUI Drag-and-Drop &amp; Modelica Code) พร้อม Export CSV</div>
+          </a>
+          <a href="Modelica_Code_Categories_Slides.html" class="cross-hub-card" style="border-left: 4px solid #be123c;">
+            <div class="cross-hub-title">🎬 สรุป 8 หมวดโค้ด &amp; สไลด์ 16:9</div>
+            <div class="cross-hub-desc">สรุปจัดหมวดหมู่โค้ดทั้ง 612 บรรทัดเป็น 8 กลุ่มพร้อมสไลด์ 16:9 จำนวน 9 แผ่นสำหรับนำเสนอ</div>
+          </a>
+        </div>
+      </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Search Filter in Sidebar
+    document.getElementById('search-input').addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.sidebar-toc a').forEach(link => {
+        const text = link.innerText.toLowerCase();
+        link.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    });
+
+    // Render KaTeX math equations
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

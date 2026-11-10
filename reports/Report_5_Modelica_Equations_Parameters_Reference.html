@@ -1,0 +1,3067 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานฉบับที่ 5: คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์แบบจำลอง Modelica</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Mermaid JS -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' }
+    });
+  </script>
+
+  <style>
+
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07);
+      --font-body: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.65;
+    }
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-logo {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      font-weight: 800;
+      font-size: 1.15rem;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+    }
+    .brand-text { display: flex; flex-direction: column; }
+    .brand-title { font-weight: 800; font-size: 0.95rem; color: #0f172a; }
+    .brand-subtitle { font-size: 0.72rem; color: #64748b; font-weight: 500; }
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+    .nav-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .nav-tab-btn:hover { color: var(--text-main); }
+    .nav-tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-print {
+      background: white;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-print:hover { background: #f8fafc; }
+    .app-container {
+      display: flex;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 28px;
+      gap: 32px;
+    }
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 88px;
+      height: calc(100vh - 110px);
+      overflow-y: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .sidebar-search input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .sidebar-toc { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-toc a {
+      display: block;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+    .sidebar-toc a:hover, .sidebar-toc a.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+    }
+    .content-area { flex: 1; min-width: 0; }
+    .doc-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .doc-title { font-size: 1.85rem; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+    .doc-meta { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+    .callout {
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin: 20px 0;
+      border-left: 4px solid var(--primary);
+      background: #f0f9ff;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px 0;
+      font-size: 0.86rem;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .data-table th { background: #f8fafc; font-weight: 700; color: var(--text-main); }
+    .data-table tr:nth-child(even) { background: #fbfcfe; }
+    .code-tag {
+      font-family: var(--font-code);
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .line-badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: var(--font-code);
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .eq-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin: 20px 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .eq-header {
+      background: #f8fafc;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .eq-title { font-weight: 700; font-size: 1.05rem; color: #0f172a; margin: 0; }
+    .eq-body { padding: 20px; }
+    .math-block {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 14px 0;
+      overflow-x: auto;
+      font-size: 1.05rem;
+    }
+    .eq-desc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+      font-size: 0.88rem;
+    }
+    .desc-box {
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+    .desc-meaning { background: #f0fdf4; border-color: #bbf7d0; }
+    .desc-purpose { background: #eff6ff; border-color: #bfdbfe; }
+    .desc-title {
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .desc-meaning .desc-title { color: #15803d; }
+    .desc-purpose .desc-title { color: #1d4ed8; }
+    @media print {
+      .header-bar, .sidebar, .btn-print { display: none !important; }
+      body { background: white !important; font-size: 10pt; }
+      .app-container { padding: 0; }
+      .doc-section { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    }
+
+  
+    /* === UNIFIED PORTAL NAV & HUB CSS === */
+    .header-bar, .top-header {
+      gap: 10px !important;
+      padding: 0 16px !important;
+    }
+    .brand-group, .header-brand, .header-actions {
+      flex-shrink: 0 !important;
+    }
+    @media (max-width: 1520px) {
+      .brand-subtitle, .badge-status, .header-badge { display: none !important; }
+      .brand-title, .header-title { font-size: 0.9rem !important; }
+    }
+    .nav-tabs {
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      background: var(--bg-secondary, #f1f5f9) !important;
+      padding: 3px !important;
+      border-radius: var(--radius-md, 10px) !important;
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      flex: 0 1 auto !important;
+      margin: 0 auto !important;
+      justify-content: flex-start !important;
+      min-width: 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 5px 8px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: var(--text-secondary, var(--text-muted, #475569)) !important;
+      text-decoration: none !important;
+      border-radius: var(--radius-sm, 6px) !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      transition: all 0.15s ease !important;
+    }
+    .nav-tab-btn:hover {
+      color: var(--text-primary, var(--text-main, #0f172a)) !important;
+      background: var(--bg-card, var(--bg-surface, rgba(255, 255, 255, 0.7))) !important;
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-primary, #ffffff) !important;
+      color: var(--accent-primary, var(--primary, #0284c7)) !important;
+      box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.08)) !important;
+    }
+    .cross-report-hub {
+      margin-top: 2.75rem;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg, 14px);
+      background: var(--bg-card, var(--bg-surface, #ffffff));
+      border: 1px solid var(--border-color, #e2e8f0);
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
+    }
+    .cross-report-hub h2 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      margin: 0 0 14px 0;
+      padding: 0;
+      border: none;
+    }
+    .cross-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+    .cross-hub-card {
+      display: block;
+      padding: 12px 14px;
+      border-radius: var(--radius-md, 10px);
+      border: 1px solid var(--border-color, #e2e8f0);
+      background: var(--bg-secondary, #f8fafc);
+      text-decoration: none;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      transition: all 0.15s ease;
+    }
+    .cross-hub-card:hover {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+    }
+    .cross-hub-card.current-doc {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      background: var(--accent-light, #eff6ff);
+      box-shadow: inset 0 0 0 1px var(--accent-primary, var(--primary, #0284c7));
+    }
+    .cross-hub-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--text-primary, var(--text-main, #0f172a));
+    }
+    .cross-hub-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary, var(--text-muted, #475569));
+      line-height: 1.45;
+    }
+    @media print {
+      .header-bar, .top-header, .nav-tabs, .cross-report-hub {
+        display: none !important;
+      }
+    }
+    /* === END UNIFIED PORTAL NAV & HUB CSS === */
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header with 5 Tabs -->
+  <header class="header-bar">
+    <a href="#" class="brand-group">
+      <div class="brand-logo">KMUTT</div>
+      <div class="brand-text">
+        <span class="brand-title">KMUTT GREENHOUSE DIGITAL TWIN</span>
+        <span class="brand-subtitle">ภาควิชาวิศวกรรมเครื่องกล มจธ.</span>
+      </div>
+    </a>
+
+        <!-- Navigation Tabs between Reports -->
+    <nav class="nav-tabs">
+      <a href="../index.html" class="nav-tab-btn" title="กลับสู่หน้าหลักพอร์ทัล รายงาน &amp; สื่อนำเสนอทั้งหมด">
+        <span>🏠</span> หน้าหลัก
+      </a>
+      <a href="Report_1_Project_Overview.html" class="nav-tab-btn" title="รายงานที่ 1: ภาพรวมโครงการและระบบโรงเรือน">
+        <span>📑</span> 1.ภาพรวม
+      </a>
+      <a href="Report_2_Modelica_Code_LineByLine.html" class="nav-tab-btn" title="รายงานที่ 2: ปูพื้นฐาน Modelica &amp; เจาะลึกโค้ด Line-by-Line">
+        <span>💻</span> 2.โค้ดระบบ
+      </a>
+      <a href="Report_3_Model_Validation_Guide.html" class="nav-tab-btn" title="รายงานที่ 3: กระบวนการและผลการ Validate เซนเซอร์ 15 จุด">
+        <span>📊</span> 3.Validate
+      </a>
+      <a href="Report_4_Modelica_CFD_Framework.html" class="nav-tab-btn" title="รายงานที่ 4: สถาปัตยกรรม Modelica &amp; 3D CFD Coupling Framework">
+        <span>🔄</span> 4.CFD
+      </a>
+      <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="nav-tab-btn active" title="รายงานที่ 5: คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์">
+        <span>📐</span> 5.สมการ
+      </a>
+      <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="nav-tab-btn" title="รายงานที่ 6: คู่มือสร้างแบบจำลองโรงเรือนสุพรรณบุรีทีละขั้นตอน (OMEdit GUI &amp; Code)">
+        <span>🛠️</span> 6.สร้างโมเดล
+      </a>
+      <a href="Modelica_Code_Categories_Slides.html" class="nav-tab-btn" title="สรุปแยก 8 หมวดหมู่โค้ด Modelica พร้อมสไลด์นำเสนอ 16:9 (9 แผ่น)">
+        <span>🎬</span> สไลด์โค้ด
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-print" onclick="window.print()">
+        <span>🖨️</span> พิมพ์รายงาน / Save PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- App Layout -->
+  <div class="app-container">
+    <!-- Sidebar Table of Contents -->
+    <aside class="sidebar">
+      <div class="sidebar-title">ค้นหาสมการ / วัสดุ</div>
+      <div class="sidebar-search">
+        <input type="text" id="search-input" placeholder="พิมพ์ชื่อวัสดุ หรือสมการ...">
+      </div>
+      <div class="sidebar-title">สารบัญรายงานที่ 5</div>
+      <ul class="sidebar-toc">
+        <li><a href="#sec-overview" class="active">ภาพรวมและวัตถุประสงค์</a></li>
+        <li><a href="#sec-mat-pe">1.1 พลาสติกคลุม PE 200µm</a></li>
+        <li><a href="#sec-mat-screen">1.2 มุ้งกันแมลง 16-Mesh</a></li>
+        <li><a href="#sec-mat-crop">1.3 มะเขือเทศเชอร์รี่</a></li>
+        <li><a href="#sec-mat-soil">1.4 พลาสติกคลุมดินสีขาว & ดิน</a></li>
+        <li><a href="#sec-mat-geom">1.5 มวลอากาศและเรขาคณิต</a></li>
+        <li><a href="#sec-eq-dae">2.1 DAE สมดุล 4 โหนดหลัก</a></li>
+        <li><a href="#sec-eq-screen">2.2 สมการมุ้ง 16-Mesh</a></li>
+        <li><a href="#sec-eq-transp">2.3 การคายน้ำ Stanghellini</a></li>
+        <li><a href="#sec-eq-ht">2.4 การถ่ายโอนความร้อน</a></li>
+        <li><a href="#sec-eq-spatial">2.5 การกระจายตัว 3D 15 จุด</a></li>
+        <li><a href="#sec-diagram">3. ผังโครงข่ายสมการฟิสิกส์</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+      <!-- Header Section -->
+      <section class="doc-section" id="sec-overview">
+        <div class="doc-header">
+          <span class="doc-badge">TECHNICAL REPORT 5 • MATHEMATICAL & PHYSICAL SPECIFICATION</span>
+          <h1 class="doc-title">คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์แบบจำลอง Modelica</h1>
+          <div class="doc-meta">
+            โครงการแบบจำลองดิจิทัลทวินโรงเรือนเกษตรอัจฉริยะเขตร้อนชื้น (อ.อู่ทอง จ.สุพรรณบุรี) | ภาควิชาวิศวกรรมเครื่องกล มจธ.
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>🎯 วัตถุประสงค์ของรายงานฉบับที่ 5:</strong> จัดทำขึ้นเพื่อตอบข้อซักถามของคณะกรรมการสอบวิทยานิพนธ์อย่างตรงไปตรงมา โดยแจกแจงรายละเอียด 5 ประการหลัก:
+          <ol style="margin-left: 20px; margin-top: 6px;">
+            <li><strong>เลขบรรทัดโค้ดจริง</strong> ในไฟล์ <code>Suphanburi_Greenhouse.mo</code>, <code>InsectScreen_16Mesh.mo</code> และ Greenhouses Library</li>
+            <li><strong>สมการคณิตศาสตร์และอุณหพลศาสตร์</strong> ทุกสมการที่ใช้คำนวณในระบบ</li>
+            <li><strong>ความหมายทางฟิสิกส์</strong> ของสมการและตัวแปรแต่ละตัว</li>
+            <li><strong>วัตถุประสงค์การใช้งาน</strong> ว่าสมการนั้นนำมาใช้ทำอะไรในระบบดิจิทัลทวิน</li>
+            <li><strong>คุณสมบัติวัสดุ พืชพรรณ และโครงสร้าง</strong> พร้อมระบุค่าตัวเลขจริงที่ป้อนเข้าสู่โปรแกรม Modelica ครบถ้วน</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 1: Materials, Crops & Geometry -->
+      <section class="doc-section" id="sec-materials">
+        <h2>1. ตารางคุณสมบัติวัสดุ พืชพรรณ และโครงสร้างโรงเรือนจริง</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
+          รวบรวมค่าพารามิเตอร์จริงที่วัดจากโรงเรือนศูนย์เรียนรู้นวัตกรรมการเกษตร อ.อู่ทอง จ.สุพรรณบุรี และใส่ลงในแบบจำลอง Modelica
+        </p>
+
+        <!-- 1.1 PE Cover -->
+        <h3 id="sec-mat-pe" style="margin-top: 24px; color: #0369a1;">1.1 แผ่นฟิล์มพลาสติกคลุมหลังคา PE 200 ไมครอน (Translucent PE Film Roof Cover)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ชื่อตัวแปรในโค้ด</th>
+              <th>คำอธิบายคุณสมบัติ</th>
+              <th>ค่าที่กำหนด</th>
+              <th>หน่วย</th>
+              <th>เหตุผลเชิงวิศวกรรม / ที่มา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-tag">rho_cover</span></td>
+              <td>ความหนาแน่นของฟิล์มพลาสติก PE</td>
+              <td><strong>920.0</strong></td>
+              <td>kg/m³</td>
+              <td>ความหนาแน่นมาตรฐานของ Low-Density Polyethylene (LDPE)</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">cp_cover</span></td>
+              <td>ความจุความร้อนจำเพาะของ PE</td>
+              <td><strong>1900.0</strong></td>
+              <td>J/(kg·K)</td>
+              <td>คุณสมบัติความร้อนจำเพาะมาตรฐานฟิล์มพลาสติกเกษตร</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">h_cover</span></td>
+              <td>ความหนาของแผ่นฟิล์มพลาสติก</td>
+              <td><strong>200e-6</strong></td>
+              <td>m (200 µm)</td>
+              <td>ความหนาจริงของพลาสติกคลุมโรงเรือน อ.อู่ทอง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">phi_roof</span></td>
+              <td>มุมเอียงหลังคาประสิทธิผล</td>
+              <td><strong>1.036</strong></td>
+              <td>rad (59.36°)</td>
+              <td>คำนวณจากรูปทรงหลังคาโค้งครึ่งวงกลมรัศมี R = 3.0 m</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">tau_cover_solar</span></td>
+              <td>การส่องผ่านรังสีอาทิตย์</td>
+              <td><strong>0.85</strong></td>
+              <td>- (85%)</td>
+              <td>ค่า Transmittance สำหรับรังสีคลื่นสั้นช่วงแสงอาทิตย์</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">epsilon_cover_FIR</span></td>
+              <td>การแผ่รังสีอินฟราเรดย่านไกล</td>
+              <td><strong>0.88</strong></td>
+              <td>- (88%)</td>
+              <td>ค่า Emissivity สำหรับการแผ่รังสีช่วงคลื่นยาวสู่ท้องฟ้า</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">A_cover_total</span></td>
+              <td>พื้นที่ผิวห่อหุ้มหลังคาและจั่วรวม</td>
+              <td><strong>141.37</strong></td>
+              <td>m²</td>
+              <td>หลังคาโค้ง 113.10 m² + จั่วหัวท้าย 2 ด้าน 28.27 m²</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 1.2 Insect Screen -->
+        <h3 id="sec-mat-screen" style="margin-top: 32px; color: #0d9488;">1.2 ผนังมุ้งตาข่ายกันแมลงสีขาว 16-Mesh (Insect Screen Walls)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ชื่อตัวแปรในโค้ด</th>
+              <th>คำอธิบายคุณสมบัติ</th>
+              <th>ค่าที่กำหนด</th>
+              <th>หน่วย</th>
+              <th>เหตุผลเชิงวิศวกรรม / ที่มา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-tag">mesh_porosity</span></td>
+              <td>ความพรุนของตาข่ายมุ้ง (Porosity)</td>
+              <td><strong>0.60</strong></td>
+              <td>- (60%)</td>
+              <td>สัดส่วนพื้นที่ช่องเปิดต่อพื้นที่มุ้งรวม (วัดได้ 58-62%)</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">thread_diameter</span></td>
+              <td>ขนาดเส้นผ่านศูนย์กลางเส้นด้าย</td>
+              <td><strong>0.30e-3</strong></td>
+              <td>m (0.30 mm)</td>
+              <td>วัดขนาดเส้นด้ายไนลอนมุ้ง 16-mesh ในแปลงปลูกจริง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">-</span></td>
+              <td>ขนาดช่องเปิดตาข่าย (Pore size)</td>
+              <td><strong>1.25 x 1.25</strong></td>
+              <td>mm</td>
+              <td>ตาข่าย 16 ช่องต่อนิ้ว (25.4 / 16 - 0.30 mm)</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">Cd_mesh</span></td>
+              <td>สัมประสิทธิ์การไหลลดทอนจากมุ้ง</td>
+              <td><strong>0.42</strong></td>
+              <td>-</td>
+              <td>อ้างอิง Valera (2006) และ Miguel (1998) สำหรับ 16-mesh</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">A_vent_side</span></td>
+              <td>พื้นที่ช่องเปิดผนังมุ้งด้านข้าง 4 ด้าน</td>
+              <td><strong>90.0</strong></td>
+              <td>m²</td>
+              <td>ผนังข้าง 2 ด้าน (2x12x2.5) + หน้าหลัง (2x6x2.5) = 60 + 30</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">A_vent_roof</span></td>
+              <td>พื้นที่ช่องระบายอากาศสันหลังคา</td>
+              <td><strong>12.0</strong></td>
+              <td>m²</td>
+              <td>ช่องระบายอากาศร้อนแนวยาวใต้สันหลังคาโค้ง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">dh_stack</span></td>
+              <td>ระยะความสูงสแต็กแนวดิ่ง</td>
+              <td><strong>2.75</strong></td>
+              <td>m</td>
+              <td>กึ่งกลางช่องเปิดผนัง (1.25 m) ถึงสันหลังคา (4.0 m)</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">delta_Cp</span></td>
+              <td>ผลต่างสัมประสิทธิ์แรงดันลม</td>
+              <td><strong>0.35</strong></td>
+              <td>-</td>
+              <td>ผลต่างแรงดันด้านต้นลม-ท้ายลม ณ มุมปะทะ 67.5°</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 1.3 Crop -->
+        <h3 id="sec-mat-crop" style="margin-top: 32px; color: #b45309;">1.3 พืชเป้าหมาย: มะเขือเทศเชอร์รี่ (Cherry Tomato Canopy Properties)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ชื่อตัวแปรในโค้ด</th>
+              <th>คำอธิบายคุณสมบัติ</th>
+              <th>ค่าที่กำหนด</th>
+              <th>หน่วย</th>
+              <th>เหตุผลเชิงวิศวกรรม / ที่มา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-tag">LAI_param</span></td>
+              <td>ดัชนีพื้นที่ใบ (Leaf Area Index)</td>
+              <td><strong>2.5</strong></td>
+              <td>m²/m²</td>
+              <td>วัดจริงจากแปลงปลูกมะเขือเทศเชอร์รี่ระยะให้ผลผลิต</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">Cap_leaf</span></td>
+              <td>ความจุความร้อนใบต่อตารางเมตรดิน</td>
+              <td><strong>1200.0</strong></td>
+              <td>J/(m²·K)</td>
+              <td>ความจุความร้อนของใบพืชตระกูลมะเขือเทศตามสรีรวิทยา</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">r_s,min</span></td>
+              <td>ความต้านทานปากใบต่ำสุดเมื่อแดดจัด</td>
+              <td><strong>82.0 - 120.0</strong></td>
+              <td>s/m</td>
+              <td>แบบจำลอง Stanghellini (1987) สำหรับมะเขือเทศ</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">T_stress_limit</span></td>
+              <td>ขีดจำกัดเริ่มเกิดความเค้นความร้อน</td>
+              <td><strong>305.15</strong></td>
+              <td>K (32.0°C)</td>
+              <td>จุดเริ่มลดทอนการผสมเกสรและการติดผลของมะเขือเทศ</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">T_critical_limit</span></td>
+              <td>ขีดจำกัดความเสียหายรุนแรงต่อผลผลิต</td>
+              <td><strong>308.15</strong></td>
+              <td>K (35.0°C)</td>
+              <td>ดอกร่วง ละอองเรณูฝ่อ และเกิดความเสียหายต่อผลผลิต</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">gamma</span></td>
+              <td>ค่าคงที่ไซโครเมตริกส์</td>
+              <td><strong>65.8</strong></td>
+              <td>Pa/K</td>
+              <td>คุณสมบัติอุณหพลศาสตร์ของอากาศชื้น</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">DELTAH</span> (λ)</td>
+              <td>ความร้อนแฝงของการกลายเป็นไอของน้ำ</td>
+              <td><strong>2.45e6</strong></td>
+              <td>J/kg</td>
+              <td>พลังงานที่ใช้ในการระเหยน้ำ 1 kg เพื่อทำความเย็นแก่ใบ</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 1.4 Soil & Mulch -->
+        <h3 id="sec-mat-soil" style="margin-top: 32px; color: #475569;">1.4 พลาสติกสีขาวคลุมดิน (White Reflective Mulch) และดินชั้นบน</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ชื่อตัวแปรในโค้ด</th>
+              <th>คำอธิบายคุณสมบัติ</th>
+              <th>ค่าที่กำหนด</th>
+              <th>หน่วย</th>
+              <th>เหตุผลเชิงวิศวกรรม / ที่มา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-tag">rho_FlrPAR_white</span></td>
+              <td>การสะท้อนรังสีช่วงสังเคราะห์แสง (PAR)</td>
+              <td><strong>0.60</strong></td>
+              <td>- (Albedo 60%)</td>
+              <td>พลาสติกสีขาวสะท้อนแสงกลับเข้าใต้ทรงพุ่มมะเขือเทศ</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">rho_FlrNIR_white</span></td>
+              <td>การสะท้อนรังสีอินฟราเรดย่านใกล้ (NIR)</td>
+              <td><strong>0.55</strong></td>
+              <td>- (Albedo 55%)</td>
+              <td>สะท้อนรังสีความร้อน ป้องกันความร้อนสะสมลงสู่ดิน</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">epsilon_Flr_white</span></td>
+              <td>การแผ่รังสีอินฟราเรดย่านไกลของ Mulch</td>
+              <td><strong>0.88</strong></td>
+              <td>- (88%)</td>
+              <td>สัมประสิทธิ์การแผ่รังสีความร้อนของฟิล์มพลาสติกคลุมดิน</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">depth_soil</span></td>
+              <td>ความหนาของชั้นดินบนที่รับความร้อน</td>
+              <td><strong>0.05</strong></td>
+              <td>m (5 cm)</td>
+              <td>Active thermal layer ของดินที่มีอุณหภูมิผันผวนตามวัน</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">rho_soil</span></td>
+              <td>ความหนาแน่นของดินร่วนปนทราย</td>
+              <td><strong>1500.0</strong></td>
+              <td>kg/m³</td>
+              <td>ดินเกษตรกรรมจริง อ.อู่ทอง จ.สุพรรณบุรี</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">cp_soil</span></td>
+              <td>ความจุความร้อนจำเพาะของดิน</td>
+              <td><strong>1800.0</strong></td>
+              <td>J/(kg·K)</td>
+              <td>ความจุความร้อนจำเพาะของดินที่มีความชื้นปานกลาง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">lambda_soil</span></td>
+              <td>สัมประสิทธิ์การนำความร้อนของดิน</td>
+              <td><strong>1.0</strong></td>
+              <td>W/(m·K)</td>
+              <td>การนำความร้อนถ่ายเทลงสู่ชั้นดินลึก</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">T_deep_soil</span></td>
+              <td>อุณหภูมิชั้นดินลึกคงที่ตลอดปี</td>
+              <td><strong>298.15</strong></td>
+              <td>K (25.0°C)</td>
+              <td>วัดจริงที่ระดับความลึก 1.0 m ใต้ผิวดิน อ.อู่ทอง</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 1.5 Geometry -->
+        <h3 id="sec-mat-geom" style="margin-top: 32px; color: #1e293b;">1.5 มวลอากาศและเรขาคณิตโรงเรือนจริง (Greenhouse Geometry & Interior Air)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ชื่อตัวแปรในโค้ด</th>
+              <th>คำอธิบายคุณสมบัติ</th>
+              <th>ค่าที่กำหนด</th>
+              <th>หน่วย</th>
+              <th>เหตุผลเชิงวิศวกรรม / ที่มา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-tag">width</span> x <span class="code-tag">length</span></td>
+              <td>ความกว้าง x ความยาวโรงเรือน</td>
+              <td><strong>6.0 x 12.0</strong></td>
+              <td>m</td>
+              <td>ขนาดพื้นที่หน้าตัดอาคารจริง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">h_eaves</span></td>
+              <td>ความสูงเสาชายคาผนังมุ้ง</td>
+              <td><strong>2.5</strong></td>
+              <td>m</td>
+              <td>ขอบล่างของหลังคาโค้ง</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">R_roof</span></td>
+              <td>รัศมีความโค้งหลังคาทรงกระบอก</td>
+              <td><strong>3.0</strong></td>
+              <td>m</td>
+              <td>ความกว้าง 6m พอดีกับรัศมีครึ่งวงกลม R = 3.0m</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">h_ridge</span></td>
+              <td>ความสูงรวมยอดสันหลังคา</td>
+              <td><strong>5.5</strong></td>
+              <td>m</td>
+              <td>2.5 m (เสา) + 3.0 m (รัศมีหลังคา) = 5.5 m</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">A_floor</span></td>
+              <td>พื้นที่ผิวดินภายในโรงเรือน</td>
+              <td><strong>72.0</strong></td>
+              <td>m²</td>
+              <td>6.0 m x 12.0 m = 72.0 m²</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">V_gh</span></td>
+              <td>ปริมาตรอากาศภายในโรงเรือนรวม</td>
+              <td><strong>349.65</strong></td>
+              <td>m³</td>
+              <td>ส่วนล่าง 180.0 m³ + หลังคาโค้ง 169.65 m³</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">h_mean</span></td>
+              <td>ความสูงเฉลี่ยประสิทธิผล</td>
+              <td><strong>4.856</strong></td>
+              <td>m</td>
+              <td>V_gh / A_floor = 349.65 / 72.0 = 4.856 m</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">rho_air</span></td>
+              <td>ความหนาแน่นอากาศภายใน</td>
+              <td><strong>1.18</strong></td>
+              <td>kg/m³</td>
+              <td>อากาศเขตร้อนชื้น ณ อุณหภูมิ 30-35°C</td>
+            </tr>
+            <tr>
+              <td><span class="code-tag">cp_air</span></td>
+              <td>ความจุความร้อนจำเพาะของอากาศ</td>
+              <td><strong>1006.0</strong></td>
+              <td>J/(kg·K)</td>
+              <td>คุณสมบัติความร้อนจำเพาะมาตรฐานของอากาศแห้ง</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+            <!-- Section 2: Equations Breakdown -->
+
+      <section class="doc-section" id="sec-equations">
+
+        <h2>2. ดัชนีสมการควบคุมหลักใน Modelica (Detailed Governing Equations Directory)</h2>
+
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">
+
+          แจกแจงทุกสมการพร้อมเลขบรรทัดจริง ความหมาย การนำไปใช้งาน พร้อมตารางระบุนิยามตัวแปรและหน่วย SI อย่างละเอียด
+
+        </p>
+
+
+        <!-- Category 1 -->
+        <h3 id="sec-eq-dae" style="color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px;">
+          หมวดที่ 1: ระบบสมดุลพลังงานและมวล 4 ตัวแปรสถานะหลัก (DAE Index-1 System)
+        </h3>
+
+        <div class="eq-card" id="eq-1-1">
+          <div class="eq-header">
+            <span class="eq-title">1.1 สมดุลความร้อนแผ่นพลาสติกคลุมหลังคา PE (Cover PE Thermal Balance DAE)</span>
+            <span class="line-badge">Cover.mo • L50, 52, 55, 58–59 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L103–104)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\rho_{cov} c_{p,cov} V_{cov} \frac{dT_{cov}}{dt} = Q_{flow} + P_{SunCov} + L_{cov}$$
+              $$\text{โดย: } V_{cov} = \frac{h_{cov} A_{flr}}{\cos(\phi)}, \quad P_{SunCov} = R_{SunCov,Glob} \cdot A_{flr}, \quad L_{cov} = \dot{M}_{condensate} \cdot \lambda$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อัตราการเปลี่ยนแปลงอุณหภูมิของแผ่นฟิล์มพลาสติก PE ขึ้นกับผลรวมของ ฟลักซ์ความร้อนสัมผัสที่แลกเปลี่ยนกับสิ่งแวดล้อม ($Q_{flow}$ ประกอบด้วยการพาความร้อนจากอากาศภายใน-ภายนอก และการแผ่รังสีอินฟราเรดย่านไกล), พลังงานรังสีอาทิตย์ที่แผ่นฟิล์มดูดซับไว้ ($P_{SunCov}$), และความร้อนแฝงจากการควบแน่นของไอน้ำที่ผิวด้านใน ($L_{cov}$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณอุณหภูมิพลศาสตร์ของแผ่นพลาสติกคลุมหลังคา $T_{cov}(t)$ ตลอด 365 วัน ซึ่งมีผลอย่างยิ่งต่อการถ่ายเทความร้อนสูญเสียสู่ท้องฟ้าในเวลากลางคืน (Nocturnal Radiative Cooling) และส่งค่าอุณหภูมิผิวไปยังเงื่อนไขขอบเขต CFD ($T_{wall,cov}$)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\rho_{cov}$</td>
+                  <td>ความหนาแน่นของฟิล์มพลาสติก PE (`rho_cover`)</td>
+                  <td><span class="unit-badge">$\text{kg/m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$c_{p,cov}$</td>
+                  <td>ความจุความร้อนจำเพาะของฟิล์ม PE (`cp_cover`)</td>
+                  <td><span class="unit-badge">$\text{J/(kg}\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$V_{cov}$</td>
+                  <td>ปริมาตรเนื้อฟิล์มพลาสติกคลุมหลังคา</td>
+                  <td><span class="unit-badge">$\text{m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">คำนวณจากเรขาคณิต</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{cov}$</td>
+                  <td>อุณหภูมิของแผ่นพลาสติกคลุมหลังคา (`cover.T`)</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ DAE</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$t$</td>
+                  <td>เวลาในการจำลอง (`time`)</td>
+                  <td><span class="unit-badge">$\text{s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอิสระ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{flow}$</td>
+                  <td>ฟลักซ์ความร้อนสัมผัสสุทธิผ่านพอร์ตความร้อน (`heatPort.Q_flow`)</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรเชื่อมต่อ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$P_{SunCov}$</td>
+                  <td>พลังงานรังสีอาทิตย์ที่แผ่นฟิล์ม PE ดูดกลืนไว้</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์รังสี</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$L_{cov}$</td>
+                  <td>ความร้อนแฝงจากการควบแน่นของหยดน้ำที่ผิวด้านใน</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อนแฝง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$h_{cov}$</td>
+                  <td>ความหนาของแผ่นฟิล์มพลาสติก PE (`200e-6 m`)</td>
+                  <td><span class="unit-badge">$\text{m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$A_{flr}$</td>
+                  <td>พื้นที่ผิวดินภายในโรงเรือน (`72.0 m2`)</td>
+                  <td><span class="unit-badge">$\text{m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\phi$</td>
+                  <td>มุมเอียงประสิทธิผลของหลังคาโค้ง (`1.036 rad`)</td>
+                  <td><span class="unit-badge">$\text{rad}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\lambda$</td>
+                  <td>ความร้อนแฝงของการกลายเป็นไอของน้ำ (`2.45e6 J/kg`)</td>
+                  <td><span class="unit-badge">$\text{J/kg}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ค่าคงที่ฟิสิกส์</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-1-2">
+          <div class="eq-header">
+            <span class="eq-title">1.2 สมดุลความร้อนมวลอากาศภายในโรงเรือน (Air Thermal Balance DAE)</span>
+            <span class="line-badge">Air.mo • L62, 64, 66–67 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L105–106)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\rho_{air} c_{p,air} V_{gh} \frac{dT_{air}}{dt} = Q_{flow} + P_{Air}$$
+              $$\text{ในระบบรวม: } \rho_{air} c_{p,air} V_{gh} \frac{dT_{air}}{dt} = Q_{cnv,cov} + Q_{cnv,can} + Q_{cnv,flr} - \dot{M}_{vent} c_{p,air}(T_{air} - T_{amb})$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                กฎการอนุรักษ์พลังงานข้อที่ 1 สำหรับมวลอากาศปริมาตร $349.65\,	ext{m}^3$ พลังงานความร้อนสะสมที่ทำให้อุณหภูมิอากาศเพิ่มขึ้น มาจากการพาความร้อนจากแผ่นพลาสติกหลังคา ($Q_{cnv,cov}$), การพาความร้อนจากทรงพุ่มมะเขือเทศ ($Q_{cnv,can}$), การพาความร้อนจากผิวดินสะท้อนแสง ($Q_{cnv,flr}$), ลบด้วย อัตราความร้อนสัมผัสที่ถูกพาออกไปโดยลมระบายอากาศผ่านมุ้ง 16-mesh ($\dot{M}_{vent} c_{p,air} \Delta T$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณอุณหภูมิอากาศมวลรวมเฉลี่ยภายในโรงเรือน $T_{air}(t)$ ซึ่งเป็นตัวแปรสถานะที่สำคัญที่สุดในการควบคุมสภาพแวดล้อม และเป็นเกณฑ์อ้างอิงในการเปรียบเทียบ Parity กับค่าเฉลี่ยเชิงปริมาตรของ CFD ($\langle T_{air} 
+angle_{CFD}$)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\rho_{air}$</td>
+                  <td>ความหนาแน่นของอากาศแห้งภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{kg/m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$c_{p,air}$</td>
+                  <td>ความจุความร้อนจำเพาะของอากาศที่ความดันคงที่</td>
+                  <td><span class="unit-badge">$\text{J/(kg}\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$V_{gh}$</td>
+                  <td>ปริมาตรอากาศภายในโรงเรือนรวม (`349.65 m3`)</td>
+                  <td><span class="unit-badge">$\text{m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{air}$</td>
+                  <td>อุณหภูมิอากาศมวลรวมเฉลี่ยภายในโรงเรือน (`air.T`)</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ DAE</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,cov}$</td>
+                  <td>อัตราการพาความร้อนระหว่างแผ่นพลาสติกหลังคากับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,can}$</td>
+                  <td>อัตราการพาความร้อนระหว่างทรงพุ่มมะเขือเทศกับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,flr}$</td>
+                  <td>อัตราการพาความร้อนระหว่างผิวดินคลุม Mulch กับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{vent}$</td>
+                  <td>อัตราการไหลเชิงมวลของอากาศที่ระบายผ่านมุ้ง 16-mesh</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{amb}$</td>
+                  <td>อุณหภูมิของอากาศแวดล้อมภายนอกโรงเรือนจาก ERA5</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-1-3">
+          <div class="eq-header">
+            <span class="eq-title">1.3 สมดุลความดันไอน้ำและความชื้นในอากาศ (Air Vapor Pressure DAE)</span>
+            <span class="line-badge">AirVP.mo • L33–34 & Air.mo • L71–72</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\frac{d(VP)}{dt} = \frac{R_{gas} \cdot T_{air}}{M_{H_2O} \cdot 1000 \cdot V_{gh}} \cdot \dot{M}_{V,flow}$$
+              $$w_{air} = \frac{VP \cdot R_a}{(P_{atm} - VP) R_s}, \quad RH = \frac{VP}{P_{sat}(T_{air})}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อนุพันธ์เทียบเวลาของความดันย่อยไอน้ำ ($VP$) แปรผันตรงกับฟลักซ์มวลไอน้ำสุทธิ ($\dot{M}_{V,flow}$) โดยมวลไอน้ำที่เพิ่มขึ้นมาจากการคายน้ำของพุ่มมะเขือเทศเชอร์รี่ ($+\dot{M}_{V,can}$) และมวลไอน้ำที่ลดลงมาจากการระบายอากาศผ่านมุ้ง ($-\dot{M}_{V,vent}$) รวมทั้งการควบแน่น ($-\dot{M}_{condensate}$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณความชื้นสัมพัทธ์เฉลี่ย $RH(t)$ และความดันไอน้ำ $VP(t)$ ภายในโรงเรือนอย่างแม่นยำ ป้องกันภาวะความชื้นสะสมสูงเกิน $85\%$ ที่ส่งผลให้เกิดโรคราน้ำค้างในมะเขือเทศ
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VP$</td>
+                  <td>ความดันย่อยของไอน้ำในมวลอากาศภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ DAE</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$R_{gas}$</td>
+                  <td>ค่าคงที่สากลของก๊าซ (`8314.0 J/(kmol.K)`)</td>
+                  <td><span class="unit-badge">$\text{J/(kmol}\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ค่าคงที่ฟิสิกส์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$M_{H_2O}$</td>
+                  <td>มวลโมเลกุลของน้ำ (`18.015 kg/kmol`)</td>
+                  <td><span class="unit-badge">$\text{kg/kmol}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ค่าคงที่ฟิสิกส์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{V,flow}$</td>
+                  <td>อัตราการไหลของมวลไอน้ำสุทธิเข้าสู่มวลอากาศ</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรเชื่อมต่อ massPort</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$w_{air}$</td>
+                  <td>อัตราส่วนความชื้นของอากาศ (Humidity Ratio)</td>
+                  <td><span class="unit-badge">$\text{kg}_{\text{vap}}/\text{kg}_{\text{dry}}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรคำนวณ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$RH$</td>
+                  <td>ความชื้นสัมพัทธ์ของอากาศเฉลี่ยทั้งโรงเรือน</td>
+                  <td><span class="unit-badge">$- \text{ หรือ } \%$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรคำนวณ (0-1)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$P_{sat}(T_{air})$</td>
+                  <td>ความดันไออิ่มตัวของน้ำ ณ อุณหภูมิอากาศ $T_{air}$</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟังก์ชันอุณหพลศาสตร์</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-1-4">
+          <div class="eq-header">
+            <span class="eq-title">1.4 สมดุลความร้อนทรงพุ่มใบมะเขือเทศเชอร์รี่ (Canopy Leaf Thermal Balance DAE)</span>
+            <span class="line-badge">Canopy.mo • L57, 60, 62, 64–65 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L107–108)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$C_{leaf} LAI A_{flr} \frac{dT_{can}}{dt} = Q_{flow} + P_{Can} + L_{can}$$
+              $$\text{ในระบบรวม: } C_{leaf} LAI A_{flr} \frac{dT_{can}}{dt} = Q_{cnv,can} + Q_{rad,can} + P_{Can} - \lambda \cdot \dot{M}_{V,transp}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                สมดุลพลังงานความร้อนที่ผิวใบมะเขือเทศ: ความจุความร้อนของเนื้อใบ ($C_{leaf} \cdot LAI \cdot A_{flr}$) ดูดซับรังสีอาทิตย์คลื่นสั้นช่วงสังเคราะห์แสง ($P_{Can}$), แลกเปลี่ยนความร้อนสัมผัสกับอากาศ ($Q_{cnv,can}$), แลกเปลี่ยนรังสีอินฟราเรด ($Q_{rad,can}$), และถูกระบายความร้อนออกอย่างมหาศาลผ่านความร้อนแฝงของการคายน้ำ ($-\lambda \dot{M}_{V,transp}$ หรือ Latent Heat Cooling)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณอุณหภูมิใบพืชจริง $T_{can}(t)$ เพื่อประเมินความเครียดความร้อนของมะเขือเทศ (Canopy Heat Stress Warning เมื่อ $T_{can} \ge 32^\circ	ext{C}$ และ Critical Damage เมื่อ $T_{can} \ge 35^\circ	ext{C}$)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$C_{leaf}$</td>
+                  <td>ความจุความร้อนของใบพืชต่อตารางเมตรดิน (`1200.0 J/(m2.K)`)</td>
+                  <td><span class="unit-badge">$\text{J/(m}^2\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์คงที่</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$LAI$</td>
+                  <td>ดัชนีพื้นที่ใบพืชของมะเขือเทศเชอร์รี่ (`2.5`)</td>
+                  <td><span class="unit-badge">$\text{m}^2/\text{m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์พืช</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{can}$</td>
+                  <td>อุณหภูมิเฉลี่ยของทรงพุ่มใบมะเขือเทศ (`canopy.T`)</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ DAE</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$P_{Can}$</td>
+                  <td>พลังงานรังสีอาทิตย์ที่ทรงพุ่มมะเขือเทศดูดซับไว้</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์รังสี</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$L_{can}$</td>
+                  <td>ฟลักซ์ความร้อนแฝงจากการคายน้ำของใบพืช</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อนแฝง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\tau_{cov}$</td>
+                  <td>สัมประสิทธิ์การส่องผ่านรังสีอาทิตย์ของฟิล์ม PE (`0.85`)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">คุณสมบัติวัสดุ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$GHI$</td>
+                  <td>ความเข้มรังสีอาทิตย์รวมในแนวราบจาก ERA5</td>
+                  <td><span class="unit-badge">$\text{W/m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{transpiration}$</td>
+                  <td>อัตราการคายน้ำรวมของทรงพุ่มมะเขือเทศทั้งแปลง</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-1-5">
+          <div class="eq-header">
+            <span class="eq-title">1.5 สมดุลความร้อนผิวดินคลุม Mulch สะท้อนแสง (Floor Thermal Balance DAE)</span>
+            <span class="line-badge">Floor.mo • L45, 48–49 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L109–110)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\rho_{soil} c_{p,soil} A_{flr} d_{soil} \frac{dT_{flr}}{dt} = Q_{flow} + P_{Flr}$$
+              $$\text{ในระบบรวม: } \rho_{soil} c_{p,soil} A_{flr} d_{soil} \frac{dT_{flr}}{dt} = Q_{cnv,flr} + Q_{rad,flr} + Q_{cd,Soil} + P_{Flr}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                สมดุลความร้อนของชั้นผิวดินบนความหนา $0.05\,	ext{m}$ ที่คลุมด้วยพลาสติกสีขาวสะท้อนแสง: พลังงานรังสีอาทิตย์ที่ทะลุพุ่มพืชลงมา ($P_{Flr}$), การพาความร้อนสู่อากาศ ($Q_{cnv,flr}$), การแผ่รังสีอินฟราเรดย่านไกล ($Q_{rad,flr}$), และการนำความร้อนลงสู่ชั้นดินลึก ($Q_{cd,Soil}$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                จำลองผลกระทบของพลาสติกคลุมดินสีขาวสะท้อนแสง (White Reflective Mulch, $
+ho_{refl} = 0.55$) ซึ่งช่วยลดความร้อนสะสมที่ผิวดินได้มากกว่าดินเปล่าถึง $4–6^\circ	ext{C}$ และส่งค่าอุณหภูมิขอบเขต $T_{flr}$ สู่ CFD
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\rho_{soil}$</td>
+                  <td>ความหนาแน่นของดินร่วนปนทรายใต้แผ่นคลุม (`1500.0 kg/m3`)</td>
+                  <td><span class="unit-badge">$\text{kg/m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ดิน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$c_{p,soil}$</td>
+                  <td>ความจุความร้อนจำเพาะของดิน (`1800.0 J/(kg.K)`)</td>
+                  <td><span class="unit-badge">$\text{J/(kg}\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ดิน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$V_{flr}$</td>
+                  <td>ปริมาตรชั้นดินบนที่รับความร้อน (`0.05 x 72.0 = 3.6 m3`)</td>
+                  <td><span class="unit-badge">$\text{m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">คำนวณจากเรขาคณิต</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$d_{soil}$</td>
+                  <td>ความหนาของชั้นดินบนที่มีอุณหภูมิผันผวน (`0.05 m`)</td>
+                  <td><span class="unit-badge">$\text{m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ดิน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{flr}$</td>
+                  <td>อุณหภูมิผิวดินคลุมพลาสติกขาวสะท้อนแสง (`floor.T`)</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ DAE</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$P_{Flr}$</td>
+                  <td>พลังงานรังสีอาทิตย์ที่ส่องทะลุพุ่มพืชและถูกผิวดินดูดซับ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์รังสี</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cd,Soil}$</td>
+                  <td>อัตราการนำความร้อนจากผิวดินลงสู่ชั้นดินลึก</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์นำความร้อน</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Category 2 -->
+        <h3 id="sec-eq-screen" style="color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px;">
+          หมวดที่ 2: แบบจำลองการระบายอากาศมุ้งกันแมลง 16-Mesh (InsectScreen_16Mesh.mo)
+        </h3>
+
+        <div class="eq-card" id="eq-2-1">
+          <div class="eq-header">
+            <span class="eq-title">2.1 อัตราการระบายอากาศจากแรงดันลม (Wind-Driven Flow Rate)</span>
+            <span class="line-badge">InsectScreen_16Mesh.mo • L111</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$Q_{wind} = \frac{1}{2} C_d \cdot A_{roof} \cdot u_{wind} \sqrt{\Delta C_p} \quad [m^3/s]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อัตราการไหลเชิงปริมาตรของอากาศภายนอกที่ถูกพัดผ่านผนังมุ้ง 16-mesh ด้วยพลังงานจลน์ของลมธรรมชาติ ($u_{wind}$) โดยมีค่าสัมประสิทธิ์แรงเสียดทานของมุ้ง ($C_d = 0.22$) และสัมประสิทธิ์ผลต่างความดันลม ($\Delta C_p = 0.12$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณอัตราการระบายอากาศหลักในเวลากลางวัน ซึ่งเป็นกลไกหลักในการระบายความร้อนออกจากโรงเรือนในสภาพภูมิอากาศร้อนชื้น
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{wind}$</td>
+                  <td>อัตราการระบายอากาศที่ขับเคลื่อนด้วยแรงดันลม</td>
+                  <td><span class="unit-badge">$\text{m}^3/\text{s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$C_{d,mesh}$</td>
+                  <td>สัมประสิทธิ์การไหลลดทอนของมุ้ง 16-mesh (`0.42`)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์มุ้ง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$A_{vent,side}$</td>
+                  <td>พื้นที่ช่องเปิดผนังมุ้งด้านข้าง 4 ด้านรวมกัน (`90.0 m2`)</td>
+                  <td><span class="unit-badge">$\text{m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$u_{wind}$</td>
+                  <td>ความเร็วลมภายนอกที่ระดับอ้างอิง 10m จาก ERA5</td>
+                  <td><span class="unit-badge">$\text{m/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta C_p$</td>
+                  <td>ผลต่างสัมประสิทธิ์แรงดันลมด้านรับลมและท้ายลม (`0.35`)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์อากาศพลศาสตร์</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-2-2">
+          <div class="eq-header">
+            <span class="eq-title">2.2 อัตราการระบายอากาศจากแรงลอยตัวความร้อน (Thermal Buoyancy Stack Flow Rate)</span>
+            <span class="line-badge">InsectScreen_16Mesh.mo • L112</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$Q_{stack} = \frac{1}{2} C_d \cdot A_{roof} \sqrt{\frac{g \cdot h_{vent} \cdot |T_{air} - T_{amb}|}{T_{mean}}} \quad [m^3/s]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อัตราการไหลเชิงปริมาตรที่เกิดจากผลต่างความหนาแน่นของอากาศ (ปรากฏการณ์แรงลอยตัวความร้อนหรือ Chimney Stack Effect) เมื่ออากาศร้อนภายในโรงเรือนลอยตัวขึ้นสูงและไหลออกทางช่องเปิดหลังคา
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ทำหน้าที่ระบายความร้อนสำรองในสภาวะลมสงบ ($u_{wind} < 0.5\,	ext{m/s}$) โดยเฉพาะช่วงเที่ยงวันที่มีรังสีอาทิตย์ตกกระทบหลังคาโค้งสูงสุด
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{stack}$</td>
+                  <td>อัตราการระบายอากาศที่ขับเคลื่อนด้วยแรงลอยตัวความร้อน</td>
+                  <td><span class="unit-badge">$\text{m}^3/\text{s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$A_{vent,roof}$</td>
+                  <td>พื้นที่ช่องระบายอากาศใต้สันหลังคา (`12.0 m2`)</td>
+                  <td><span class="unit-badge">$\text{m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$g$</td>
+                  <td>ความเร่งเนื่องจากแรงโน้มถ่วงของโลก (`9.81 m/s2`)</td>
+                  <td><span class="unit-badge">$\text{m/s}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ค่าคงที่ฟิสิกส์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta h_{stack}$</td>
+                  <td>ระยะความสูงแนวดิ่งระหว่างกึ่งกลางผนังมุ้งถึงสันหลังคา (`2.75 m`)</td>
+                  <td><span class="unit-badge">$\text{m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{air,in}$</td>
+                  <td>อุณหภูมิอากาศภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{amb,out}$</td>
+                  <td>อุณหภูมิอากาศแวดล้อมภายนอกโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-2-3">
+          <div class="eq-header">
+            <span class="eq-title">2.3 การรวมอัตราการระบายอากาศและอัตราการพาความร้อนออก (Total Ventilation & Heat Removal)</span>
+            <span class="line-badge">InsectScreen_16Mesh.mo • L113–118</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$Q_{vent,total} = \sqrt{Q_{wind}^2 + Q_{stack}^2} \quad [m^3/s]$$
+              $$\dot{M}_{vent} = \rho_{air} \cdot Q_{vent,total} \quad [kg/s]$$
+              $$Q_{vent,heat} = \dot{M}_{vent} \cdot c_{p,air} \cdot (T_{air} - T_{amb}) \quad [W]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                การรวมผลของแรงลมและแรงลอยตัวแบบ Quadratic Superposition ตามมาตรฐานวิศวกรรมการระบายอากาศการเกษตรสากล (ASABE / De Jong) พร้อมแปลงเป็นอัตราการไหลเชิงมวลและอัตราการดึงความร้อนสัมผัสออกจากโรงเรือน
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ใช้เป็นฟลักซ์ความร้อนหลักในการหน่วงอุณหภูมิอากาศภายในไม่ให้สูงเกินสภาพแวดล้อมภายนอกมากเกินไป ($T_{air} - T_{amb} \le 1.8–2.2^\circ	ext{C}$ ในช่วงเที่ยงวัน)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{vent,total}$</td>
+                  <td>อัตราการระบายอากาศรวมจากแรงลมและแรงลอยตัว</td>
+                  <td><span class="unit-badge">$\text{m}^3/\text{s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{vent}$</td>
+                  <td>อัตราการไหลเชิงมวลของอากาศระบายรวม</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{vent,heat}$</td>
+                  <td>อัตราความร้อนสัมผัสที่ถูกพาออกจากโรงเรือนผ่านมุ้ง</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$heatPort.Q\_flow$</td>
+                  <td>ฟลักซ์ความร้อนที่พอร์ตความร้อนดึงออกจากอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรเชื่อมต่อ</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-2-4">
+          <div class="eq-header">
+            <span class="eq-title">2.4 อัตราการระบายมวลไอน้ำผ่านมุ้ง 16-Mesh (Moisture Ventilation Exchange)</span>
+            <span class="line-badge">InsectScreen_16Mesh.mo • L121–129</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$VP_{amb,sat} = 610.78 \exp\left( \frac{17.27(T_{amb} - 273.15)}{T_{amb} - 273.15 + 237.3} \right) \quad [Pa]$$
+              $$VP_{amb} = \max(0.0, \, \min(VP_{amb,sat}, \, RH_{amb} \cdot VP_{amb,sat})) \quad [Pa]$$
+              $$\dot{M}_{v,vent} = Q_{vent,total} \cdot \left( \frac{M_{H_2O}}{R_{gas}} \right) \left( \frac{massPort.VP}{T_{air}} - \frac{VP_{amb}}{T_{amb}} \right) \quad [kg/s]$$
+              $$massPort.MV\_flow = \dot{M}_{v,vent}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                มวลไอน้ำที่ถูกพัดออกจากโรงเรือนผ่านมุ้ง 16-mesh ตามผลต่างความดันย่อยไอน้ำ โดยใช้สูตรเตเทนส์ (Tetens Formula) คำนวณความดันไอน้ำภายนอก
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ระบายความชื้นที่เกิดจากการคายน้ำของมะเขือเทศออกสู่ภายนอก ป้องกันการเกิดหยดน้ำเกาะใบพืช
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{v,vent}$</td>
+                  <td>อัตราการระบายมวลไอน้ำออกจากโรงเรือนผ่านมุ้ง 16-mesh</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VP_{amb,sat}$</td>
+                  <td>ความดันไออิ่มตัวของอากาศภายนอกตามสูตร Tetens</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรคำนวณ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VP_{amb}$</td>
+                  <td>ความดันย่อยของไอน้ำในอากาศภายนอก</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรคำนวณ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$RH_{amb}$</td>
+                  <td>ความชื้นสัมพัทธ์ของอากาศภายนอกโรงเรือน</td>
+                  <td><span class="unit-badge">$- \text{ (0-1)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$massPort.VP$</td>
+                  <td>ความดันย่อยของไอน้ำภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรเชื่อมต่อ</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-2-5">
+          <div class="eq-header">
+            <span class="eq-title">2.5 อัตราการหมุนเวียนอากาศต่อชั่วโมง (Air Changes per Hour - ACH)</span>
+            <span class="line-badge">InsectScreen_16Mesh.mo • L134 & Suphanburi_Greenhouse.mo • L448</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$ACH = \frac{3600 \cdot Q_{vent,total}}{V_{gh}} = \frac{3600 \cdot Q_{vent,total}}{349.65} \quad [h^{-1}]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อัตราส่วนระหว่างปริมาตรอากาศที่ระบายออกต่อชั่วโมงเทียบกับปริมาตรโรงเรือนรวม
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ใช้เป็นตัวชี้วัดมาตรฐานทางวิศวกรรมเกษตร โดยโรงเรือนมุ้ง 16-mesh ที่สุพรรณบุรีทำค่าได้เฉลี่ย $25–45\,	ext{ACH}$ ในช่วงกลางวัน สอดคล้องกับเกณฑ์การระบายอากาศตามธรรมชาติที่ดีเลิศ
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$ACH$</td>
+                  <td>อัตราการหมุนเวียนอากาศเทียบกับปริมาตรโรงเรือนต่อชั่วโมง</td>
+                  <td><span class="unit-badge">$\text{h}^{-1} \text{ (รอบ/ชม.)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ดัชนีระบายอากาศ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{vent,total}$</td>
+                  <td>อัตราการระบายอากาศเชิงปริมาตรรวม</td>
+                  <td><span class="unit-badge">$\text{m}^3/\text{s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอัตราการไหล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$V_{gh}$</td>
+                  <td>ปริมาตรอากาศภายในโรงเรือนรวม (`349.65 m3`)</td>
+                  <td><span class="unit-badge">$\text{m}^3$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Category 3 -->
+        <h3 id="sec-eq-transp" style="color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px;">
+          หมวดที่ 3: แบบจำลองการคายน้ำของพืช Stanghellini (MV_CanopyTranspiration.mo)
+        </h3>
+
+        <div class="eq-card" id="eq-3-1">
+          <div class="eq-header">
+            <span class="eq-title">3.1 สัมประสิทธิ์การถ่ายโอนมวลไอน้ำและอัตราการคายน้ำ (Transpiration Rate Equations)</span>
+            <span class="line-badge">MV_CanopyTranspiration.mo • L120–125</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$VEC_{canAir} = \frac{2 \rho_{air} c_{p,air} LAI}{\gamma (r_b + r_s)} \quad [kg/(s\cdot Pa\cdot m^2)]$$
+              $$\dot{M}_V = VEC_{canAir} \cdot A_{flr} \cdot (VP_{can,sat} - VP_{air}) \quad [kg/s]$$
+              $$E_{Wm2} = \frac{\dot{M}_V \cdot \lambda}{A_{flr}} \quad [W/m^2]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                แบบจำลองสแตงเกลลินี (Stanghellini Transpiration Model) ที่ปรับปรุงสำหรับพืชในโรงเรือน: อัตราการคายน้ำขึ้นกับสัมประสิทธิ์การถ่ายโอนมวล ($VEC_{canAir}$) ซึ่งนำพื้นที่ผิวใบสองด้าน ($2 \cdot LAI$), ความต้านทานชั้นขอบเขตใบ ($r_b$), และความต้านทานปากใบ ($r_s$) มาคำนวณร่วมกับแรงดึงความดันไอน้ำ
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณอัตราการใช้น้ำของมะเขือเทศเชอร์รี่ และคำนวณฟลักซ์การลดอุณหภูมิด้วยความร้อนแฝง (Evaporative Cooling Flux, $E_{Wm2} pprox 150–280\,	ext{W/m}^2$ ในเวลากลางวัน)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VEC_{canAir}$</td>
+                  <td>สัมประสิทธิ์การถ่ายโอนมวลไอน้ำระหว่างพุ่มพืชกับอากาศ</td>
+                  <td><span class="unit-badge">$\text{kg/(s}\cdot\text{Pa}\cdot\text{m}^2\text{)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">สัมประสิทธิ์ถ่ายโอนมวล</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\gamma$</td>
+                  <td>ค่าคงที่ไซโครเมตริกส์ (`65.8 Pa/K`)</td>
+                  <td><span class="unit-badge">$\text{Pa/K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">คุณสมบัติอุณหพลศาสตร์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_{bV}$</td>
+                  <td>ความต้านทานชั้นขอบเขตใบต่อการถ่ายโอนไอน้ำ (`275.0 s/m`)</td>
+                  <td><span class="unit-badge">$\text{s/m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ขอบเขตใบ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_s$</td>
+                  <td>ความต้านทานปากใบของมะเขือเทศเชอร์รี่</td>
+                  <td><span class="unit-badge">$\text{s/m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสรีรวิทยาพืช</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\dot{M}_{V,flow}$</td>
+                  <td>อัตราการไหลของมวลไอน้ำจากการคายน้ำรวมทั้งโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{kg/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรเชื่อมต่อ massPort</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VP_{can}$</td>
+                  <td>ความดันไออิ่มตัวที่ผิวเซลล์ใบ ณ อุณหภูมิ $T_{can}$</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรคำนวณ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VP_{air}$</td>
+                  <td>ความดันย่อยของไอน้ำในอากาศภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{Pa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$E_{Wm2}$</td>
+                  <td>ฟลักซ์ความร้อนแฝงจากการคายน้ำต่อตารางเมตรดิน</td>
+                  <td><span class="unit-badge">$\text{W/m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความเย็นแฝง</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-3-2">
+          <div class="eq-header">
+            <span class="eq-title">3.2 ความต้านทานปากใบต่อสิ่งเร้าแวดล้อม (Stanghellini Resistance Factors)</span>
+            <span class="line-badge">MV_CanopyTranspiration.mo • L101–118</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$r_s = r_{s,min} \cdot R_I(I_{can}) \cdot R_T(T_{can}) \cdot R_{CO2}(CO_2) \cdot R_{VP}(VPD) \quad [s/m]$$
+              $$R_I = \frac{I_{can} + C_1}{I_{can} + C_2}, \quad R_{VP} = 1 + C_{vpd} \cdot (VP_{can,sat} - VP_{air})$$
+              $$r_b = \left( \frac{T_{can} - T_{air}}{d_l} \right)^{0.25} \cdot C_{rb} \quad [s/m]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                กลไกการเปิด-ปิดปากใบของมะเขือเทศเชอร์รี่ภายใต้สิ่งเร้า 4 ปัจจัย: ความเข้มแสงแดด ($R_I$), อุณหภูมิใบ ($R_T$), ความเข้มข้นก๊าซคาร์บอนไดออกไซด์ ($R_{CO2}$), และผลต่างความดันย่อยไอน้ำ ($R_{VP}$ หรือ VPD Effect)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ป้องกันการคายน้ำเกินขีดจำกัดทางชีววิทยาเมื่ออากาศร้อนจัดและแห้งแล้ง (Midday Stomatal Closure) ทำให้โมเดลสะท้อนพฤติกรรมพืชจริงอย่างสมบูรณ์แบบ
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_s$</td>
+                  <td>ความต้านทานปากใบรวมที่แปรผันตามสิ่งเร้าแวดล้อม</td>
+                  <td><span class="unit-badge">$\text{s/m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสรีรวิทยาพืช</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_{min}$</td>
+                  <td>ความต้านทานปากใบต่ำสุดเมื่อแดดจัดและไม่อดน้ำ (`82.0 - 120.0 s/m`)</td>
+                  <td><span class="unit-badge">$\text{s/m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์พืช</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_I$</td>
+                  <td>ตัวคูณลดทอนจากความเข้มรังสีอาทิตย์ตกกระทบพุ่มใบ</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวคูณไร้หน่วย</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$R_{can}$</td>
+                  <td>รังสีอาทิตย์สุทธิที่ทรงพุ่มใบดูดกลืนไว้</td>
+                  <td><span class="unit-badge">$\text{W/m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์รังสี</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_{CO2}$</td>
+                  <td>ตัวคูณลดทอนจากความเข้มข้นก๊าซคาร์บอนไดออกไซด์</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวคูณไร้หน่วย</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_{VP}$</td>
+                  <td>ตัวคูณลดทอนจากผลต่างความดันไอน้ำ (VPD effect)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวคูณไร้หน่วย</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$r_T$</td>
+                  <td>ตัวคูณลดทอนจากอุณหภูมิใบพืช (Leaf temp effect)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวคูณไร้หน่วย</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$S_{rs}$</td>
+                  <td>ฟังก์ชัน Differentiable Sigmoid Switch สลับกลางวัน/กลางคืน</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรปรับเรียบ</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Category 4 -->
+        <h3 id="sec-eq-ht" style="color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px;">
+          หมวดที่ 4: กลไกการถ่ายโอนความร้อน (Convection, Radiation, Conduction)
+        </h3>
+
+        <div class="eq-card" id="eq-4-1">
+          <div class="eq-header">
+            <span class="eq-title">4.1 การแผ่รังสีอินฟราเรดย่านไกล (Stefan-Boltzmann Longwave Radiation)</span>
+            <span class="line-badge">Radiation_T4.mo • L27–28 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L119–124, 133–134)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$REC_{ab} = \varepsilon_a \varepsilon_b FF_a FF_b (1 - FF_{ab1}) \sigma \quad [W/(m^2\cdot K^4)]$$
+              $$Q_{flow} = A \cdot REC_{ab} \cdot (port\_a.T^4 - port\_b.T^4) \quad [W]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                กฎการแผ่รังสีความร้อนของสเตฟาน-โบลต์ซมันน์ระหว่างพื้นผิวคู่ขนานในโรงเรือน โดยคำนึงถึงค่าความเปล่งรังสี ($arepsilon$) และตัวประกอบมุมมองเรขาคณิต (View Factor, $FF$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณการแลกเปลี่ยนรังสีความร้อนคลื่นยาว 3 คู่หลัก: พลาสติกหลังคา-ท้องฟ้า, หลังคา-พุ่มพืช, และพุ่มพืช-ผิวดิน
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$REC_{ab}$</td>
+                  <td>สัมประสิทธิ์การแผ่รังสีประสิทธิผลระหว่างผิว $a$ และ $b$</td>
+                  <td><span class="unit-badge">$\text{W/(m}^2\cdot\text{K}^4\text{)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">สัมประสิทธิ์รังสี</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\varepsilon_a, \varepsilon_b$</td>
+                  <td>ค่าความเปล่งรังสีอินฟราเรดย่านไกลของผิว $a$ และ $b$</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">คุณสมบัติวัสดุ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$FF_a, FF_b$</td>
+                  <td>สัดส่วนพื้นที่มุมมองระหว่างพื้นผิว (View Factor)</td>
+                  <td><span class="unit-badge">$-$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวคูณเรขาคณิต</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\sigma$</td>
+                  <td>ค่าคงที่สเตฟาน-โบลต์ซมันน์ (`5.670374e-8 W/(m2.K4)`)</td>
+                  <td><span class="unit-badge">$\text{W/(m}^2\cdot\text{K}^4\text{)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ค่าคงที่ฟิสิกส์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_a, T_b$</td>
+                  <td>อุณหภูมิสัมบูรณ์ของพื้นผิวคู่ถ่ายโอนความร้อน</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอุณหภูมิ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{flow}$</td>
+                  <td>อัตราการถ่ายโอนความร้อนด้วยการแผ่รังสีสุทธิ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-4-2">
+          <div class="eq-header">
+            <span class="eq-title">4.2 การพาความร้อนผิวนอกหลังคาตามความเร็วลม (Outside Air Convection)</span>
+            <span class="line-badge">OutsideAirConvection.mo • L31–39 (เรียกใช้ใน Suphanburi_Greenhouse.mo • L125–126)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$h_{out} = \frac{2.8 + 1.2 u_{wind}}{\cos(\phi)} \quad [W/(m^2\cdot K)]$$
+              $$Q_{flow} = A_{cov} \cdot h_{out} \cdot (T_{cov} - T_{amb}) \quad [W]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                สัมประสิทธิ์การพาความร้อนที่ผิวพลาสติกด้านนอก เชื่อมโยงกับความเร็วลมภายนอก $u_{wind}$ จาก ERA5 และมุมเอียงประสิทธิผลของหลังคาโค้ง $\phi$
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณความร้อนที่แผ่นพลาสติกหลังคาสูญเสียให้แก่อากาศภายนอก ซึ่งเป็นเส้นทางระบายความร้อนที่สำคัญมากในวันที่ลมพัดแรง
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$h_{out}$</td>
+                  <td>สัมประสิทธิ์การพาความร้อนที่ผิวพลาสติกด้านนอก</td>
+                  <td><span class="unit-badge">$\text{W/(m}^2\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">สัมประสิทธิ์การพา</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\alpha$</td>
+                  <td>ฟังก์ชันสัมประสิทธิ์การพาตามความเร็วลม (McAdams Correlation)</td>
+                  <td><span class="unit-badge">$\text{W/(m}^2\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟังก์ชันกึ่งเชิงประจักษ์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$u_{wind}$</td>
+                  <td>ความเร็วลมภายนอกที่ระดับอ้างอิงจาก ERA5</td>
+                  <td><span class="unit-badge">$\text{m/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\phi$</td>
+                  <td>มุมเอียงประสิทธิผลของหลังคาโค้ง (`1.036 rad`)</td>
+                  <td><span class="unit-badge">$\text{rad}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{flow}$</td>
+                  <td>อัตราความร้อนที่แผ่นพลาสติกหลังคาสูญเสียให้อากาศภายนอก</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-4-3">
+          <div class="eq-header">
+            <span class="eq-title">4.3 การพาความร้อนแบบอิสระภายในโรงเรือน (Canopy & Floor Free Convection)</span>
+            <span class="line-badge">CanopyFreeConvection.mo • L48, 59–60 & Floor.mo</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$h_{can} = 1.86 \cdot |T_{can} - T_{air}|^{0.33}, \quad Q_{cnv,can} = 2 \cdot LAI \cdot A_{flr} \cdot h_{can} \cdot (T_{can} - T_{air}) \quad [W]$$
+              $$h_{flr} = 1.52 \cdot |T_{flr} - T_{air}|^{0.33}, \quad Q_{cnv,flr} = A_{flr} \cdot h_{flr} \cdot (T_{flr} - T_{air}) \quad [W]$$
+              $$h_{cov,in} = 3.0 \cdot |T_{air} - T_{cov}|^{0.33}, \quad Q_{cnv,cov} = A_{cov} \cdot h_{cov,in} \cdot (T_{air} - T_{cov}) \quad [W]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                การพาความร้อนแบบลอยตัวอิสระ (Natural Convection) ภายในอาคารปิด/กึ่งปิด ตามความแตกต่างระหว่างอุณหภูมิพื้นผิวกับอุณหภูมิอากาศยกกำลัง $1/3$ (สูตรคลาสสิกของ McAdams สำหรับพื้นผิวในแนวนอนและใบพืช)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                จำลองการถ่ายเทความร้อนระหว่างใบพืช ผิวดิน และหลังคาด้านใน เข้าสู่มวลอากาศอย่างถูกต้องตามกลศาสตร์ของไหล
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,can}$</td>
+                  <td>อัตราการพาความร้อนสัมผัสระหว่างทรงพุ่มมะเขือเทศกับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,flr}$</td>
+                  <td>อัตราการพาความร้อนสัมผัสระหว่างผิวดินคลุม Mulch กับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cnv,cov}$</td>
+                  <td>อัตราการพาความร้อนสัมผัสระหว่างแผ่นพลาสติกหลังคากับอากาศ</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์ความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{flr}, T_{can}, T_{cov}$</td>
+                  <td>อุณหภูมิพื้นผิวของดิน, ทรงพุ่ม และหลังคา PE</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{air}$</td>
+                  <td>อุณหภูมิอากาศมวลรวมภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-4-4">
+          <div class="eq-header">
+            <span class="eq-title">4.4 การนำความร้อนลงสู่ชั้นดินลึก (Deep Soil Conduction)</span>
+            <span class="line-badge">SoilConduction.mo (เรียกใช้ใน Suphanburi_Greenhouse.mo • L115–116, 320–323)</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$Q_{cd,Soil} = \frac{k_{soil}}{d_{soil}} \cdot A_{flr} \cdot (T_{deep} - T_{flr}) \quad [W]$$
+              $$\text{โดย: } T_{deep} = 299.15\,\text{K } (26^\circ\text{C}), \quad k_{soil} = 1.2\,\text{W/(m}\cdot\text{K)}, \quad d_{soil} = 0.5\,\text{m}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                กฎการนำความร้อนของฟูริเยร์ (Fourier's Law of Heat Conduction) ระหว่างผิวดินบน ($T_{flr}$) กับชั้นดินลึกที่ระดับความลึก $0.5\,	ext{m}$ ($T_{deep} = 26^\circ	ext{C}$ คงที่ตลอดปี)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                จำลองความเฉื่อยความร้อนของผืนดิน (Thermal Soil Inertia) ซึ่งทำหน้าที่ดูดซับความร้อนในเวลากลางวันและคายความร้อนกลับขึ้นมาในเวลากลางคืน
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Q_{cd,Soil}$</td>
+                  <td>อัตราการนำความร้อนจากผิวดินบนลงสู่ชั้นดินลึก</td>
+                  <td><span class="unit-badge">$\text{W}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ฟลักซ์นำความร้อน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\lambda_{soil}$</td>
+                  <td>สัมประสิทธิ์การนำความร้อนของดินร่วนปนทราย (`1.0 W/(m.K)`)</td>
+                  <td><span class="unit-badge">$\text{W/(m}\cdot\text{K)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ดิน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta z_{soil}$</td>
+                  <td>ความหนาของชั้นดินบนที่นำความร้อน (`0.05 m`)</td>
+                  <td><span class="unit-badge">$\text{m}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ดิน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$A_{flr}$</td>
+                  <td>พื้นที่ผิวดินภายในโรงเรือน (`72.0 m2`)</td>
+                  <td><span class="unit-badge">$\text{m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์โครงสร้าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{flr}$</td>
+                  <td>อุณหภูมิผิวดินคลุมพลาสติกขาว</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{deep\_soil}$</td>
+                  <td>อุณหภูมิของชั้นดินลึกใต้โรงเรือนคงที่ตลอดปี (`298.15 K = 25.0 °C`)</td>
+                  <td><span class="unit-badge">$\text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พารามิเตอร์ขอบเขตลึก</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Category 5 -->
+        <h3 id="sec-eq-spatial" style="color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px;">
+          หมวดที่ 5: แบบจำลองการกระจายตัว 3 มิติตาม 15 จุดเซนเซอร์ (Spatial Telemetry Layer)
+        </h3>
+
+        <div class="eq-card" id="eq-5-1">
+          <div class="eq-header">
+            <span class="eq-title">5.1 สมการเกรเดียนต์ความร้อนตามแนวยาว WSW (Longitudinal Airflow Gradient)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L351</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\Delta T_{spatial,longitudinal} = \left( \frac{GHI_{actual}}{950.0} \right) \cdot \left( \frac{1.2}{\max(0.6, \, u_{wind,actual})} \right) \quad [^\circ C]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                อุณหภูมิอากาศสะสมเพิ่มขึ้นตามแนวการไหลของลมหลัก WSW ($67.5^\circ$) จากเสาด้านหน้าต้นลม (C, D) ไปยังเสาด้านหลังท้ายลม (A, B) ยิ่งแดดจัดเกรเดียนต์ยิ่งสูง และยิ่งลมแรงเกรเดียนต์ยิ่งลดลงจากการระบายอากาศที่ดีขึ้น
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                จำลองปรากฏการณ์ความร้อนสะสมท้ายลม (Leeward Heat Accumulation) สอดคล้องกับพฤติกรรมจริงในโรงเรือนทรงกระบอกยาว
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta T_{spatial,longitudinal}$</td>
+                  <td>ผลต่างอุณหภูมิอากาศสะสมตามแนวการไหลของลม WSW</td>
+                  <td><span class="unit-badge">$^\circ\text{C} \text{ หรือ } \text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">เกรเดียนต์แนวยาว</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$GHI_{actual}$</td>
+                  <td>ความเข้มรังสีอาทิตย์รวมในแนวราบจริงรายชั่วโมง</td>
+                  <td><span class="unit-badge">$\text{W/m}^2$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$u_{wind,actual}$</td>
+                  <td>ความเร็วลมจริงรายชั่วโมงที่ระดับอ้างอิง</td>
+                  <td><span class="unit-badge">$\text{m/s}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรนำเข้า (Input)</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-5-2">
+          <div class="eq-header">
+            <span class="eq-title">5.2 สมการความร้อนลอยตัวใต้หลังคาและความไม่สมมาตรตามแนวขวาง (Buoyancy & Lateral)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L353, 355</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\Delta T_{spatial,lateral} = \left( \frac{GHI_{actual}}{950.0} \right) \cdot \left( \frac{0.35}{\max(0.6, \, u_{wind,actual})} \right) \quad [^\circ C]$$
+              $$\Delta T_{thermal,buoyancy} = \left( \frac{GHI_{actual}}{950.0} \right) \cdot \left( \frac{1.5}{\max(0.6, \, u_{wind,actual})} \right) \quad [^\circ C]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                ผลต่างอุณหภูมิระหว่างฝั่งซ้าย-ขวาจากมุมตกกระทบของแสงอาทิตย์ และการลอยตัวสะสมความร้อนใต้สันหลังคาโค้งครึ่งวงกลม (Thermal Buoyancy Plume)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ใช้สร้างเกรเดียนต์อุณหภูมิในมิติแนวตั้ง ($z$) และแนวด้านข้าง ($y$)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta T_{spatial,lateral}$</td>
+                  <td>ผลต่างอุณหภูมิระหว่างฝั่งซ้ายและขวาจากมุมตกกระทบแสงอาทิตย์</td>
+                  <td><span class="unit-badge">$^\circ\text{C} \text{ หรือ } \text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">เกรเดียนต์แนวขวาง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta T_{thermal,buoyancy}$</td>
+                  <td>อุณหภูมิที่เพิ่มขึ้นจากการลอยตัวสะสมความร้อนใต้สันหลังคาโค้ง</td>
+                  <td><span class="unit-badge">$^\circ\text{C} \text{ หรือ } \text{K}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">เกรเดียนต์แนวดิ่ง</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-5-3">
+          <div class="eq-header">
+            <span class="eq-title">5.3 สมการโปรไฟล์ฐานตามระดับความสูง 3 ชั้น (Top, Mid, Bottom Baseline Profiles)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L360–368</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$T_{top,base} = T_{air,degC} + 0.5 \Delta T_{thermal,buoyancy} \quad [^\circ C]$$
+              $$T_{mid,base} = T_{air,degC} \quad [^\circ C]$$
+              $$T_{bot,base} = T_{air,degC} - 0.5 \Delta T_{thermal,buoyancy} \quad [^\circ C]$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                การแบ่งระดับอุณหภูมิอ้างอิงเป็น 3 ชั้นความสูง: Top ($2.5\,	ext{m}$ ใต้หลังคา), Mid ($2.0\,	ext{m}$ กลางทรงพุ่ม), และ Bot ($1.2\,	ext{m}$ โคนต้นมะเขือเทศ)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                เป็นแกนอ้างอิงแนวดิ่งก่อนกระจายไปยังเสา A, B, C, D, E
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{top,base}$</td>
+                  <td>อุณหภูมิฐานที่ระดับใต้หลังคา ($z = 2.5\,	ext{m}$)</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">โปรไฟล์ฐานชั้นบน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{mid,base}$</td>
+                  <td>อุณหภูมิฐานที่ระดับกลางทรงพุ่ม ($z = 2.0\,	ext{m}$)</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">โปรไฟล์ฐานชั้นกลาง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{bot,base}$</td>
+                  <td>อุณหภูมิฐานที่ระดับโคนต้นเหนือผิวดิน ($z = 1.2\,	ext{m}$)</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">โปรไฟล์ฐานชั้นล่าง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{air,degC}$</td>
+                  <td>อุณหภูมิอากาศมวลรวมเฉลี่ยแปลงเป็นองศาเซลเซียส</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอุณหภูมิ</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-5-4">
+          <div class="eq-header">
+            <span class="eq-title">5.4 สมการอุณหภูมิเฉพาะจุด 15 ตำแหน่ง (เสา A, B, C, D, E x Top, Mid, Bot)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L370–394</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$\text{Pole A (NW - ตกเฉียงเหนือ): } T_{sensor,A} = T_{base} + 0.5 \Delta T_{long} - 0.5 \Delta T_{lat}$$
+              $$\text{Pole B (NE - ออกเฉียงเหนือ [ท้ายลมร้อนสุด]): } T_{sensor,B} = T_{base} + 0.5 \Delta T_{long} + 0.5 \Delta T_{lat}$$
+              $$\text{Pole C (SW - ตกเฉียงใต้ [ต้นลม WSW เย็นสุด]): } T_{sensor,C} = T_{base} - 0.5 \Delta T_{long} - 0.5 \Delta T_{lat}$$
+              $$\text{Pole D (SE - ออกเฉียงใต้): } T_{sensor,D} = T_{base} - 0.5 \Delta T_{long} + 0.5 \Delta T_{lat}$$
+              $$\text{Pole E (Center - กึ่งกลางโรงเรือน): } T_{sensor,E} = T_{base}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                การระบุพิกัดสามมิติของเซนเซอร์จริงทั้ง 15 จุด โดยผสานผลต่างตามแนวยาว (WSW) และแนวขวางเข้ากับระดับความสูง Top ($2.5\,	ext{m}$), Mid ($2.0\,	ext{m}$), Bot ($1.2\,	ext{m}$)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ให้ผลลัพธ์จำลองเทียบเคียงกับข้อมูลจากโครงข่ายเซนเซอร์ IoT จริงในโรงเรือน เพื่อใช้ในการสอบเทียบและตรวจสอบความแม่นยำ (Validation RMSE $\le 0.98^\circ	ext{C}$)
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{sensor,i}$</td>
+                  <td>อุณหภูมิเสมือน ณ จุดติดตั้งเซนเซอร์จริงเสา A–E ทั้ง 3 ระดับ</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ผลลัพธ์จำลอง 15 จุด</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$T_{base}$</td>
+                  <td>อุณหภูมิฐานของระดับความสูงที่เซนเซอร์นั้นติดตั้งอยู่ ($T_{top}, T_{mid}, T_{bot}$)</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรฐาน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta T_{long}$</td>
+                  <td>เกรเดียนต์ความร้อนตามแนวยาว WSW</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">เกรเดียนต์</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta T_{lat}$</td>
+                  <td>เกรเดียนต์ความร้อนตามแนวขวาง</td>
+                  <td><span class="unit-badge">$^\circ\text{C}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">เกรเดียนต์</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-5-5">
+          <div class="eq-header">
+            <span class="eq-title">5.5 สมการแปลงความชื้นสัมพัทธ์เฉพาะจุด 15 ตำแหน่ง (Spatial Psychrometric Relative Humidity)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L403–428</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$RH_{sensor,i} = \max\left( 5.0, \, \min\left( 100.0, \, RH_{interior} \cdot \exp\left( \frac{17.27 T_{air,degC}}{T_{air,degC} + 237.3} - \frac{17.27 T_{sensor,i}}{T_{sensor,i} + 237.3} \right) + \Delta RH_{canopy} \right) \right)$$
+              $$\text{โดย: } \Delta RH_{canopy} = 1.5 \left( \frac{GHI}{950} \right) \text{ ที่ระดับ Mid}, \quad \Delta RH_{canopy} = 1.0 \left( \frac{GHI}{950} \right) \text{ ที่ระดับ Bot}$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                กฎทางไซโครเมตริกส์: เมื่อความดันไอน้ำในมวลอากาศคงที่ ความชื้นสัมพัทธ์จะแปรผกผันกับความดันไออิ่มตัว ณ อุณหภูมิเฉพาะจุดนั้น พร้อมทั้งบวกเพิ่มความชื้นเฉพาะที่เกิดจากการคายน้ำของพุ่มใบพืช
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                คำนวณความชื้นสัมพัทธ์ ณ จุดติดตั้งเซนเซอร์ทั้ง 15 จุดได้อย่างถูกต้องตามหลักฟิสิกส์
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$RH_{sensor,i}$</td>
+                  <td>ความชื้นสัมพัทธ์เฉพาะจุด 15 ตำแหน่ง</td>
+                  <td><span class="unit-badge">$\%$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ผลลัพธ์จำลอง 15 จุด</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$RH_{interior}$</td>
+                  <td>ความชื้นสัมพัทธ์เฉลี่ยของมวลอากาศภายในโรงเรือน</td>
+                  <td><span class="unit-badge">$- \text{ (0-1)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรสถานะ</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$\Delta RH_{canopy}$</td>
+                  <td>ความชื้นสัมพัทธ์ที่เพิ่มขึ้นเฉพาะที่จากการคายน้ำของพุ่มใบพืช</td>
+                  <td><span class="unit-badge">$\%$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">พจน์ชดเชยไซโครเมตริกส์</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card" id="eq-5-6">
+          <div class="eq-header">
+            <span class="eq-title">5.6 สมการดัชนีตรวจวัดและสัญญาณเตือนความร้อน (VPD, Lux, Pressure & Agronomical Warnings)</span>
+            <span class="line-badge">Suphanburi_Greenhouse.mo • L433–450</span>
+          </div>
+          <div class="eq-body">
+            <div class="math-block">
+              $$VPD = 0.61078 \exp\left( \frac{17.27 T_{air,degC}}{T_{air,degC} + 237.3} \right) (1.0 - air.RH) \quad [kPa]$$
+              $$Lux_{High} = \max(0.0, \, R_{t,Glob} \cdot 110.0) \quad [lx]$$
+              $$Lux_{Mid} = Lux_{High} \cdot \exp(-0.7 \times 1.2) \cdot (0.5 + 0.5 e^{-1.0}) \quad [lx]$$
+              $$Pressure = 100.5 + 0.3 \sin\left( \frac{2\pi(time - 32400)}{86400} \right) \quad [kPa]$$
+              $$Thermal\_Stress\_Warning = (canopy.T \ge 305.15\,\text{K})$$
+              $$Critical\_Damage\_Warning = (canopy.T \ge 308.15\,\text{K})$$
+            </div>
+            <div class="eq-desc-grid">
+              <div class="desc-box desc-meaning">
+                <div class="desc-title">💡 ความหมายของสมการ</div>
+                1. <strong>VPD (kPa):</strong> แรงดึงระเหยน้ำของอากาศ ยิ่งสูงอากาศยิ่งแห้งและพืชคายน้ำรุนแรง<br>2. <strong>Lux (lx):</strong> ความสว่างของแสงแดด แปลงจากรังสีอาทิตย์ด้วยค่า Luminous Efficacy $110\,	ext{lm/W}$ และคำนวณการบังแสงของใบพืชตามกฎเบียร์-แลมเบิร์ต (Beer-Lambert Law)<br>3. <strong>Pressure (kPa):</strong> ความกดอากาศบรรยากาศ อ.อู่ทอง พร้อมการแกว่งตัวกึ่งวัน (Semi-diurnal Atmospheric Tide)<br>4. <strong>Warnings:</strong> บูลีนสัญญาณเตือนเมื่ออุณหภูมิใบมะเขือเทศเกิน $32^\circ	ext{C}$ (ความเค้น) และ $35^\circ	ext{C}$ (วิกฤต)
+              </div>
+              <div class="desc-box desc-purpose">
+                <div class="desc-title">⚙️ เอาไว้ทำอะไร</div>
+                ให้ผลลัพธ์โทรมาตรแบบ Digital Twin Dashboard ที่ตรงกับหน้าจอแอปพลิเคชันสมาร์ทฟาร์มจริง
+              </div>
+            </div>
+            <!-- Variables and Units Specification Table -->
+            <div style="margin-top:14px;">
+              <div style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#475569; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> นิยามตัวแปรและหน่วยในสมการ (Variables & Units Specification)
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="var-table">
+                  <thead>
+                    <tr>
+                      <th style="width:20%;">สัญลักษณ์ตัวแปร</th>
+                      <th style="width:42%;">ความหมายทางฟิสิกส์และการใช้งานในโค้ด</th>
+                      <th style="width:20%;">หน่วย SI ใน Modelica</th>
+                      <th style="width:18%;">ชนิดตัวแปรในโมเดล</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$VPD$</td>
+                  <td>แรงดึงระเหยน้ำของอากาศ (Vapor Pressure Deficit)</td>
+                  <td><span class="unit-badge">$\text{kPa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ดัชนีสรีรวิทยา</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Lux_{High}$</td>
+                  <td>ความสว่างแสงแดดระดับเหนือทรงพุ่ม</td>
+                  <td><span class="unit-badge">$\text{lx} \text{ (ลักซ์)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ดัชนีแสง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Lux_{Mid}$</td>
+                  <td>ความสว่างแสงแดดระดับกลางทรงพุ่ม (หลังกรองด้วย Beer-Lambert)</td>
+                  <td><span class="unit-badge">$\text{lx} \text{ (ลักซ์)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ดัชนีแสง</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Pressure$</td>
+                  <td>ความกดอากาศบรรยากาศ อ.อู่ทอง พร้อมการแกว่งกึ่งวัน</td>
+                  <td><span class="unit-badge">$\text{kPa}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">ตัวแปรอุตุนิยมวิทยา</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Thermal\_Stress\_Warning$</td>
+                  <td>สัญญาณเตือนภัยเมื่ออุณหภูมิใบมะเขือเทศแตะ 32 °C</td>
+                  <td><span class="unit-badge">$\text{Boolean (จริง/เท็จ)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">สัญญาณแจ้งเตือน</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700; color:#0369a1;">$Critical\_Damage\_Warning$</td>
+                  <td>สัญญาณเตือนภัยวิกฤตเมื่ออุณหภูมิใบแตะ 35 °C</td>
+                  <td><span class="unit-badge">$\text{Boolean (จริง/เท็จ)}$</span></td>
+                  <td style="font-size:0.78rem; color:#64748b;">สัญญาณแจ้งเตือน</td>
+                </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Section 3: Equation Network Diagram -->
+      <section class="doc-section" id="sec-diagram">
+        <h2>3. แผนภูมิความสัมพันธ์ระหว่างตัวแปรและสมการ (Equation Network & Data Flow)</h2>
+        
+        <div class="callout" style="background:#f0f9ff; border-left:4px solid #0284c7; margin-bottom:24px;">
+          <h4 style="color:#0369a1; margin-bottom:6px; font-size:1rem; display:flex; align-items:center; gap:8px;">
+            <span>💡</span> คู่มืออ่านผังให้เข้าใจง่ายใน 1 นาที (The 4-Stage Architecture Pipeline)
+          </h4>
+          <p style="font-size:0.9rem; color:#334155; line-height:1.6; margin-bottom:12px;">
+            โครงสร้างการไหลของข้อมูลและสมการในแบบจำลอง Modelica ไหลเป็นเส้นตรงจากบนลงล่างอย่างเป็นระบบ แบ่งออกเป็น 4 ขั้นตอนหลัก:
+          </p>
+        </div>
+
+        <!-- Visual Flow Cards (Native Responsive HTML) -->
+        <div style="display:flex; flex-direction:column; gap:16px; margin:24px 0;">
+          
+          <!-- Card 1 -->
+          <div style="background:#ffffff; border:2px solid #3b82f6; border-radius:12px; padding:18px 22px; box-shadow:0 2px 6px rgba(59,130,246,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:800; color:#1d4ed8; font-size:1.05rem;">
+                ☀️ ขั้นตอนที่ 1: ข้อมูลสภาพอากาศรายชั่วโมง (Weather Inputs จาก ERA5 สุพรรณบุรี 365 วัน)
+              </span>
+              <span style="background:#dbeafe; color:#1e40af; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                BOUNDARY INPUTS
+              </span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:0.86rem; color:#334155;">
+              <div style="background:#eff6ff; padding:8px 12px; border-radius:6px;"><strong>รังสีอาทิตย์:</strong> $GHI(t)$ [$\text{W/m}^2$]</div>
+              <div style="background:#eff6ff; padding:8px 12px; border-radius:6px;"><strong>ความเร็วลม:</strong> $u_{wind}(t)$ [$\text{m/s}$]</div>
+              <div style="background:#eff6ff; padding:8px 12px; border-radius:6px;"><strong>อุณหภูมิภายนอก:</strong> $T_{amb}(t)$ [$\text{K}$ หรือ $^\circ\text{C}$]</div>
+              <div style="background:#eff6ff; padding:8px 12px; border-radius:6px;"><strong>ความชื้นภายนอก:</strong> $RH_{amb}(t)$ [$\%$]</div>
+            </div>
+          </div>
+
+          <!-- Connector 1 -->
+          <div style="display:flex; justify-content:center; align-items:center; gap:8px; color:#2563eb; font-weight:700; font-size:0.85rem;">
+            <span>⬇️</span> <span>ส่งต่อสภาพอากาศขับเคลื่อนโมเดลฟิสิกส์</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div style="background:#ffffff; border:2px solid #10b981; border-radius:12px; padding:18px 22px; box-shadow:0 2px 6px rgba(16,185,129,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:800; color:#047857; font-size:1.05rem;">
+                ⚙️ ขั้นตอนที่ 2: โมเดลย่อยคำนวณฟลักซ์ทางฟิสิกส์ (Physics Transport Sub-Models)
+              </span>
+              <span style="background:#d1fae5; color:#065f46; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                PHYSICS FLUXES
+              </span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; font-size:0.86rem; color:#334155;">
+              <div style="background:#ecfdf5; padding:8px 12px; border-radius:6px;">
+                <strong>มุ้ง 16-Mesh (L111–126):</strong><br>
+                $Q_{vent,heat} = \dot{M} c_p \Delta T$<br>
+                $\dot{M}_{v,vent} = Q \frac{M}{R} \Delta(\frac{VP}{T})$
+              </div>
+              <div style="background:#ecfdf5; padding:8px 12px; border-radius:6px;">
+                <strong>คายน้ำมะเขือเทศ (L101–125):</strong><br>
+                $\dot{M}_{V,flow} = A \cdot VEC \cdot \Delta VP$<br>
+                ความเย็นแฝง $E_{Wm2} = \frac{\dot{M}_V}{A} \lambda$
+              </div>
+              <div style="background:#ecfdf5; padding:8px 12px; border-radius:6px;">
+                <strong>การพาความร้อนผิวนอก (L31):</strong><br>
+                $h_{out} = \frac{2.8 + 1.2 u_{wind}}{\cos\phi}$<br>
+                $Q_{cnv,covOut} = A h_{out} \Delta T$
+              </div>
+              <div style="background:#ecfdf5; padding:8px 12px; border-radius:6px;">
+                <strong>การแผ่รังสี $T^4$ (L27):</strong><br>
+                $Q_{rad} = A \cdot REC (T_a^4 - T_b^4)$<br>
+                4 เส้นทาง (พุ่มพืช, ดิน, หลังคา, ฟ้า)
+              </div>
+            </div>
+          </div>
+
+          <!-- Connector 2 -->
+          <div style="display:flex; justify-content:center; align-items:center; gap:8px; color:#059669; font-weight:700; font-size:0.85rem;">
+            <span>⬇️</span> <span>แลกเปลี่ยนความร้อนและมวลไอน้ำผ่านขั้วต่อฟิสิกส์ (heatPort & massPort)</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div style="background:#ffffff; border:2px solid #f59e0b; border-radius:12px; padding:18px 22px; box-shadow:0 2px 6px rgba(245,158,11,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:800; color:#b45309; font-size:1.05rem;">
+                🧮 ขั้นตอนที่ 3: ระบบอนุพันธ์ 4 โหนดหลัก (Core 4-Node DAEs Integrator)
+              </span>
+              <span style="background:#fef3c7; color:#92400e; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                DASSL / IDA SOLVER
+              </span>
+            </div>
+            <p style="font-size:0.86rem; color:#64748b; margin-bottom:10px;">
+              OpenModelica ทำการแก้ระบบสมการอนุพันธ์พีชคณิต (DAEs Index-1) พร้อมกันทั้งระบบ:
+            </p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; font-size:0.86rem; color:#334155;">
+              <div style="background:#fffbeb; padding:8px 12px; border-radius:6px;"><strong>หลังคา PE:</strong> $\frac{dT_{cov}}{dt}$ (L58)</div>
+              <div style="background:#fffbeb; padding:8px 12px; border-radius:6px;"><strong>มวลอากาศ:</strong> $\frac{dT_{air}}{dt}$ (L66)</div>
+              <div style="background:#fffbeb; padding:8px 12px; border-radius:6px;"><strong>ความดันไอ:</strong> $\frac{d(VP)}{dt}$ (L34)</div>
+              <div style="background:#fffbeb; padding:8px 12px; border-radius:6px;"><strong>พุ่มมะเขือเทศ:</strong> $\frac{dT_{can}}{dt}$ (L64)</div>
+              <div style="background:#fffbeb; padding:8px 12px; border-radius:6px;"><strong>ผิวดิน Mulch:</strong> $\frac{dT_{flr}}{dt}$ (L48)</div>
+            </div>
+          </div>
+
+          <!-- Connector 3 -->
+          <div style="display:flex; justify-content:center; align-items:center; gap:8px; color:#d97706; font-weight:700; font-size:0.85rem;">
+            <span>⬇️</span> <span>ส่งออกตัวแปรสถานะหลัก ($T_{cov}, T_{air}, VP, T_{can}, T_{flr}$) ไปยังชั้นโทรมาตร</span>
+          </div>
+
+          <!-- Card 4 -->
+          <div style="background:#ffffff; border:2px solid #0d9488; border-radius:12px; padding:18px 22px; box-shadow:0 2px 6px rgba(13,148,136,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:800; color:#0f766e; font-size:1.05rem;">
+                📊 ขั้นตอนที่ 4: การกระจายตัวเชิงพื้นที่ 3 มิติ และโทรมาตร (3D Spatial Telemetry & Alerts)
+              </span>
+              <span style="background:#ccfbf1; color:#115e59; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                FARM DASHBOARD
+              </span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; font-size:0.86rem; color:#334155;">
+              <div style="background:#f0fdfa; padding:8px 12px; border-radius:6px;">
+                <strong>เกรเดียนต์ 3 มิติ (L351–355):</strong><br>
+                $\Delta T_{long}, \Delta T_{lat}, \Delta T_{buoyancy}$
+              </div>
+              <div style="background:#f0fdfa; padding:8px 12px; border-radius:6px;">
+                <strong>เซนเซอร์เสมือน 15 จุด (L370–428):</strong><br>
+                $T_{sensor,1..15}$ และ $RH_{sensor,1..15}$
+              </div>
+              <div style="background:#f0fdfa; padding:8px 12px; border-radius:6px;">
+                <strong>ดัชนีสรีรวิทยา (L433–448):</strong><br>
+                $VPD$ (kPa), $Lux$, $ACH$
+              </div>
+              <div style="background:#f0fdfa; padding:8px 12px; border-radius:6px;">
+                <strong>สัญญาณเตือนความเค้น (L449–450):</strong><br>
+                Stress ($32^\circ\text{C}$), Critical ($35^\circ\text{C}$)
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Diagram 3.1 Card -->
+        <div class="flowchart-card" style="margin-top:32px;">
+          <div class="flowchart-header">
+            <span class="flowchart-title">
+              <span>📐</span> ผังที่ 3.1: แผนภูมิภาพรวมระดับสถาปัตยกรรม (High-Level 4-Stage Architecture Flowchart)
+            </span>
+            <div class="flowchart-tools">
+              <button class="tool-btn" onclick="zoomDiagram('chart-pipe', 0.15)"><span>🔍</span> ซูมเข้า</button>
+              <button class="tool-btn" onclick="zoomDiagram('chart-pipe', -0.15)"><span>🔎</span> ซูมออก</button>
+              <button class="tool-btn" onclick="resetZoom('chart-pipe')"><span>🔄</span> รีเซ็ต</button>
+              <button class="tool-btn tool-btn-primary" onclick="openFullscreen('chart-pipe', 'ผังที่ 3.1: สถาปัตยกรรม 4 ลำดับขั้น')"><span>⛶</span> ขยายเต็มจอ</button>
+            </div>
+          </div>
+          <div class="diagram-scroll-wrapper">
+            <div class="zoomable-chart" id="chart-pipe">
+              <div class="mermaid">
+flowchart TD
+    STAGE1["☀️ ขั้นตอนที่ 1: ข้อมูลสภาพอากาศ ERA5 รายชั่วโมง (Weather Inputs)<br>• รังสีอาทิตย์รวม GHI (W/m²)<br>• ความเร็วลม u_wind (m/s)<br>• อุณหภูมิแวดล้อม T_amb (°C)<br>• ความชื้นสัมพัทธ์ RH_amb (%)"]
+    
+    STAGE2["⚙️ ขั้นตอนที่ 2: โมเดลย่อยคำนวณฟลักซ์ทางฟิสิกส์ (Physics Sub-Models)<br>• มุ้ง 16-Mesh: ลมระบายอากาศ Q_vent และความร้อนที่พาออก Q_vent,heat<br>• ทรงพุ่มมะเขือเทศ: ความต้านทานปากใบ rs และการคายน้ำ Mdot_V<br>• การถ่ายโอนความร้อน: สัมประสิทธิ์การพา h_out และการแผ่รังสีอินฟราเรด T^4"]
+    
+    STAGE3["🧮 ขั้นตอนที่ 3: ระบบสมดุลพลังงานและมวล 4 โหนดหลัก (Core 4-Node DAEs)<br>OpenModelica (DASSL Solver) แก้ระบบสมการอนุพันธ์พร้อมกัน:<br>• der(T_cov) : แผ่นพลาสติก PE คลุมหลังคา (Cover.mo L58-59)<br>• der(T_air) : มวลอากาศภายในโรงเรือน 349.65 m³ (Air.mo L66-67)<br>• der(VP) : ความดันไอน้ำในอากาศ (AirVP.mo L34)<br>• der(T_can) : ทรงพุ่มใบมะเขือเทศเชอร์รี่ LAI=2.5 (Canopy.mo L64-65)<br>• der(T_flr) : ผิวดินคลุมพลาสติกขาว White Mulch (Floor.mo L48-49)"]
+    
+    STAGE4["📊 ขั้นตอนที่ 4: การกระจายตัวเชิงพื้นที่ 3 มิติและโทรมาตร (3D Spatial Telemetry)<br>• เกรเดียนต์ 3 มิติ: แนวยาว dT_long, แนวขวาง dT_lat, แรงลอยตัว dT_buoyancy<br>• โครงข่ายเซนเซอร์เสมือน 15 จุด: T_sensor 1-15 และ RH_sensor 1-15<br>• ดัชนีสรีรวิทยาและเตือนภัย: VPD (kPa), Lux, ACH, Heat Stress Warnings (32°C, 35°C)"]
+
+    STAGE1 -->|"1. ป้อนข้อมูลสภาพอากาศขับเคลื่อนโมเดล"| STAGE2
+    STAGE2 -->|"2. แลกเปลี่ยนฟลักซ์ความร้อนและมวลไอน้ำ (heatPort, massPort)"| STAGE3
+    STAGE3 -->|"3. ส่งผลลัพธ์อุณหภูมิและไอน้ำมวลรวมไปกระจายตัว 3 มิติ"| STAGE4
+
+    style STAGE1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e3a8a
+    style STAGE2 fill:#ecfdf5,stroke:#059669,stroke-width:2px,color:#064e3b
+    style STAGE3 fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+    style STAGE4 fill:#f0fdfa,stroke:#0d9488,stroke-width:2px,color:#134e4a
+              </div>
+            </div>
+          </div>
+          <div class="diagram-hint">
+            <span>💡 <strong>คำแนะนำ:</strong> ผังแสดงลำดับขั้นตอนการคำนวณแบบบนลงล่าง (Top-to-Bottom) เข้าใจง่าย</span>
+            <span>ความกว้างผัง: Vector Graphics</span>
+          </div>
+        </div>
+
+        <!-- Diagram 3.2 Card -->
+        <div class="flowchart-card" style="margin-top:32px;">
+          <div class="flowchart-header">
+            <span class="flowchart-title">
+              <span>🔄</span> ผังที่ 3.2: ผังเจาะลึกการเชื่อมโยงสมการและตัวแปรทางฟิสิกส์ (Detailed Equation Network)
+            </span>
+            <div class="flowchart-tools">
+              <button class="tool-btn" onclick="zoomDiagram('chart-detail', 0.15)"><span>🔍</span> ซูมเข้า</button>
+              <button class="tool-btn" onclick="zoomDiagram('chart-detail', -0.15)"><span>🔎</span> ซูมออก</button>
+              <button class="tool-btn" onclick="resetZoom('chart-detail')"><span>🔄</span> รีเซ็ต</button>
+              <button class="tool-btn tool-btn-primary" onclick="openFullscreen('chart-detail', 'ผังที่ 3.2: การเชื่อมโยงสมการและตัวแปรทางฟิสิกส์ระดับลึก')"><span>⛶</span> ขยายเต็มจอ</button>
+            </div>
+          </div>
+          <div class="diagram-scroll-wrapper">
+            <div class="zoomable-chart" id="chart-detail">
+              <div class="mermaid">
+flowchart LR
+    subgraph Col1 ["1. สภาพอากาศ ERA5"]
+        direction TB
+        inp_GHI["☀️ รังสีอาทิตย์ GHI<br>(W/m²)"]
+        inp_wind["💨 ความเร็วลม u_wind<br>(m/s)"]
+        inp_Tamb["🌡️ อุณหภูมิภายนอก T_amb<br>(K)"]
+        inp_RH["💧 ความชื้นภายนอก RH_amb<br>(0-1)"]
+    end
+
+    subgraph Col2 ["2. โมเดลคำนวณฟลักซ์ฟิสิกส์"]
+        direction TB
+        sub_screen["🪟 มุ้ง 16-Mesh (L111-126)<br>Q_wind = Cd * A * u * sqrt(dCp)<br>Q_stack = Cd * A * sqrt(2g*dh*dT/T)<br>Q_vent,heat = Mdot * cp * dT<br>Mdot_v,vent = Q * (M/R) * d(VP/T)"]
+        sub_transp["🌱 คายน้ำมะเขือเทศ (L101-125)<br>rs = r_min * rI * rCO2 * rVP * rT<br>VEC = 2*rho*cp*LAI / (lambda*gamma*(ra+rs))<br>Mdot_V = A * VEC * dVP<br>E_Wm2 = (Mdot_V / A) * lambda"]
+        sub_conv["🌬️ การพาผิวนอก (L31)<br>h_out = (2.8 + 1.2*u) / cos(phi)"]
+        sub_rad["⚡ แผ่รังสีอินฟราเรด (L27)<br>Q_rad = A * REC * (Ta^4 - Tb^4)"]
+    end
+
+    subgraph Col3 ["3. ระบบอนุพันธ์ 4 โหนด (Core DAEs)"]
+        direction TB
+        dae_cov["หลังคา PE: der(T_cov) (L58)<br>rho*cp*V * der(T_cov) = Q + P_Sun + L"]
+        dae_air["มวลอากาศ: der(T_air) (L66)<br>rho*cp*V * der(T_air) = Q_cnv - Q_vent,heat"]
+        dae_vp["ความดันไอ: der(VP) (L34)<br>der(VP) = (R*T / M*V) * Mdot_V,flow"]
+        dae_can["พุ่มมะเขือเทศ: der(T_can) (L64)<br>C*LAI*A * der(T_can) = Q + P_Can - E_Wm2"]
+        dae_flr["ผิวดิน Mulch: der(T_flr) (L48)<br>rho*cp*V * der(T_flr) = Q + P_Flr - Q_cd,soil"]
+    end
+
+    subgraph Col4 ["4. โทรมาตร 15 จุด & Dashboard"]
+        direction TB
+        tel_grad["เกรเดียนต์ 3 มิติ (L351-355)<br>dT_long, dT_lat, dT_buoyancy"]
+        tel_pts["เซนเซอร์จริง 15 จุด (L370-428)<br>T_sensor 1-15 & RH_sensor 1-15"]
+        tel_dash["ดัชนีตรวจวัด & เตือนภัย (L433-450)<br>VPD, Lux, ACH, Heat Warnings"]
+    end
+
+    inp_GHI --> dae_cov
+    inp_GHI --> dae_can
+    inp_GHI --> dae_flr
+    inp_GHI --> tel_grad
+
+    inp_wind --> sub_screen
+    inp_wind --> sub_conv
+    inp_wind --> tel_grad
+
+    inp_Tamb --> sub_screen
+    inp_Tamb --> sub_conv
+    inp_Tamb --> dae_air
+
+    inp_RH --> sub_screen
+
+    sub_screen -->|"ความร้อนระบายออก Q_vent,heat"| dae_air
+    sub_screen -->|"ระบายไอน้ำ Mdot_v,vent"| dae_vp
+
+    sub_transp -->|"ไอน้ำจากการคายน้ำ Mdot_V"| dae_vp
+    sub_transp -->|"ความเย็นแฝง E_Wm2"| dae_can
+
+    sub_conv -->|"ความร้อนสูญเสียสู่ภายนอก"| dae_cov
+
+    sub_rad --> dae_cov
+    sub_rad --> dae_can
+    sub_rad --> dae_flr
+
+    dae_cov -->|"การพาความร้อน"| dae_air
+    dae_air --> dae_cov
+
+    dae_can -->|"การพาความร้อน"| dae_air
+    dae_air --> dae_can
+
+    dae_flr -->|"การพาความร้อน"| dae_air
+    dae_air --> dae_flr
+
+    dae_air --> tel_grad
+    dae_cov --> tel_grad
+    dae_can --> tel_grad
+
+    tel_grad --> tel_pts
+    tel_pts --> tel_dash
+    dae_vp --> tel_dash
+
+    style Col1 fill:#eff6ff,stroke:#3b82f6,stroke-width:2px
+    style Col2 fill:#ecfdf5,stroke:#10b981,stroke-width:2px
+    style Col3 fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style Col4 fill:#f0fdfa,stroke:#0d9488,stroke-width:2px
+              </div>
+            </div>
+          </div>
+          <div class="diagram-hint">
+            <span>💡 <strong>คำแนะนำ:</strong> สามารถกด "ขยายเต็มจอ" เพื่อตรวจสอบการเชื่อมโยงระหว่างพอร์ตความร้อนและมวลไอน้ำ</span>
+            <span>ระดับความลึก: Line-by-Line Coupling</span>
+          </div>
+        </div>
+
+        <!-- Dependency Matrix Table -->
+        <h3 style="margin-top:36px; margin-bottom:12px; color:#0369a1; display:flex; align-items:center; gap:8px;">
+          <span>📊</span> 3.3 ตารางสรุปเมทริกซ์การเชื่อมโยงตัวแปร (Equation Input-Output Dependency Matrix)
+        </h3>
+        <p style="font-size:0.88rem; color:#475569; margin-bottom:14px;">
+          ตารางนี้แจกแจงความสัมพันธ์แบบ Input-to-Output ของทุกสมการในโมเดล ช่วยให้เข้าใจการส่งผ่านตัวแปรระหว่างแต่ละไฟล์ .mo ได้อย่างรวดเร็ว:
+        </p>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:20%;">โมดูล / ส่วนของโค้ด</th>
+                <th style="width:20%;">ตัวแปร Input ที่รับเข้ามา</th>
+                <th style="width:25%;">สมการหลักที่ใช้ประมวลผล</th>
+                <th style="width:18%;">ตัวแปร Output ที่ส่งออก</th>
+                <th style="width:17%;">ปลายทางที่รับไปคำนวณต่อ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. ผนังมุ้ง 16-Mesh</strong><br><span class="code-tag">InsectScreen_16Mesh.mo</span><br>(L111–134)</td>
+                <td>$u_{wind}, T_{amb}, RH_{amb}$,<br>$T_{air}, VP_{air}$</td>
+                <td>Bernoulli Orifice ($Q_{wind}$),<br>Thermal Stack ($Q_{stack}$),<br>Tetens Vapor Formula</td>
+                <td><span class="code-tag">Q_vent,total</span><br><span class="code-tag">Q_vent,heat</span><br><span class="code-tag">Mdot_v,vent</span><br><span class="code-tag">ACH</span></td>
+                <td>• <span class="code-tag">heatPort</span> $\rightarrow$ Air.mo<br>• <span class="code-tag">massPort</span> $\rightarrow$ AirVP.mo<br>• Farm Dashboard</td>
+              </tr>
+              <tr>
+                <td><strong>2. การคายน้ำมะเขือเทศ</strong><br><span class="code-tag">MV_CanopyTranspiration.mo</span><br>(L101–125)</td>
+                <td>$GHI, T_{can}, VP_{can},$<br>$VP_{air}, LAI=2.5$</td>
+                <td>Stanghellini Multi-factor ($r_s$),<br>Mass Transfer Coefficient ($VEC$),<br>Latent Heat Flux ($E_{Wm2}$)</td>
+                <td><span class="code-tag">Mdot_V,flow</span><br><span class="code-tag">E_Wm2</span> (W/m²)</td>
+                <td>• <span class="code-tag">massPort</span> $\rightarrow$ AirVP.mo<br>• ลดความร้อนสะสมใบ $\rightarrow$ Canopy.mo</td>
+              </tr>
+              <tr>
+                <td><strong>3. การแผ่รังสีอินฟราเรด $T^4$</strong><br><span class="code-tag">Radiation_T4.mo</span><br>(L27–28)</td>
+                <td>$T_{can}, T_{flr}, T_{cov}, T_{sky}$,<br>$\varepsilon_{cov}=0.88, \varepsilon_{can}=0.95$</td>
+                <td>Stefan-Boltzmann Law:<br>$Q = A \cdot REC_{ab} (T_a^4 - T_b^4)$</td>
+                <td><span class="code-tag">Q_rad</span> (W) 4 คู่ผิว</td>
+                <td>• Cover.mo (หลังคา PE)<br>• Canopy.mo (พุ่มมะเขือเทศ)<br>• Floor.mo (ผิวดิน Mulch)</td>
+              </tr>
+              <tr>
+                <td><strong>4. การพาความร้อนผิวนอก</strong><br><span class="code-tag">OutsideAirConvection.mo</span><br>(L31–39)</td>
+                <td>$u_{wind}, T_{amb}, T_{cov}$,<br>$\phi_{roof}=1.036\,\text{rad}$</td>
+                <td>McAdams Forced Convection:<br>$h_{out} = (2.8 + 1.2 u_{wind}) / \cos\phi$</td>
+                <td><span class="code-tag">Q_cnv,covOut</span></td>
+                <td>• ระบายความร้อนสู่สิ่งแวดล้อม $\rightarrow$ Cover.mo</td>
+              </tr>
+              <tr>
+                <td><strong>5. การนำความร้อนดิน</strong><br><span class="code-tag">SoilConduction.mo</span><br>(L115–116)</td>
+                <td>$T_{flr}, T_{deep}=25^\circ\text{C}$,<br>$\lambda_{soil}=1.0\,\text{W/(m}\cdot\text{K)}$</td>
+                <td>Fourier Conduction Law:<br>$Q = (\lambda/\Delta z) A_{flr} (T_{flr} - T_{deep})$</td>
+                <td><span class="code-tag">Q_cd,Soil</span></td>
+                <td>• หน่วงความร้อนสะสมลงดิน $\rightarrow$ Floor.mo</td>
+              </tr>
+              <tr>
+                <td><strong>6. ระบบอนุพันธ์ 4 โหนด</strong><br><span class="code-tag">Greenhouses Components</span><br>(Cover, Air, AirVP, Canopy, Floor)</td>
+                <td>ฟลักซ์ความร้อนและมวลไอน้ำสุทธิทั้งหมดจากโมดูล 1–5</td>
+                <td>Simultaneous DAE Integration:<br>DASSL / IDA Solver Algorithm</td>
+                <td><span class="code-tag">T_cov(t)</span>, <span class="code-tag">T_air(t)</span>,<br><span class="code-tag">VP_air(t)</span>, <span class="code-tag">RH_air(t)</span>,<br><span class="code-tag">T_can(t)</span>, <span class="code-tag">T_flr(t)</span></td>
+                <td>• ส่งค่าสถานะหลักเข้าสู่ Suphanburi_Greenhouse.mo<br>• ป้อนสู่ 3D Telemetry Layer</td>
+              </tr>
+              <tr>
+                <td><strong>7. โทรมาตร 3D & แจ้งเตือน</strong><br><span class="code-tag">Suphanburi_Greenhouse.mo</span><br>(L351–450)</td>
+                <td>$T_{air}, T_{cov}, T_{can}, VP,$<br>$GHI, u_{wind}$</td>
+                <td>เกรเดียนต์ 3 มิติ ($\Delta T_{long}, \Delta T_{lat}, \Delta T_{buoy}$),<br>Psychrometric Tetens RH, VPD, Lux</td>
+                <td><span class="code-tag">T_sensor 1-15</span><br><span class="code-tag">RH_sensor 1-15</span><br><span class="code-tag">VPD, Lux, Alerts</span></td>
+                <td>• แสดงผล Digital Twin Dashboard<br>• สอบเทียบ Parity กับข้อมูล IoT จริง 15 จุด</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+                              <section id="cross-reports" class="cross-report-hub">
+        <h2>📚 เอกสารเชื่อมโยงทั้งชุดโครงการ KMUTT Greenhouse Digital Twin (หน้าหลัก + 7 ไฟล์)</h2>
+        <div class="cross-hub-grid">
+          <a href="../index.html" class="cross-hub-card" style="border-left: 4px solid #0f172a;">
+            <div class="cross-hub-title">🏠 หน้าหลักพอร์ทัล &amp; สื่อนำเสนอ (Main Hub &amp; Presentations)</div>
+            <div class="cross-hub-desc">ศูนย์รวมรายงานทั้ง 6 ฉบับ, สไลด์นำเสนอ PDF, วิทยานิพนธ์ และแผนภาพสถาปัตยกรรม 300 DPI</div>
+          </a>
+          <a href="Report_1_Project_Overview.html" class="cross-hub-card" style="border-left: 4px solid #0284c7;">
+            <div class="cross-hub-title">📑 รายงานที่ 1: ภาพรวมโครงการ</div>
+            <div class="cross-hub-desc">ข้อมูลพื้นที่ อ.อู่ทอง, เรขาคณิตโรงเรือน 6×12 ม., ฟิสิกส์ 4 โหนด, มะเขือเทศเชอร์รี่ และผลจำลองเบื้องต้น</div>
+          </a>
+          <a href="Report_2_Modelica_Code_LineByLine.html" class="cross-hub-card" style="border-left: 4px solid #2563eb;">
+            <div class="cross-hub-title">💻 รายงานที่ 2: โค้ด Modelica รายบรรทัด</div>
+            <div class="cross-hub-desc">Modelica Masterclass และคำอธิบายซอร์สโค้ดทุกบรรทัดในแพ็กเกจ Greenhouse_DigitalTwin_KMUTT</div>
+          </a>
+          <a href="Report_3_Model_Validation_Guide.html" class="cross-hub-card" style="border-left: 4px solid #059669;">
+            <div class="cross-hub-title">📊 รายงานที่ 3: การ Validate 15 จุด</div>
+            <div class="cross-hub-desc">เทียบผลจำลองกับเซนเซอร์จริง 15 จุด (Base Day 13 เม.ย. 2569), RMSE/MAE/R² และคู่มือตอบคำถามสอบ</div>
+          </a>
+          <a href="Report_4_Modelica_CFD_Framework.html" class="cross-hub-card" style="border-left: 4px solid #7c3aed;">
+            <div class="cross-hub-title">🔄 รายงานที่ 4: สถาปัตยกรรม Modelica &amp; CFD</div>
+            <div class="cross-hub-desc">สถาปัตยกรรม Input → Equation → Output เชื่อม DAE 365 วัน สู่ 3D CFD CHT และ Darcy-Forchheimer</div>
+          </a>
+          <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="cross-hub-card current-doc" style="border-left: 4px solid #0891b2;">
+            <div class="cross-hub-title">📐 รายงานที่ 5: ดัชนีสมการ &amp; พารามิเตอร์ <span style="font-size:0.72rem;font-weight:700;opacity:0.85;">(หน้าปัจจุบัน)</span></div>
+            <div class="cross-hub-desc">รวมสมการ Modelica ครบทุกบรรทัด, ความหมายตัวแปร-หน่วยวัด SI และคุณสมบัติวัสดุ/พืชทั้งหมด</div>
+          </a>
+          <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="cross-hub-card" style="border-left: 4px solid #ea580c;">
+            <div class="cross-hub-title">🛠️ รายงานที่ 6: คู่มือสร้างโมเดลทีละขั้นตอน</div>
+            <div class="cross-hub-desc">คู่มือภาคปฏิบัติใน OMEdit แบบ Dual-Track (GUI Drag-and-Drop &amp; Modelica Code) พร้อม Export CSV</div>
+          </a>
+          <a href="Modelica_Code_Categories_Slides.html" class="cross-hub-card" style="border-left: 4px solid #be123c;">
+            <div class="cross-hub-title">🎬 สรุป 8 หมวดโค้ด &amp; สไลด์ 16:9</div>
+            <div class="cross-hub-desc">สรุปจัดหมวดหมู่โค้ดทั้ง 612 บรรทัดเป็น 8 กลุ่มพร้อมสไลด์ 16:9 จำนวน 9 แผ่นสำหรับนำเสนอ</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Fullscreen Modal Container -->
+      <div class="modal-overlay" id="modal-container">
+        <div class="modal-card">
+          <div class="modal-header">
+            <span class="modal-title" id="modal-title">ขยายแผนภูมิเต็มจอ</span>
+            <button class="modal-close" onclick="closeFullscreen()">&times;</button>
+          </div>
+          <div class="modal-body" id="modal-body">
+            <!-- Diagram clone injected via JS -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- KaTeX Auto-Render Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "\\[", right: "\\]", display: true},
+            {left: "$", right: "$", display: false},
+            {left: "\\(", right: "\\)", display: false}
+          ],
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+          ignoredClasses: ["mermaid"],
+          throwOnError: false
+        });
+      }
+    });
+
+    // Search Filter
+    document.getElementById('search-input').addEventListener('input', function(e) {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.eq-card, .data-table tr').forEach(el => {
+        el.style.display = el.innerText.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

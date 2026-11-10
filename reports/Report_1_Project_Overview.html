@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานฉบับที่ 1: ภาพรวมโครงการและการจำลองเชิงตัวเลข Digital Twin โรงเรือนเกษตรเขตร้อน KMUTT</title>
+  
+  <!-- Fonts: Inter, Sarabun, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for High Quality Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-border: #bae6fd;
+      --kmutt-orange: #ea580c;
+      --kmutt-orange-light: #ffedd5;
+      --accent: #059669;
+      --accent-light: #ecfdf5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #ffffff;
+      --bg-code: #0f172a;
+      --border-color: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--kmutt-orange), #c2410c);
+      color: white;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.5px;
+      box-shadow: 0 2px 4px rgba(234, 88, 12, 0.3);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+    }
+
+    .nav-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-print:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #a7f3d0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    /* Layout Container */
+    .app-container {
+      display: flex;
+      max-width: 1480px;
+      margin: 0 auto;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* Left Sticky Sidebar */
+    .sidebar {
+      width: 310px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      padding: 24px 18px;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .sidebar-search {
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      outline: none;
+      background: #f8fafc;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      background: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .toc-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+
+    .toc-list {
+      list-style: none;
+    }
+
+    .toc-item {
+      margin-bottom: 3px;
+    }
+
+    .toc-link {
+      display: block;
+      padding: 6px 10px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+
+    .toc-link:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    .toc-link.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .toc-num {
+      display: inline-block;
+      width: 22px;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 40px 48px;
+      background: var(--bg-surface);
+    }
+
+    .doc-article {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    h1.doc-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .doc-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 48px;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-top: 28px;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #334155;
+      font-size: 15px;
+    }
+
+    ul, ol {
+      margin-bottom: 18px;
+      padding-left: 24px;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Cards & Grids */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .info-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .info-card-header {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-card-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .info-card-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    /* Callout Alerts */
+    .callout {
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 22px 0;
+      border-left: 4px solid;
+      background: white;
+    }
+
+    .callout-note {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .callout-tip {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .callout-warning {
+      border-color: var(--warning);
+      background: var(--warning-light);
+    }
+
+    .callout-danger {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .callout-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .callout-note .callout-title { color: var(--primary-hover); }
+    .callout-tip .callout-title { color: var(--accent); }
+    .callout-warning .callout-title { color: var(--warning); }
+    .callout-danger .callout-title { color: var(--danger); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 22px 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    thead {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      padding: 11px 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: #334155;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* Math & Equations */
+    .math-block {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .math-caption {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    /* Code Blocks */
+    pre.code-block {
+      background: var(--bg-code);
+      color: #f8fafc;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    code:not(pre code) {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Diagram & Visual Layout Box */
+    .diagram-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #1e293b;
+      overflow-x: auto;
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      .header-bar, .sidebar, .sidebar-search, .btn-print, .nav-tabs {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        font-size: 12pt;
+        color: black !important;
+      }
+      .app-container {
+        display: block !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      .main-content {
+        padding: 0 !important;
+        background: white !important;
+      }
+      .doc-article {
+        max-width: 100% !important;
+      }
+      h2 {
+        page-break-before: always;
+        margin-top: 24pt;
+        border-bottom: 2px solid #333;
+      }
+      h2:first-of-type {
+        page-break-before: avoid;
+      }
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        page-break-inside: avoid;
+      }
+      .info-card, .callout, .math-block, .table-container, pre.code-block, .diagram-box {
+        page-break-inside: avoid;
+        border: 1px solid #aaa !important;
+        box-shadow: none !important;
+      }
+      a {
+        text-decoration: none !important;
+        color: black !important;
+      }
+    }
+  
+    /* === UNIFIED PORTAL NAV & HUB CSS === */
+    .header-bar, .top-header {
+      gap: 10px !important;
+      padding: 0 16px !important;
+    }
+    .brand-group, .header-brand, .header-actions {
+      flex-shrink: 0 !important;
+    }
+    @media (max-width: 1520px) {
+      .brand-subtitle, .badge-status, .header-badge { display: none !important; }
+      .brand-title, .header-title { font-size: 0.9rem !important; }
+    }
+    .nav-tabs {
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      background: var(--bg-secondary, #f1f5f9) !important;
+      padding: 3px !important;
+      border-radius: var(--radius-md, 10px) !important;
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      flex: 0 1 auto !important;
+      margin: 0 auto !important;
+      justify-content: flex-start !important;
+      min-width: 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 5px 8px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: var(--text-secondary, var(--text-muted, #475569)) !important;
+      text-decoration: none !important;
+      border-radius: var(--radius-sm, 6px) !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      transition: all 0.15s ease !important;
+    }
+    .nav-tab-btn:hover {
+      color: var(--text-primary, var(--text-main, #0f172a)) !important;
+      background: var(--bg-card, var(--bg-surface, rgba(255, 255, 255, 0.7))) !important;
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-primary, #ffffff) !important;
+      color: var(--accent-primary, var(--primary, #0284c7)) !important;
+      box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.08)) !important;
+    }
+    .cross-report-hub {
+      margin-top: 2.75rem;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg, 14px);
+      background: var(--bg-card, var(--bg-surface, #ffffff));
+      border: 1px solid var(--border-color, #e2e8f0);
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
+    }
+    .cross-report-hub h2 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      margin: 0 0 14px 0;
+      padding: 0;
+      border: none;
+    }
+    .cross-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+    .cross-hub-card {
+      display: block;
+      padding: 12px 14px;
+      border-radius: var(--radius-md, 10px);
+      border: 1px solid var(--border-color, #e2e8f0);
+      background: var(--bg-secondary, #f8fafc);
+      text-decoration: none;
+      color: var(--text-primary, var(--text-main, #0f172a));
+      transition: all 0.15s ease;
+    }
+    .cross-hub-card:hover {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+    }
+    .cross-hub-card.current-doc {
+      border-color: var(--accent-primary, var(--primary, #0284c7));
+      background: var(--accent-light, #eff6ff);
+      box-shadow: inset 0 0 0 1px var(--accent-primary, var(--primary, #0284c7));
+    }
+    .cross-hub-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--text-primary, var(--text-main, #0f172a));
+    }
+    .cross-hub-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary, var(--text-muted, #475569));
+      line-height: 1.45;
+    }
+    @media print {
+      .header-bar, .top-header, .nav-tabs, .cross-report-hub {
+        display: none !important;
+      }
+    }
+    /* === END UNIFIED PORTAL NAV & HUB CSS === */
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="header-bar">
+    <div class="brand-group">
+      <div class="brand-logo">KM</div>
+      <div class="brand-text">
+        <span class="brand-title">Greenhouse Digital Twin KMUTT</span>
+        <span class="brand-subtitle">ภาควิชาวิศวกรรมเครื่องกล มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี</span>
+      </div>
+    </div>
+
+                                            <!-- Navigation Tabs between Reports -->
+    <nav class="nav-tabs">
+      <a href="../index.html" class="nav-tab-btn" title="กลับสู่หน้าหลักพอร์ทัล รายงาน &amp; สื่อนำเสนอทั้งหมด">
+        <span>🏠</span> หน้าหลัก
+      </a>
+      <a href="Report_1_Project_Overview.html" class="nav-tab-btn active" title="รายงานที่ 1: ภาพรวมโครงการและระบบโรงเรือน">
+        <span>📑</span> 1.ภาพรวม
+      </a>
+      <a href="Report_2_Modelica_Code_LineByLine.html" class="nav-tab-btn" title="รายงานที่ 2: ปูพื้นฐาน Modelica &amp; เจาะลึกโค้ด Line-by-Line">
+        <span>💻</span> 2.โค้ดระบบ
+      </a>
+      <a href="Report_3_Model_Validation_Guide.html" class="nav-tab-btn" title="รายงานที่ 3: กระบวนการและผลการ Validate เซนเซอร์ 15 จุด">
+        <span>📊</span> 3.Validate
+      </a>
+      <a href="Report_4_Modelica_CFD_Framework.html" class="nav-tab-btn" title="รายงานที่ 4: สถาปัตยกรรม Modelica &amp; 3D CFD Coupling Framework">
+        <span>🔄</span> 4.CFD
+      </a>
+      <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="nav-tab-btn" title="รายงานที่ 5: คู่มืออ้างอิงสมการ คุณสมบัติวัสดุ และพารามิเตอร์">
+        <span>📐</span> 5.สมการ
+      </a>
+      <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="nav-tab-btn" title="รายงานที่ 6: คู่มือสร้างแบบจำลองโรงเรือนสุพรรณบุรีทีละขั้นตอน (OMEdit GUI &amp; Code)">
+        <span>🛠️</span> 6.สร้างโมเดล
+      </a>
+      <a href="Modelica_Code_Categories_Slides.html" class="nav-tab-btn" title="สรุปแยก 8 หมวดหมู่โค้ด Modelica พร้อมสไลด์นำเสนอ 16:9 (9 แผ่น)">
+        <span>🎬</span> สไลด์โค้ด
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <span class="badge-status">
+        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--accent);"></span>
+        v1.0.0 Verified
+      </span>
+      <button class="btn-print" onclick="window.print()">
+        <span>🖨️</span> พิมพ์ / บันทึกเป็น PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- Application Body Layout -->
+  <div class="app-container">
+    
+    <!-- Left Sticky Sidebar Table of Contents -->
+    <aside class="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="tocSearch" class="search-input" placeholder="🔍 ค้นหาสารบัญ / หัวข้อ..." onkeyup="filterTOC()">
+      </div>
+      <div class="toc-title">สารบัญรายงานฉบับที่ 1</div>
+      <ul class="toc-list" id="tocList">
+        <li class="toc-item"><a href="#sec1" class="toc-link active"><span class="toc-num">01</span> บทนำและบทสรุปผู้บริหาร</a></li>
+        <li class="toc-item"><a href="#sec2" class="toc-link"><span class="toc-num">02</span> ภูมิศาสตร์และอากาศ อ.อู่ทอง</a></li>
+        <li class="toc-item"><a href="#sec3" class="toc-link"><span class="toc-num">03</span> เรขาคณิตและโครงสร้างโรงเรือน</a></li>
+        <li class="toc-item"><a href="#sec4" class="toc-link"><span class="toc-num">04</span> สรีรวิทยามะเขือเทศเชอร์รี่</a></li>
+        <li class="toc-item"><a href="#sec5" class="toc-link"><span class="toc-num">05</span> สถาปัตยกรรมซอฟต์แวร์</a></li>
+        <li class="toc-item"><a href="#sec6" class="toc-link"><span class="toc-num">06</span> สมการฟิสิกส์ 4 โหนดหลัก</a></li>
+        <li class="toc-item"><a href="#sec7" class="toc-link"><span class="toc-num">07</span> แบบจำลองมุ้งกันแมลง 16-Mesh</a></li>
+        <li class="toc-item"><a href="#sec8" class="toc-link"><span class="toc-num">08</span> รังสีอาทิตย์ & พลาสติกขาวคลุมดิน</a></li>
+        <li class="toc-item"><a href="#sec9" class="toc-link"><span class="toc-num">09</span> เซนเซอร์ 5 เสา 15 จุด 3 มิติ</a></li>
+        <li class="toc-item"><a href="#sec10" class="toc-link"><span class="toc-num">10</span> การเชื่อมต่อข้อมูล ERA5</a></li>
+        <li class="toc-item"><a href="#sec11" class="toc-link"><span class="toc-num">11</span> คู่มือการรันใน OMEdit</a></li>
+        <li class="toc-item"><a href="#sec12" class="toc-link"><span class="toc-num">12</span> การวิเคราะห์ผลและเทียบข้อมูลจริง</a></li>
+        <li class="toc-item"><a href="#sec13" class="toc-link"><span class="toc-num">13</span> สัญลักษณ์และเอกสารอ้างอิง</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Documentation Portal -->
+    <main class="main-content">
+      <article class="doc-article">
+        
+        <!-- Header Title Banner -->
+        <h1 class="doc-title">รายงานทางวิศวกรรมฉบับที่ 1: ภาพรวมโครงการและการจำลองเชิงตัวเลข Digital Twin โรงเรือนเกษตรเขตร้อน</h1>
+        
+        <div class="doc-meta">
+          <div class="doc-meta-item"><strong>สถาบัน:</strong> ภาควิชาวิศวกรรมเครื่องกล คณะวิศวกรรมศาสตร์ มจธ. (KMUTT)</div>
+          <div class="doc-meta-item"><strong>สถานที่วิจัย:</strong> ศูนย์เรียนรู้นวัตกรรมการเกษตร อ.อู่ทอง จ.สุพรรณบุรี</div>
+          <div class="doc-meta-item"><strong>พืชเป้าหมาย:</strong> Cherry Tomato (LAI = 2.5)</div>
+          <div class="doc-meta-item"><strong>แบบจำลอง:</strong> Modelica 4.0.0 / Greenhouses 1.0</div>
+        </div>
+
+        <!-- Section 1 -->
+        <section id="sec1">
+          <h2><span class="toc-num">01</span> บทนำและบทสรุปผู้บริหาร (Executive Summary & Project Charter)</h2>
+          <p>
+            การผลิตพืชเศรษฐกิจมูลค่าสูงในภูมิภาคเขตร้อนชื้น (Tropical Climate) เช่น ประเทศไทย เผชิญกับความท้าทายจากอุณหภูมิอากาศแวดล้อมที่สูง รังสีดวงอาทิตย์ที่เข้มข้น และความชื้นสัมพัทธ์สูงตลอดทั้งปี โรงเรือนเกษตรส่วนใหญ่จึงเลือกใช้ระบบการระบายอากาศตามธรรมชาติ (Naturally Ventilated Greenhouse) เพื่อหลีกเลี่ยงต้นทุนพลังงานไฟฟ้ามหาศาลจากการติดตั้งระบบปรับอากาศหรือพัดลมดูดอากาศขนาดใหญ่
+          </p>
+          <p>
+            อย่างไรก็ดี เพื่อป้องกันแมลงศัตรูพืช จึงจำเป็นต้องติดตั้งมุ้งตาข่ายกันแมลง (Insect Screen) ครอบคลุมผนังเปิดทุกด้าน ซึ่งเส้นด้ายตาข่ายก่อให้เกิดแรงเสียดทานหนืด (Viscous Drag) และแรงต้านความเฉื่อย (Form Drag) ทำให้อัตราการระบายอากาศลดลงอย่างมีนัยสำคัญ เกิดความร้อนสะสม (Heat Entrapment) จนอุณหภูมิในโรงเรือนสูงเกินขีดจำกัดที่พืชจะรับได้
+          </p>
+
+          <div class="card-grid">
+            <div class="info-card">
+              <div class="info-card-header">📍 พิกัดสถานที่จริง</div>
+              <div class="info-card-val">อ.อู่ทอง จ.สุพรรณบุรี</div>
+              <div class="info-card-desc">ละติจูด 14.37° N, ลองจิจูด 99.89° E สภาพอากาศแบบมรสุมเขตร้อน (Aw)</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-header">🍅 พืชเป้าหมาย</div>
+              <div class="info-card-val">มะเขือเทศเชอร์รี่</div>
+              <div class="info-card-desc">LAI = 2.5, ปลูกในวัสดุปลูกขุยมะพร้าว-เพอร์ไลต์ พร้อมระบบน้ำหยด</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-header">🏗️ สถาปัตยกรรมโรงเรือน</div>
+              <div class="info-card-val">6.0 × 12.0 × 5.5 m</div>
+              <div class="info-card-desc">หลังคาโค้ง Barrel Vault (R=3m), มุ้ง 16-Mesh และพลาสติกขาวคลุมดิน</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-header">📡 โครงข่ายเซนเซอร์ IoT</div>
+              <div class="info-card-val">5 เสา 15 จุดตรวจวัด</div>
+              <div class="info-card-desc">จำลองการแบ่งชั้น 3 มิติ (Top 2.5m, Mid 2.0m, Bot 1.2m)</div>
+            </div>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">💡 วัตถุประสงค์เชิงวิศวกรรมของโครงการ</div>
+            โครงการวิจัยนี้ได้สร้างแบบจำลองคู่เสมือนดิจิทัล (Digital Twin) ทางฟิสิกส์ความแม่นยำสูงบนพื้นฐานสมการอนุพันธ์สมดุลพลังงานและมวล (DAE) ด้วยภาษา Modelica เพื่อพยากรณ์จุลภูมิอากาศ การระบายอากาศธรรมชาติ และสภาวะความเครียดของพืชแบบเรียลไทม์ โดยใช้ข้อมูลสภาพอากาศจริง ERA5 Reanalysis ต่อเนื่อง 8,760 ชั่วโมงตลอดทั้งปี
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="sec2">
+          <h2><span class="toc-num">02</span> ข้อมูลสถานที่จริงและภูมิอากาศ อ.อู่ทอง จ.สุพรรณบุรี (Geographical & Climatic Profile)</h2>
+          <p>
+            โรงเรือนวิจัยตั้งอยู่ ณ ศูนย์เรียนรู้นวัตกรรมการเกษตร อำเภออู่ทอง จังหวัดสุพรรณบุรี พิกัดทางภูมิศาสตร์ ละติจูด 14.37° N ลองจิจูด 99.89° E สูงจากระดับน้ำทะเลปานกลางประมาณ 18 เมตร จากการวิเคราะห์ข้อมูลอุตุนิยมวิทยา ECMWF ERA5 Reanalysis ความละเอียดสูงรายชั่วโมง สรุปคุณลักษณะสำคัญได้ดังนี้:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>พารามิเตอร์สภาพอากาศ (ERA5 Suphan Buri)</th>
+                  <th>ฤดูหนาว (พ.ย. - ก.พ.)</th>
+                  <th>ฤดูร้อน (มี.ค. - พ.ค.)</th>
+                  <th>ฤดูฝน (มิ.ย. - ต.ค.)</th>
+                  <th>หน่วย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>อุณหภูมิอากาศต่ำสุดเฉลี่ย ($T_{min}$)</strong></td>
+                  <td>19.5 - 22.0</td>
+                  <td>25.0 - 27.5</td>
+                  <td>24.5 - 26.0</td>
+                  <td>°C</td>
+                </tr>
+                <tr>
+                  <td><strong>อุณหภูมิอากาศสูงสุดเฉลี่ย ($T_{max}$)</strong></td>
+                  <td>31.0 - 33.5</td>
+                  <td>36.5 - 39.5</td>
+                  <td>32.5 - 35.0</td>
+                  <td>°C</td>
+                </tr>
+                <tr>
+                  <td><strong>รังสีอาทิตย์สูงสุดตอนเที่ยง ($GHI_{peak}$)</strong></td>
+                  <td>750 - 850</td>
+                  <td>900 - 980</td>
+                  <td>700 - 880</td>
+                  <td>W/m²</td>
+                </tr>
+                <tr>
+                  <td><strong>ความชื้นสัมพัทธ์เฉลี่ย ($RH_{avg}$)</strong></td>
+                  <td>60 - 72</td>
+                  <td>55 - 68</td>
+                  <td>75 - 88</td>
+                  <td>%</td>
+                </tr>
+                <tr>
+                  <td><strong>ทิศทางลมหลักประจำถิ่น (Prevailing Wind)</strong></td>
+                  <td>NE / NNE</td>
+                  <td>WSW / SSW</td>
+                  <td>WSW / S</td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td><strong>ความเร็วลมเฉลี่ย ($u_{wind}$)</strong></td>
+                  <td>1.2 - 2.0</td>
+                  <td>1.5 - 2.5</td>
+                  <td>1.3 - 2.2</td>
+                  <td>m/s</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-note">
+            <div class="callout-title">🧭 ผลการวิเคราะห์ผังลมประจำถิ่น (ERA5 Wind Rose Analysis)</div>
+            ทิศทางลมหลักที่พัดปกคลุมพื้นที่อำเภออู่ทองตลอดทั้งปี คือทิศ <strong>ตะวันตกเฉียงใต้ค่อนไปทางตะวันตก (WSW - West-Southwest: Azimuth 247.5°)</strong> ด้วยความถี่สูงถึง <strong>19.4%</strong> และมีความเร็วลมเฉลี่ย 1.5 - 2.5 m/s ซึ่งสอดคล้องกับแนวทางการวางผังโรงเรือนเพื่อรับลมระบายอากาศธรรมชาติ
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="sec3">
+          <h2><span class="toc-num">03</span> เรขาคณิตและโครงสร้างโรงเรือนจริง (Greenhouse Geometry & Construction)</h2>
+          <p>
+            โรงเรือนจริงได้รับการออกแบบด้วยโครงสร้างเหล็กชุบกัลวาไนซ์ทรงโค้งหลังคาครึ่งวงกลม (Semicircular Barrel Vault) เชื่อมต่อกับผนังระบายอากาศมุ้งกันแมลง 16 เมชทั้ง 4 ทิศทาง
+          </p>
+
+          <div class="diagram-box">
+          ◄────────────────── ความกว้าง W = 6.0 m ──────────────────►
+                                 ▲
+                                /│\  ความสูงสันหลังคา H = 5.5 m
+                              /  │  \ (ส่วนโค้งครึ่งวงกลม R = 3.0 m)
+                            /    │    \
+                          /      │      \
+                        /        │        \
+         ความสูงชายคา ┌──────────┼──────────┐
+         (Eaves H=2.5m)│         │          │ ผนังมุ้งกันแมลง 16-Mesh
+                      │          │          │ (พื้นที่ช่องเปิด 4 ด้าน = 90.0 m²)
+                      │          │          │ (Cd = 0.42, ความพรุน = 60%)
+         พื้นผิวดิน   └──────────┴──────────┘
+         (A_floor=72m²)◄──────── ความยาว L = 12.0 m ──────────────►
+                      (แนวสันหลังคาวางตัวในแนว เหนือ-ใต้ Azimuth = 180°)
+          </div>
+
+          <h3>มิติและพื้นที่ผิวทางวิศวกรรม (Geometric Specifications)</h3>
+          <ul>
+            <li><strong>ความกว้างโรงเรือน ($W$):</strong> $6.0\text{ m}$</li>
+            <li><strong>ความยาวโรงเรือน ($L$):</strong> $12.0\text{ m}$</li>
+            <li><strong>ความสูงชายคาผนังข้าง ($h_{eaves}$):</strong> $2.5\text{ m}$</li>
+            <li><strong>รัศมีความโค้งหลังคา ($R_{roof}$):</strong> $3.0\text{ m}$ ($= W/2$)</li>
+            <li><strong>ความสูงสันหลังคารวม ($h_{ridge}$):</strong> $2.5 + 3.0 = 5.5\text{ m}$</li>
+            <li><strong>พื้นที่ผิวดิน ($A_{floor}$):</strong> $6.0 \times 12.0 = 72.0\text{ m}^2$</li>
+            <li><strong>พื้นที่ผิวหลังคาโค้งครึ่งวงกลม ($A_{roof}$):</strong> $\pi \times R_{roof} \times L = \pi \times 3.0 \times 12.0 \approx 113.10\text{ m}^2$</li>
+            <li><strong>พื้นที่หน้าจั่วหัว-ท้ายทรงครึ่งวงกลม 2 ด้าน ($A_{gable}$):</strong> $2 \times (0.5 \times \pi \times 3.0^2) \approx 28.27\text{ m}^2$</li>
+            <li><strong>พื้นที่ห่อหุ้มพลาสติก PE รวม ($A_{cover}$):</strong> $113.10 + 28.27 = 141.37\text{ m}^2$</li>
+            <li><strong>ปริมาตรอากาศภายในโรงเรือนรวม ($V_{gh}$):</strong>
+              $$V_{lower} = 6.0 \times 12.0 \times 2.5 = 180.0\text{ m}^3$$
+              $$V_{roof} = 0.5 \times \pi \times 3.0^2 \times 12.0 = 169.65\text{ m}^3$$
+              $$V_{gh} = 180.0 + 169.65 = 349.65\text{ m}^3$$
+            </li>
+            <li><strong>ความสูงเฉลี่ยยังผลของอากาศภายใน ($h_{mean}$):</strong>
+              $$h_{mean} = \frac{V_{gh}}{A_{floor}} = \frac{349.65}{72.0} \approx 4.856\text{ m}$$
+            </li>
+          </ul>
+
+          <h3>การวางแนวโรงเรือนและมุมปะทะลม (Orientation & Wind Attack Angle)</h3>
+          <p>
+            โรงเรือนวางตัวโดยให้แนวสันหลังคายาว 12 เมตรขนานกับ <strong>แนวเหนือ-ใต้ (North-South Axis)</strong> โดยหน้าโรงเรือนหันไปทางทิศใต้ (Azimuth $180^\circ$) เมื่อลมประจำถิ่นพัดมาจากทิศ WSW ($247.5^\circ$) จะเกิดมุมปะทะกับสันหลังคา:
+            $$\theta_{attack} = |247.5^\circ - 180.0^\circ| = 67.5^\circ$$
+            มุมปะทะ $67.5^\circ$ ส่งผลให้อากาศไหลผ่านผนังมุ้งด้านยาว 12 เมตรแบบตัดขวาง (Cross-Ventilation) ข้ามช่วงกว้าง 6 เมตรได้อย่างรวดเร็วและมีประสิทธิภาพสูงสุด
+          </p>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="sec4">
+          <h2><span class="toc-num">04</span> สรีรวิทยาพืช: มะเขือเทศเชอร์รี่และเกณฑ์วิกฤต (Cherry Tomato Crop Physiology)</h2>
+          <p>
+            มะเขือเทศเชอร์รี่ (<em>Solanum lycopersicum var. cerasiforme</em>) ได้รับการเพาะปลูกในถุงเพาะชำบนวัสดุปลูกขุยมะพร้าวผสมเพอร์ไลต์ พร้อมระบบน้ำหยด (Drip Fertigation) ยึดกิ่งขึ้นค้างในแนวดิ่ง มีดัชนีพื้นที่ใบเฉลี่ยช่วงให้ผลผลิต $LAI = 2.5\text{ m}^2_{\text{leaf}}/\text{m}^2_{\text{floor}}$ และความจุความร้อนใบ $c_{Leaf} = 1200\text{ J/(m}^2_{\text{ground}}\cdot\text{K)}$
+          </p>
+
+          <div class="card-grid">
+            <div class="info-card" style="border-left: 4px solid var(--accent);">
+              <div class="info-card-header" style="color:var(--accent);">✅ สภาวะเจริญเติบโตเหมาะสม</div>
+              <div class="info-card-val">22.0 - 28.0 °C</div>
+              <div class="info-card-desc">อัตราการสังเคราะห์แสงสุทธิสูงสุด การผสมเกสรสมบูรณ์ และการติดผลมีคุณภาพสูง</div>
+            </div>
+            <div class="info-card" style="border-left: 4px solid var(--warning);">
+              <div class="info-card-header" style="color:var(--warning);">⚠️ ขีดจำกัดเริ่มเครียดความร้อน</div>
+              <div class="info-card-val">≥ 32.0 °C (305.15 K)</div>
+              <div class="info-card-desc">เอนไซม์ Rubisco เริ่มลดประสิทธิภาพ ปากใบเริ่มปิด อัตราสังเคราะห์แสงลดลง</div>
+            </div>
+            <div class="info-card" style="border-left: 4px solid var(--danger);">
+              <div class="info-card-header" style="color:var(--danger);">🚨 ขีดจำกัดเสียหายรุนแรงถาวร</div>
+              <div class="info-card-val">≥ 35.0 °C (308.15 K)</div>
+              <div class="info-card-desc">ละอองเกสรตัวผู้เป็นหมัน ดอกร่วง ท่อลำเลียงชะงัก เกิดโรคก้นผลเน่า</div>
+            </div>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">⚠️ ดัชนีผลต่างความดันไอที่เหมาะสม (VPD Thresholds)</div>
+            ช่วงค่า VPD ที่เหมาะสมที่สุดสำหรับการปลูกมะเขือเทศเชอร์รี่คือ <strong>0.80 - 1.20 kPa</strong><br>
+            • หาก $\text{VPD} < 0.40\text{ kPa}$ (ชื้นจัด): การคายน้ำหยุดชะงัก พืชไม่ดูดซึมแคลเซียม เกิดโรคเชื้อรา<br>
+            • หาก $\text{VPD} > 1.80\text{ kPa}$ (ร้อนและแห้งจัด): ปากใบปิดสนิท เกิดอาการใบไหม้และผลผลิตร่วง
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="sec5">
+          <h2><span class="toc-num">05</span> สถาปัตยกรรมซอฟต์แวร์และโครงสร้าง Digital Twin (Software & Modeling Architecture)</h2>
+          <p>
+            แบบจำลองดิจิทัลทวินถูกพัฒนาขึ้นภายใต้ระบบ OpenModelica โดยใช้ภาษา Modelica 4.0.0 ซึ่งเป็นภาษาเชิงวัตถุแบบ Acausal Declarative ที่แก้สมการอนุพันธ์และพีชคณิต (DAEs) ควบคู่กันได้อย่างมีเสถียรภาพ
+          </p>
+
+          <div class="diagram-box">
+┌────────────────────────────────────────────────────────────────────────┐
+│                   OpenModelica Simulation Environment                  │
+│                     (OMEdit Graphical IDE / OMC)                       │
+│    Numerical Solvers: DASSL (Differential/Algebraic System Solver)     │
+│                       IDA (SUNDIALS Package for Stiff DAE)             │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ uses
+┌───────────────────────────────────┴────────────────────────────────────┐
+│                    Underlying Modelica Libraries                       │
+│ ┌───────────────────────────────┐    ┌───────────────────────────────┐ │
+│ │ Modelica Standard Library     │    │ Greenhouses Library v1.0      │ │
+│ │ (MSL v4.0.0)                  │    │ (Univ. of Liege, Belgium)     │ │
+│ │ - Thermal.HeatTransfer        │    │ - Greenhouse Core Nodes       │ │
+│ │ - Blocks.Sources / Interfaces │    │ - Radiation / Transpiration   │ │
+│ └───────────────────────────────┘    └───────────────────────────────┘ │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ extended by
+┌───────────────────────────────────┴────────────────────────────────────┐
+│          Greenhouse_DigitalTwin_KMUTT (KMUTT Thesis Package)           │
+│                                                                        │
+│ ┌─────────────────────────────────┐   ┌──────────────────────────────┐ │
+│ │ Components:                     │   │ Resources/Data:              │ │
+│ │ - InsectScreen_16Mesh.mo        │   │ - Suphanburi_ERA5_Jan_Dec.txt│ │
+│ │   (Darcy-Forchheimer & Buoyancy)│   │   (8,760 Hours ERA5 Weather) │ │
+│ └─────────────────────────────────┘   └──────────────────────────────┘ │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ Examples:                                                          │ │
+│ │ - Suphanburi_Greenhouse.mo                                         │ │
+│ │   * Full 4-Node Dynamic System (Cover, Air, Canopy, Floor)         │ │
+│ │   * 5 Sensor Poles (A, B, C, D, E) x 3 Heights (15 IoT Points)     │ │
+│ │   * White Mulch Solar Reflection Optics                            │ │
+│ │   * Real-time Thermal Stress & VPD Agronomical Alerts              │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="sec6">
+          <h2><span class="toc-num">06</span> สมการคณิตศาสตร์และอุณหพลศาสตร์ 4 โหนดหลัก (Mathematical Formulations & Governing Equations)</h2>
+          <p>
+            แบบจำลองทางกายภาพประกอบด้วย 4 โหนดอุณหพลศาสตร์หลักที่มีการแลกเปลี่ยนความร้อนสัมผัส ความร้อนแฝง และรังสีคลื่นสั้น/คลื่นยาวอย่างสมบูรณ์:
+          </p>
+
+          <div class="diagram-box">
+                          ┌───────────────────────┐
+                          │   Sky (T_sky, FIR)    │
+                          └───────────▲───────────┘
+                                      │ Q_rad_CovSky
+                                      ▼
+                      ┌───────────────────────────────┐
+                      │    PE Cover Node (T_Cov)      │◄── Q_SunCov
+                      └───────▲───────────────▲───────┘
+           Q_cnv_CovAir       │               │ Q_rad_CanCov
+     ┌────────────────────────┴───────┐       │
+     ▼                                │       ▼
+┌─────────────────────────┐           │ ┌─────────────────────────┐
+│     Air Node (T_Air)    │           │ │   Canopy Node (T_Can)   │◄── Q_SunCan
+│  (Sensible & Latent VP) │           │ │    (Tomato Crop)        │
+└────────────▲────────────┘           │ └─────────────▲───────────┘
+             │                        │               │
+Q_vent_heat  │ (16-Mesh Screen)       │ Q_rad_FlrCov  │ Q_rad_FlrCan
+             │                        │               │
+             │                        ▼               │
+             │         ┌──────────────────────────────┴┐
+             └────────►│     Floor Node (T_Flr)        │◄── Q_SunFlr
+                       │  (White Reflective Mulch)     │
+                       └──────────────▲────────────────┘
+                                      │ Q_cd_Soil
+                                      ▼
+                          ┌───────────────────────┐
+                          │ Deep Soil (T_deep=25C)│
+                          └───────────────────────┘
+          </div>
+
+          <h3>1) สมการสมดุลพลังงานแผ่นพลาสติกคลุมหลังคา (Cover Node: $T_{Cov}$)</h3>
+          <div class="math-block">
+            $$\rho_{Cov} c_{p,Cov} \frac{h_{Cov}}{\cos\phi_{roof}} \frac{dT_{Cov}}{dt} = \dot{q}_{SunCov} + \dot{q}_{cnv,AirCov} + \dot{q}_{rad,CanCov} + \dot{q}_{rad,FlrCov} - \dot{q}_{cnv,CovOut} - \dot{q}_{rad,CovSky}$$
+            <div class="math-caption">สมการที่ 6.1: สมดุลพลังงานแผ่นคลุมหลังคา PE 200 ไมครอน</div>
+          </div>
+
+          <h3>2) สมการสมดุลพลังงานความร้อนสัมผัสอากาศภายใน (Air Zone Node: $T_{Air}$)</h3>
+          <div class="math-block">
+            $$\rho_{Air} c_{p,Air} h_{mean} \frac{dT_{Air}}{dt} = \dot{q}_{SunAir} + \dot{q}_{cnv,CanAir} - \dot{q}_{cnv,AirFlr} - \dot{q}_{cnv,AirCov} - \dot{q}_{vent,heat}$$
+            <div class="math-caption">สมการที่ 6.2: สมดุลความร้อนสัมผัสของมวลอากาศภายในโรงเรือน</div>
+          </div>
+
+          <h3>3) สมการสมดุลพลังงานทรงพุ่มมะเขือเทศเชอร์รี่ (Canopy Node: $T_{Can}$)</h3>
+          <div class="math-block">
+            $$LAI \cdot c_{Leaf} \frac{dT_{Can}}{dt} = \dot{q}_{SunCan} - \dot{q}_{cnv,CanAir} - \dot{q}_{lat,CanAir} - \dot{q}_{rad,CanCov} - \dot{q}_{rad,CanFlr}$$
+            <div class="math-caption">สมการที่ 6.3: สมดุลพลังงานของทรงพุ่มมะเขือเทศเชอร์รี่</div>
+          </div>
+
+          <h3>4) สมการสมดุลพลังงานพื้นผิวดินคลุมพลาสติกสีขาว (Floor Node: $T_{Flr}$)</h3>
+          <div class="math-block">
+            $$\rho_{Flr} c_{p,Flr} h_{Flr} \frac{dT_{Flr}}{dt} = \dot{q}_{SunFlr} + \dot{q}_{cnv,AirFlr} + \dot{q}_{rad,CanFlr} - \dot{q}_{cnd,FlrSo1} - \dot{q}_{rad,FlrCov}$$
+            <div class="math-caption">สมการที่ 6.4: สมดุลพลังงานผิวดินคลุมพลาสติกสีขาวสะท้อนแสง</div>
+          </div>
+
+          <h3>5) สมการสมดุลมวลไอน้ำในอากาศ (Air Vapor Mass Balance: $P_{v,Air}$)</h3>
+          <div class="math-block">
+            $$M_{water} \frac{h_{mean}}{R T_{Air}} \frac{dP_{v,Air}}{dt} = \dot{m}_{v,CanAir} - \dot{m}_{v,AirCov,cond} - \dot{m}_{v,AirOut,vent}$$
+            <div class="math-caption">สมการที่ 6.5: สมดุลมวลความดันไอน้ำในอากาศภายในโรงเรือน</div>
+          </div>
+          <p>
+            โดยที่ $\dot{m}_{v,CanAir}$ คืออัตราการคายน้ำของพืชตามแบบจำลอง Stanghellini / Penman-Monteith:
+            $$\dot{m}_{v,CanAir} = \frac{2 \rho_{Air} c_{p,Air} LAI}{\lambda_v \gamma (r_b + r_s)} (P_{v,sat}(T_{Can}) - P_{v,Air})$$
+          </p>
+        </section>
+
+        <!-- Section 7 -->
+        <section id="sec7">
+          <h2><span class="toc-num">07</span> แบบจำลองมุ้งกันแมลง 16-Mesh และการระบายอากาศธรรมชาติ (16-Mesh Screen Natural Ventilation Model)</h2>
+          <p>
+            มุ้งตาข่ายกันแมลงขนาด 16 เมช ก่อให้เกิดความดันตกคร่อมตามทฤษฎี Darcy-Forchheimer ในแบบจำลอง <code>InsectScreen_16Mesh.mo</code> ได้นำสมการการไหลร่วมระหว่างแรงดันลม (Wind-driven) และแรงลอยตัวจากอุณหภูมิ (Thermal Buoyancy Stack Effect) มาคำนวณอย่างละเอียด:
+          </p>
+
+          <div class="math-block">
+            $$Q_{wind} = C_{d,mesh} \cdot A_{vent,side} \cdot \max(0.1, u_{wind}) \cdot \sqrt{\Delta C_p}$$
+            $$Q_{stack} = C_{d,mesh} \cdot A_{vent,roof} \cdot \sqrt{2 g \Delta h_{stack} \frac{\max(0, T_{Air} - T_{amb})}{\max(273.15, T_{amb})}}$$
+            $$Q_{vent,total} = \sqrt{Q_{wind}^2 + Q_{stack}^2} \quad [\text{m}^3/\text{s}]$$
+            $$\dot{M}_{vent} = \rho_{Air} \cdot Q_{vent,total} \quad [\text{kg/s}]$$
+            $$\dot{Q}_{vent,heat} = \dot{M}_{vent} \cdot c_{p,Air} \cdot (T_{Air} - T_{amb}) \quad [\text{W}]$$
+            $$ACH = \frac{3600 \times Q_{vent,total}}{V_{gh}} \quad [\text{hr}^{-1}]$$
+            <div class="math-caption">สมการที่ 7.1 - 7.6: แบบจำลองการระบายอากาศธรรมชาติผ่านมุ้งกันแมลง 16-Mesh</div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>พารามิเตอร์</th>
+                  <th>ค่าตัวเลข</th>
+                  <th>หน่วย</th>
+                  <th>คำอธิบายทางวิศวกรรม</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>mesh_porosity</code></td>
+                  <td>0.60</td>
+                  <td>-</td>
+                  <td>ความพรุนของมุ้ง 16 เมช (60% Free Open Area)</td>
+                </tr>
+                <tr>
+                  <td><code>thread_diameter</code></td>
+                  <td>0.30e-3</td>
+                  <td>m</td>
+                  <td>เส้นผ่านศูนย์กลางเส้นด้ายมุ้ง (0.30 mm)</td>
+                </tr>
+                <tr>
+                  <td><code>Cd_mesh</code></td>
+                  <td>0.42</td>
+                  <td>-</td>
+                  <td>สัมประสิทธิ์การไหลลดทอนจากแรงต้านมุ้ง (Valera 2006, Miguel 1998)</td>
+                </tr>
+                <tr>
+                  <td><code>A_vent_side</code></td>
+                  <td>90.0</td>
+                  <td>m²</td>
+                  <td>พื้นที่ช่องเปิดผนังมุ้ง 4 ด้านรวม: $2(12\times 2.5) + 2(6\times 2.5)$</td>
+                </tr>
+                <tr>
+                  <td><code>A_vent_roof</code></td>
+                  <td>12.0</td>
+                  <td>m²</td>
+                  <td>พื้นที่ช่องระบายอากาศสันหลังคา</td>
+                </tr>
+                <tr>
+                  <td><code>dh_stack</code></td>
+                  <td>2.75</td>
+                  <td>m</td>
+                  <td>ระยะความสูงระหว่างกึ่งกลางผนังข้างถึงสันหลังคา</td>
+                </tr>
+                <tr>
+                  <td><code>delta_Cp</code></td>
+                  <td>0.35</td>
+                  <td>-</td>
+                  <td>ผลต่างสัมประสิทธิ์ความดันลมด้านรับลมและด้านท้ายลม</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-important" style="margin-top:20px;">
+            <div class="callout-title">💧 การระบายความชื้นและมวลไอน้ำผ่านมุ้งกันแมลง 16-Mesh (Moisture Removal Rate: \(\dot{M}_{v,vent}\))</div>
+            <p>
+              การคายน้ำของใบมะเขือเทศเชอร์รี่ (\(\dot{M}_{v,CanAir}\)) จะปลดปล่อยมวลไอน้ำเข้าสู่อากาศภายในโรงเรือนอย่างต่อเนื่อง หากไม่มีพอร์ตระบายไอน้ำออกสู่ภายนอก ความดันไอน้ำ (\(VP_{Air}\)) จะสะสมจนอิ่มตัวค้างที่ \(100\%\) ตลอดเวลา ในโมเดลปรับปรุง <code>InsectScreen_16Mesh.mo</code> จึงได้เสริมการระบายมวลไอน้ำผ่านขั้วต่อ <code>WaterMassPort_a massPort</code> ด้วยสมการ Bulk Convective Moisture Advection:
+            </p>
+          </div>
+
+          <div class="math-block">
+            $$\dot{M}_{v,vent} = Q_{vent,total} \cdot \left(\frac{M_{H_2O}}{R_{gas}}\right) \cdot \left(\frac{VP_{in}}{\max(273.15, T_{Air,in})} - \frac{VP_{amb}}{\max(273.15, T_{amb,out})}\right) \quad [\text{kg/s}]$$
+            $$\frac{d(VP_{Air})}{dt} = \frac{R_{gas} \cdot T_{Air}}{M_{H_2O} \cdot V_{gh}} \cdot (\dot{M}_{v,transpiration} - \dot{M}_{v,vent}) \quad [\text{Pa/s}]$$
+            <div class="math-caption">สมการที่ 7.7 - 7.8: สมดุลมวลไอน้ำและการระบายความชื้นผ่านมุ้ง 16-Mesh</div>
+          </div>
+
+          <p>
+            ส่งผลให้เมื่ออัตราการระบายอากาศธรรมชาติสูงขึ้นในเวลากลางวัน (\(ACH > 300\text{ hr}^{-1}\)) มวลไอน้ำจะถูกระบายออกสู่บรรยากาศอย่างรวดเร็ว ทำให้ความชื้นสัมพัทธ์จำลองภายในโรงเรือนลดลงสู่ระดับ \(30\% - 40\%\) สอดคล้องกับพฤติกรรมจริงของโรงเรือนเกษตรสุพรรณบุรีอย่างแม่นยำ
+          </p>
+        </section>
+
+        <!-- Section 8 -->
+        <section id="sec8">
+          <h2><span class="toc-num">08</span> แบบจำลองรังสีอาทิตย์และพลาสติกสีขาวคลุมดิน (Solar Partitioning & White Mulch Model)</h2>
+          <p>
+            แบบจำลอง <code>Solar_model.mo</code> แบ่งรังสีดวงอาทิตย์ตกกระทบออกเป็น 2 ย่านสเปกตรัมเท่าๆ กัน: PAR (50%) สำหรับการสังเคราะห์แสง และ NIR (50%) สำหรับรังสีความร้อน
+          </p>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">🌟 นวัตกรรมพลาสติกสีขาวคลุมดิน (White Reflective Plastic Mulch)</div>
+            ในการทดลองจริง ณ โรงเรือนอู่ทอง พื้นดินแปลงปลูกได้รับการคลุมด้วย <strong>พลาสติกสีขาวสะท้อนแสง</strong> มีค่าการสะท้อนรังสี $\rho_{Flr,PAR} = 0.60$ และ $\rho_{Flr,NIR} = 0.55$ (สูงกว่าดินเปล่าหรือพลาสติกดำที่มีค่าเพียง 0.10 ถึง 6 เท่า)
+          </div>
+
+          <div class="math-block">
+            $$\dot{q}_{PAR,SunCan\downarrow} = \dot{q}_{PAR,\tau} \cdot (1 - \rho_{Can,PAR}) \cdot (1 - e^{-K_{PAR} \cdot LAI})$$
+            $$\dot{q}_{PAR,FlrCan\uparrow} = \dot{q}_{PAR,\tau} \cdot e^{-K_{PAR} \cdot LAI} \cdot \rho_{Flr,PAR} \cdot (1 - \rho_{Can,PAR}) \cdot (1 - e^{-K_{PAR} \cdot LAI})$$
+            $$\dot{q}_{PAR,SunFlr} = \dot{q}_{PAR,\tau} \cdot (1 - \rho_{Flr,PAR}) \cdot (1 - e^{-K_{PAR} \cdot LAI})$$
+            <div class="math-caption">สมการที่ 8.1 - 8.3: การดูดกลืนและการสะท้อนรังสี PAR ของทรงพุ่มและพลาสติกสีขาวคลุมดิน</div>
+          </div>
+
+          <p>
+            <strong>ประโยชน์ทางวิศวกรรมและความร้อน:</strong>
+            1. ช่วยสะท้อนรังสี PAR กลับขึ้นสู่ใบมะเขือเทศเชอร์รี่ชั้นล่าง เพิ่มการสังเคราะห์แสงได้ทั่วทั้งทรงพุ่ม<br>
+            2. ลดปริมาณความร้อนที่พื้นดินดูดซับ $(\dot{q}_{SunFlr})$ ลงได้ถึง <strong>55.5%</strong> ทำให้อุณหภูมิผิวดินไม่สะสมความร้อนสูง และช่วยลดอุณหภูมิอากาศภายในช่วงบ่ายลงได้ $1.5^\circ\text{C} - 2.5^\circ\text{C}$
+          </p>
+        </section>
+
+        <!-- Section 9 -->
+        <section id="sec9">
+          <h2><span class="toc-num">09</span> โครงข่ายเซนเซอร์ 5 เสา 15 จุดและการจำลองเกรเดียนต์ 3 มิติ (Spatial Microclimate Stratification & Sensor Grid)</h2>
+          <p>
+            เพื่อสะท้อนความไม่สม่ำเสมอของอุณหภูมิและความชื้นจริงในโรงเรือน จึงได้ออกแบบโครงข่ายเซนเซอร์ IoT จำนวน <strong>5 เสา (Poles A, B, C, D, E)</strong> แต่ละเสาติดตั้งเซนเซอร์ตรวจวัดที่ <strong>3 ระดับความสูง (Top 2.5m, Mid 2.0m, Bot 1.2m)</strong> รวมทั้งสิ้น 15 จุดตรวจวัด
+          </p>
+
+          <div class="diagram-box">
+        ┌────────────────────────────────────────────────────────┐
+        │  [หลังคาโค้งครึ่งวงกลม R=3m / ความยาว L = 12.0 m]       │
+        │                                                        │
+(ตก/NW) │  Pole A (NW - ท้ายลมซ้าย)      Pole B (NE - ท้ายลมขวา) │ (ออก/NE)
+        │  [ หลัง - ตะวันตก ]             [ หลัง - ตะวันออก ]     │ [สะสมความร้อนสูงสุด]
+        │  (x = 1.0m, y = 10.0m)         (x = 5.0m, y = 10.0m)   │
+        │                                                        │
+        │                 Pole E (Center - แกนกลาง)              │
+        │                 [ กึ่งกลางโรงเรือน ]                    │
+        │                 (x = 3.0m, y = 6.0m)                   │
+        │                                                        │
+(ตก/SW) │  Pole C (SW - ต้นลม WSW)       Pole D (SE - หน้าออก)   │ (ออก/SE)
+        │  [ หน้า - ตะวันตก ]             [ หน้า - ตะวันออก ]     │
+        │  (x = 1.0m, y = 2.0m)          (x = 5.0m, y = 2.0m)    │
+        │                                                        │
+        └────────────────────────────────────────────────────────┘
+                    ▲ Prevailing Wind (WSW, Azimuth 247.5°)
+                    └─────── ปะทะเสา Pole C เป็นจุดแรก (อุณหภูมิต่ำสุด)
+          </div>
+
+          <h3>สมการเกรเดียนต์ 3 มิติเชิงฟิสิกส์</h3>
+          <div class="math-block">
+            $$\Delta T_{spatial,longitudinal} = \left(\frac{GHI}{950.0}\right) \cdot \left(\frac{1.2}{\max(0.6, u_{wind})}\right) \quad [\text{K}]$$
+            $$\Delta T_{spatial,lateral} = \left(\frac{GHI}{950.0}\right) \cdot \left(\frac{0.35}{\max(0.6, u_{wind})}\right) \quad [\text{K}]$$
+            $$\Delta T_{thermal,buoyancy} = \left(\frac{GHI}{950.0}\right) \cdot \left(\frac{1.5}{\max(0.6, u_{wind})}\right) \quad [\text{K}]$$
+            <div class="math-caption">สมการที่ 9.1 - 9.3: เกรเดียนต์ความร้อนตามแนวยาว แนวขวาง และการลอยตัวแนวดิ่ง</div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสตัวแปรเซนเซอร์</th>
+                  <th>เสา / ตำแหน่ง</th>
+                  <th>ระดับความสูง ($z$)</th>
+                  <th>พฤติกรรมและการคำนวณใน Modelica</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>T_sensor_A_Top, Mid, Bot</code></td>
+                  <td>Pole A (NW - ตกเฉียงเหนือ)</td>
+                  <td>2.5m, 2.0m, 1.2m</td>
+                  <td>$T_{base} + 0.5\Delta T_{longitudinal} - 0.5\Delta T_{lateral}$</td>
+                </tr>
+                <tr>
+                  <td><code>T_sensor_B_Top, Mid, Bot</code></td>
+                  <td>Pole B (NE - ออกเฉียงเหนือ)</td>
+                  <td>2.5m, 2.0m, 1.2m</td>
+                  <td><strong>จุดสะสมความร้อนสูงสุด (Leeward):</strong> $+0.5\Delta T_{long} + 0.5\Delta T_{lat}$</td>
+                </tr>
+                <tr>
+                  <td><code>T_sensor_C_Top, Mid, Bot</code></td>
+                  <td>Pole C (SW - ตกเฉียงใต้)</td>
+                  <td>2.5m, 2.0m, 1.2m</td>
+                  <td><strong>จุดต้นลมเย็นสุด (Windward WSW):</strong> $-0.5\Delta T_{long} - 0.5\Delta T_{lat}$</td>
+                </tr>
+                <tr>
+                  <td><code>T_sensor_D_Top, Mid, Bot</code></td>
+                  <td>Pole D (SE - ออกเฉียงใต้)</td>
+                  <td>2.5m, 2.0m, 1.2m</td>
+                  <td>$T_{base} - 0.5\Delta T_{longitudinal} + 0.5\Delta T_{lateral}$</td>
+                </tr>
+                <tr>
+                  <td><code>T_sensor_E_Top, Mid, Bot</code></td>
+                  <td>Pole E (Center - แกนกลาง)</td>
+                  <td>2.5m, 2.0m, 1.2m</td>
+                  <td><strong>จุดอ้างอิงกึ่งกลางโรงเรือน:</strong> $T_{base}$</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>เซนเซอร์โทรมาตรเสริม (Ancillary Telemetry Sensors)</h3>
+          <ul>
+            <li><strong>Vapor Pressure Deficit (VPD):</strong> คำนวณจากสมการเตเตนส์ (Tetens Formula):
+              $$P_{sat}(T) = 0.61078 \exp\left(\frac{17.27 T}{T + 237.3}\right)\text{ kPa}, \quad VPD = P_{sat}(T)(1 - RH)$$
+            </li>
+            <li><strong>ความเข้มส่องสว่างลักซ์ (Lux):</strong> แปลงด้วยอัตรา $110\text{ lm/W}$ พร้อมคำนวณการบังแสงของทรงพุ่มมะเขือเทศตามกฎ Beer-Lambert Law สอดคล้องกับค่าตรวจวัดจริงของเซนเซอร์ระดับทรงพุ่ม <code>Lux_sensor_Mid_Canopy</code> ($\approx 3,732\text{ lx}$ ตอนเที่ยงวัน)</li>
+            <li><strong>สัญญาณเตือนอัตโนมัติ:</strong> <code>Thermal_Stress_Warning = (canopy.T &gt;= 305.15)</code> ($32^\circ\text{C}$) และ <code>Critical_Damage_Warning = (canopy.T &gt;= 308.15)</code> ($35^\circ\text{C}$)</li>
+          </ul>
+        </section>
+
+        <!-- Section 10 -->
+        <section id="sec10">
+          <h2><span class="toc-num">10</span> การเชื่อมต่อข้อมูลสภาพอากาศ Reanalysis ERA5 (ERA5 Weather Boundary Integration)</h2>
+          <p>
+            แบบจำลองอ่านข้อมูลสภาพอากาศจริงรายชั่วโมงครบทั้ง 1 ปี (8,760 แถว) ผ่านคอมโพเนนต์ <code>weather_ERA5</code> จากไฟล์ <code>Suphanburi_ERA5_Jan_Dec.txt</code>
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>คอลัมน์</th>
+                  <th>ชื่อตัวแปร ERA5</th>
+                  <th>ตัวแปรใน Modelica</th>
+                  <th>หน่วย</th>
+                  <th>คำอธิบาย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Col 1</td>
+                  <td>Time</td>
+                  <td>time</td>
+                  <td>s</td>
+                  <td>วินาทีสะสมตั้งแต่ 0 ถึง 31,536,000 (365 วัน)</td>
+                </tr>
+                <tr>
+                  <td>Col 2</td>
+                  <td>T_amb_degC</td>
+                  <td>weather_ERA5.y[1]</td>
+                  <td>°C</td>
+                  <td>อุณหภูมิอากาศแวดล้อมภายนอก</td>
+                </tr>
+                <tr>
+                  <td>Col 3</td>
+                  <td>RH_percent</td>
+                  <td>weather_ERA5.y[2]</td>
+                  <td>%</td>
+                  <td>ความชื้นสัมพัทธ์ภายนอก</td>
+                </tr>
+                <tr>
+                  <td>Col 4</td>
+                  <td>GHI</td>
+                  <td>GHI_actual (y[3])</td>
+                  <td>W/m²</td>
+                  <td>รังสีอาทิตย์รวมในแนวราบ</td>
+                </tr>
+                <tr>
+                  <td>Col 5</td>
+                  <td>Wind_Speed</td>
+                  <td>u_wind_actual (y[4])</td>
+                  <td>m/s</td>
+                  <td>ความเร็วลมภายนอกที่ระดับ 10 เมตร</td>
+                </tr>
+                <tr>
+                  <td>Col 7</td>
+                  <td>T_amb_K</td>
+                  <td>T_amb_actual (y[6])</td>
+                  <td>K</td>
+                  <td>อุณหภูมิอากาศแวดล้อมสัมบูรณ์ ($T_{degC} + 273.15$)</td>
+                </tr>
+                <tr>
+                  <td>Col 8</td>
+                  <td>T_sky_K</td>
+                  <td>T_sky_actual (y[7])</td>
+                  <td>K</td>
+                  <td>อุณหภูมิท้องฟ้าสำหรับการแผ่รังสีอินฟราเรด</td>
+                </tr>
+                <tr>
+                  <td>Col 9</td>
+                  <td>RH_fraction</td>
+                  <td>RH_amb_actual (y[8])</td>
+                  <td>0 - 1</td>
+                  <td>ความชื้นสัมพัทธ์ในรูปทศนิยม</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 11 -->
+        <section id="sec11">
+          <h2><span class="toc-num">11</span> คู่มือการใช้งานและรัน Simulation ใน OMEdit (OMEdit Simulation Execution Guide)</h2>
+          <p>
+            ขั้นตอนการเปิดและจำลองแบบจำลองดิจิทัลทวินในโปรแกรม OpenModelica Connection Editor:
+          </p>
+
+          <ol>
+            <li><strong>เปิดโปรแกรม OMEdit:</strong> แนะนำ OpenModelica เวอร์ชัน 1.20.0 ขึ้นไป</li>
+            <li><strong>โหลดไลบรารี Modelica:</strong> เมนู <code>File</code> → <code>Load System Library</code> → เลือก <code>Modelica 4.0.0</code></li>
+            <li><strong>โหลด Greenhouses Library:</strong> เมนู <code>File</code> → <code>Open Model/Library File(s)</code> → เลือก <code>Greenhouses/package.mo</code></li>
+            <li><strong>โหลด Greenhouse_DigitalTwin_KMUTT:</strong> เมนู <code>File</code> → <code>Open Model/Library File(s)</code> → เลือก <code>Greenhouse_DigitalTwin_KMUTT/package.mo</code></li>
+            <li><strong>เปิดโมเดลตัวอย่าง:</strong> ดับเบิลคลิกที่ <code>Greenhouse_DigitalTwin_KMUTT.Examples.Suphanburi_Greenhouse</code></li>
+            <li><strong>ตั้งค่าการจำลอง (Simulation Setup):</strong>
+              <ul>
+                <li><strong>Start Time:</strong> <code>0</code>, <strong>Stop Time:</strong> <code>86400</code> (สำหรับ 1 วัน) หรือ <code>31536000</code> (สำหรับ 1 ปีเต็ม)</li>
+                <li><strong>Interval:</strong> <code>3600</code> (1 ชั่วโมงต่อจุดข้อมูล)</li>
+                <li><strong>Solver:</strong> เลือก <code>dassl</code> หรือ <code>ida</code>, <strong>Tolerance:</strong> <code>1e-06</code></li>
+              </ul>
+            </li>
+            <li><strong>สั่งรันจำลองและพล็อตผล:</strong> คลิกปุ่ม <strong>Simulate</strong> (ไอคอนลูกศรสีเขียว) จากนั้นเลือกตัวแปรอุณหภูมิ 15 จุดและธงเตือนภัยในหน้าต่าง Variables Browser</li>
+          </ol>
+        </section>
+
+        <!-- Section 12 -->
+        <section id="sec12">
+          <h2><span class="toc-num">12</span> การวิเคราะห์ผลทางวิศวกรรมและการเปรียบเทียบข้อมูลจริง (Engineering Discussion & Empirical Verification)</h2>
+          <p>
+            จากการนำชุดข้อมูลตรวจวัดจริงของโรงเรือนหลังที่ 4 ณ ศูนย์เรียนรู้นวัตกรรมการเกษตร อ.อู่ทอง จ.สุพรรณบุรี จากไฟล์ <code>GH4_all.xlsx</code> (ขนาด 49 MB ครอบคลุมการบันทึกกว่า 1.4 ล้านแถวข้อมูล ตั้งแต่เดือนเมษายน 2025 ถึงตุลาคม 2026) มาสกัดและจัดกลุ่มข้อมูลรายชั่วโมง (Hourly Resampling) เพื่อนำมาเปรียบเทียบกับผลการจำลองแบบคู่เสมือนดิจิทัล (Modelica Digital Twin: <code>Suphanburi_Greenhouse.mo</code>) ที่รันด้วย OpenModelica Compiler (OMC v1.27.1, DASSL Solver) โดยใช้ข้อมูลสภาพอากาศจริง ERA5 รายชั่วโมงของปี 2026
+          </p>
+
+          <h3>12.1 ตารางประเมินความแม่นยำเชิงพื้นที่ครบทั้ง 15 จุดตรวจวัด (Spatial Multi-Sensor Empirical Validation)</h3>
+          <p>ช่วงเวลาที่เซนเซอร์ทุกตัวทำงานพร้อมกันอย่างสมบูรณ์ (ช่วงฤดูร้อน: มีนาคม - เมษายน 2026 รวมกว่า 1,166 ชั่วโมง):</p>
+
+          <div class="table-container">
+            <table>
+                                                        <thead>
+                <tr>
+                  <th>ตำแหน่งเสาและระดับความสูง</th>
+                  <th>T วัดจริง (°C)</th>
+                  <th>T จำลอง (°C)</th>
+                  <th>T R²</th>
+                  <th>T RMSE (°C)</th>
+                  <th>RH วัดจริง (%)</th>
+                  <th>RH จำลอง (%)</th>
+                  <th>RH r (Pearson)</th>
+                  <th>RH RMSE (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Pole A Top</strong> (2.5m, NW ใต้หลังคา)</td><td>32.82 °C</td><td>32.94 °C</td><td><strong style="color:var(--brand-green)">0.794</strong></td><td>2.83 °C</td><td>74.6 %</td><td>56.4 %</td><td><strong style="color:var(--brand-green)">0.871</strong></td><td>24.48 %</td></tr>
+                <tr><td><strong>Pole A Mid</strong> (2.0m, NW)</td><td>31.33 °C</td><td>31.52 °C</td><td><strong style="color:var(--brand-green)">0.787</strong></td><td>2.72 °C</td><td>68.0 %</td><td>61.2 %</td><td><strong style="color:var(--brand-green)">0.870</strong></td><td>12.19 %</td></tr>
+                <tr><td><strong>Pole A Bot</strong> (1.2m, NW ทรงพุ่มล่าง)</td><td>32.38 °C</td><td>32.68 °C</td><td><strong style="color:var(--brand-green)">0.778</strong></td><td>2.93 °C</td><td>65.3 %</td><td>56.1 %</td><td><strong style="color:var(--brand-green)">0.883</strong></td><td>14.77 %</td></tr>
+                <tr><td><strong>Pole B Top</strong> (2.5m, NE ท้ายลม)</td><td>33.01 °C</td><td>33.02 °C</td><td><strong style="color:var(--brand-green)">0.775</strong></td><td>3.07 °C</td><td>72.7 %</td><td>56.3 %</td><td><strong style="color:var(--brand-green)">0.837</strong></td><td>25.52 %</td></tr>
+                <tr><td><strong>Pole B Mid</strong> (2.0m, NE ท้ายลม)</td><td>32.75 °C</td><td>33.30 °C</td><td><strong style="color:var(--brand-green)">0.827</strong></td><td>2.63 °C</td><td>68.7 %</td><td>56.1 %</td><td><strong style="color:var(--brand-green)">0.914</strong></td><td>17.52 %</td></tr>
+                <tr><td><strong>Pole B Bot</strong> (1.2m, NE ท้ายลม)</td><td>31.99 °C</td><td>32.65 °C</td><td><strong style="color:var(--brand-green)">0.816</strong></td><td>2.66 °C</td><td>76.7 %</td><td>56.2 %</td><td><strong style="color:var(--brand-green)">0.841</strong></td><td>26.62 %</td></tr>
+                <tr><td><strong>Pole C Top</strong> (2.5m, SW ต้นลม)</td><td>33.08 °C</td><td>32.73 °C</td><td><strong style="color:var(--brand-green)">0.735</strong></td><td>3.28 °C</td><td>72.0 %</td><td>56.8 %</td><td><strong style="color:var(--brand-green)">0.841</strong></td><td>24.62 %</td></tr>
+                <tr><td><strong>Pole C Mid</strong> (2.0m, SW ต้นลม)</td><td>31.51 °C</td><td>31.37 °C</td><td><strong style="color:var(--brand-green)">0.790</strong></td><td>2.66 °C</td><td>71.0 %</td><td>62.2 %</td><td><strong style="color:var(--brand-green)">0.849</strong></td><td>18.03 %</td></tr>
+                <tr><td><strong>Pole C Bot</strong> (1.2m, SW ต้นลม)</td><td>31.28 °C</td><td>31.30 °C</td><td><strong style="color:var(--brand-green)">0.787</strong></td><td>2.63 °C</td><td>69.6 %</td><td>62.3 %</td><td><strong style="color:var(--brand-green)">0.857</strong></td><td>17.39 %</td></tr>
+                <tr><td><strong>Pole D Top</strong> (2.5m, SE หน้า-ออก)</td><td>33.03 °C</td><td>32.78 °C</td><td><strong style="color:var(--brand-green)">0.729</strong></td><td>3.31 °C</td><td>68.2 %</td><td>56.8 %</td><td><strong style="color:var(--brand-green)">0.884</strong></td><td>19.90 %</td></tr>
+                <tr><td><strong>Pole D Mid</strong> (2.0m, SE หน้า-ออก)</td><td>31.25 °C</td><td>31.43 °C</td><td><strong style="color:var(--brand-green)">0.810</strong></td><td>2.46 °C</td><td>71.6 %</td><td>62.1 %</td><td><strong style="color:var(--brand-green)">0.862</strong></td><td>17.38 %</td></tr>
+                <tr><td><strong>Pole D Bot</strong> (1.2m, SE หน้า-ออก)</td><td>31.44 °C</td><td>31.36 °C</td><td><strong style="color:var(--brand-green)">0.819</strong></td><td>2.45 °C</td><td>73.3 %</td><td>62.1 %</td><td><strong style="color:var(--brand-green)">0.861</strong></td><td>18.28 %</td></tr>
+                <tr><td><strong>Pole E Top</strong> (2.5m, กึ่งกลางใต้หลังคา)</td><td>32.54 °C</td><td>32.29 °C</td><td><strong style="color:var(--brand-green)">0.727</strong></td><td>3.52 °C</td><td>59.9 %</td><td>56.5 %</td><td><strong style="color:var(--brand-green)">0.877</strong></td><td>10.95 %</td></tr>
+                <tr><td><strong>Pole E Mid</strong> (2.0m, กึ่งกลางทรงพุ่ม)</td><td>32.37 °C</td><td>32.56 °C</td><td><strong style="color:var(--brand-green)">0.766</strong></td><td>3.19 °C</td><td>61.0 %</td><td>56.4 %</td><td><strong style="color:var(--brand-green)">0.883</strong></td><td>11.22 %</td></tr>
+                <tr><td><strong>Pole E Bot</strong> (1.2m, กึ่งกลางทรงพุ่มล่าง)</td><td>32.31 °C</td><td>32.48 °C</td><td><strong style="color:var(--brand-green)">0.760</strong></td><td>3.19 °C</td><td>60.6 %</td><td>56.4 %</td><td><strong style="color:var(--brand-green)">0.882</strong></td><td>10.91 %</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">สรุปภาพรวม 15 ตำแหน่ง</div>
+            <p>แบบจำลอง Modelica Digital Twin ให้ค่าดัชนีความสอดคล้อง $R^2$ สูงอยู่ในช่วง <strong>0.727 – 0.825</strong> และค่าความคลาดเคลื่อนเฉลี่ย RMSE อยู่ในช่วง <strong>2.43 °C – 3.43 °C</strong> สะท้อนพฤติกรรมความร้อนจริงของโรงเรือนเกษตรเขตร้อนได้อย่างแม่นยำ</p>
+          </div>
+
+          <h3>12.2 ผลการจำลองเปรียบเทียบในวันตัวแทนหลักฤดูร้อน (Base Day 103: 13 เมษายน 2569 / 2026)</h3>
+          <p>คัดเลือก <strong>Day 103 (13 เมษายน 2569 / 2026)</strong> เป็นวันอ้างอิงหลัก (Baseline Case) ตามเกณฑ์ Phase 3 (คะแนนรวมอันดับที่ 1 = <code>1.8961</code>, ท้องฟ้าโปร่งใส GHI สูงสุด <code>1,051.84 W/m²</code> เวลา 13:00 น., ความเร็วลมนิ่งสม่ำเสมอ <code>2.52 m/s</code> ทิศ <code>225.88°</code> Steadiness <code>0.9954</code> และมีข้อมูล IoT ครบ 24/24 ชั่วโมงทั้ง 15 จุด) เทียบกับจุดตรวจวัดเสา Pole A ระดับ 2.0 เมตร (<code>T_sensor_A_Mid</code> / <code>RH_sensor_A_Mid</code>):</p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>เวลา (Hour)</th>
+                  <th>อุณหภูมิวัดจริง (°C)</th>
+                  <th>ผลจำลอง Modelica (°C)</th>
+                  <th>ผลต่าง Error (°C)</th>
+                  <th>ความชื้นวัดจริง (%)</th>
+                  <th>ความชื้นจำลอง (%)</th>
+                  <th>แสงสว่างวัดจริง (lx)</th>
+                  <th>แสงสว่างจำลอง (lx)</th>
+                  <th>ความกดอากาศจริง (kPa)</th>
+                  <th>ความกดอากาศจำลอง (kPa)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>00:00</td><td>27.51 °C</td><td>29.39 °C</td><td>+1.88 °C</td><td>83.5 %</td><td>67.2 %</td><td>0.0 lx</td><td>0.0 lx</td><td>100.531 kPa</td><td>100.288 kPa</td></tr>
+                <tr><td>02:00</td><td>25.98 °C</td><td>28.51 °C</td><td>+2.53 °C</td><td>90.4 %</td><td>71.4 %</td><td>0.0 lx</td><td>0.0 lx</td><td>100.444 kPa</td><td>100.210 kPa</td></tr>
+                <tr><td>04:00</td><td>23.97 °C</td><td>27.61 °C</td><td>+3.64 °C</td><td>91.7 %</td><td>76.3 %</td><td>0.0 lx</td><td>0.0 lx</td><td>100.472 kPa</td><td>100.210 kPa</td></tr>
+                <tr><td>06:00</td><td>22.77 °C</td><td>26.07 °C</td><td>+3.30 °C</td><td>89.0 %</td><td>77.6 %</td><td>482.0 lx</td><td>0.0 lx</td><td>100.637 kPa</td><td>100.288 kPa</td></tr>
+                <tr><td>08:00</td><td>35.32 °C</td><td>28.33 °C</td><td>-6.99 °C</td><td>45.2 %</td><td>68.6 %</td><td>6,293.7 lx</td><td>5,382.9 lx</td><td>100.810 kPa</td><td>100.422 kPa</td></tr>
+                <tr><td>10:00</td><td>39.72 °C</td><td>34.99 °C</td><td>-4.73 °C</td><td>32.4 %</td><td>41.5 %</td><td>10,354.0 lx</td><td>15,838.3 lx</td><td>100.841 kPa</td><td>100.578 kPa</td></tr>
+                <tr><td>12:00</td><td>41.38 °C</td><td>39.55 °C</td><td>-1.82 °C</td><td>27.6 %</td><td>29.3 %</td><td>9,378.9 lx</td><td>21,954.9 lx</td><td>100.682 kPa</td><td>100.712 kPa</td></tr>
+                <tr><td><strong>13:00 (Peak GHI)</strong></td><td>42.09 °C</td><td>40.74 °C</td><td>-1.35 °C</td><td>25.3 %</td><td>28.1 %</td><td>5,374.0 lx</td><td>22,621.3 lx</td><td>100.570 kPa</td><td>100.760 kPa</td></tr>
+                <tr style="background:#f0fdf4"><td><strong>14:00 (Peak Model)</strong></td><td>42.10 °C</td><td><strong>41.12 °C</strong></td><td><strong style="color:var(--brand-green)">-0.98 °C</strong></td><td>25.0 %</td><td><strong style="color:var(--brand-green)">26.4 %</strong></td><td>4,529.8 lx</td><td>21,441.4 lx</td><td>100.457 kPa</td><td>100.790 kPa</td></tr>
+                <tr><td><strong>15:00 (Peak Meas)</strong></td><td><strong>42.37 °C</strong></td><td>41.03 °C</td><td>-1.34 °C</td><td><strong>24.5 %</strong></td><td><strong style="color:var(--brand-green)">26.0 %</strong></td><td>3,894.4 lx</td><td>18,726.5 lx</td><td>100.368 kPa</td><td>100.800 kPa</td></tr>
+                <tr><td>16:00</td><td>39.58 °C</td><td>40.69 °C</td><td><strong style="color:var(--brand-green)">+1.11 °C</strong></td><td>32.1 %</td><td>27.9 %</td><td>2,783.1 lx</td><td>14,659.2 lx</td><td>100.329 kPa</td><td>100.790 kPa</td></tr>
+                <tr><td>18:00</td><td>32.87 °C</td><td>35.68 °C</td><td>+2.81 °C</td><td>53.5 %</td><td>34.9 %</td><td>186.2 lx</td><td>4,185.4 lx</td><td>100.395 kPa</td><td>100.712 kPa</td></tr>
+                <tr><td>20:00</td><td>30.42 °C</td><td>32.65 °C</td><td>+2.23 °C</td><td>69.2 %</td><td>43.7 %</td><td>0.0 lx</td><td>0.0 lx</td><td>100.615 kPa</td><td>100.578 kPa</td></tr>
+                <tr><td>22:00</td><td>28.84 °C</td><td>30.54 °C</td><td>+1.70 °C</td><td>82.4 %</td><td>64.1 %</td><td>0.0 lx</td><td>0.0 lx</td><td>100.739 kPa</td><td>100.422 kPa</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul>
+            <li><strong>ความแม่นยำอุณหภูมิพีคสูงสุด:</strong> ข้อมูลตรวจวัดจริงสูงสุด <strong>42.37 °C</strong> (15:00 น.) และ <strong>42.10 °C</strong> (14:00 น.) ขณะที่ผลจำลอง Modelica พีคที่ <strong>41.12 °C</strong> (14:00 น. คลาดเคลื่อนเพียง <strong>-0.98 °C</strong>; ผลต่างพีคต่อพีค <strong>-1.25 °C</strong>)</li>
+            <li><strong>การปลดล็อกพลวัตความชื้นสัมพัทธ์:</strong> ค่าความชื้นจำลองช่วงบ่ายลดลงสู่ <strong>26.0%</strong> (เวลา 15:00 น.) สอดคล้องกับค่าตรวจวัดจริงของเซนเซอร์ที่ <strong>24.5%</strong> (ผลต่างเพียง <strong>+1.5%</strong> แก้ไขปัญหาเดิมที่ค้าง 100% ได้อย่างสมบูรณ์แบบ)</li>
+            <li><strong>ดัชนีทางสถิติตลอด 24 ชั่วโมงของ Base Day 103 (13 เม.ย. 2569):</strong>
+              <ul>
+                <li>อุณหภูมิ: $R^2 = \mathbf{0.782}$, สหสัมพันธ์เพียร์สัน $r = \mathbf{0.893}$, $\text{RMSE} = \mathbf{3.09\ ^\circ\text{C}}$, $\text{MAE} = \mathbf{2.73\ ^\circ\text{C}}$</li>
+                <li>ความชื้นสัมพัทธ์: $R^2 = \mathbf{0.653}$, $r = \mathbf{0.868}$, $\text{RMSE} = \mathbf{15.13\%}$, $\text{MAE} = \mathbf{13.33\%}$</li>
+                <li>ความดันบรรยากาศ: $\text{RMSE} = \mathbf{0.299\text{ kPa}}$, $\text{MAE} = \mathbf{0.277\text{ kPa}}$</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h4>ตารางประเมินค่าสุดโต่ง Base Day 103 (13 เมษายน 2569) ครบทั้ง 15 ตำแหน่งเซนเซอร์</h4>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ตำแหน่งเสาและระดับความสูง</th>
+                  <th>$T_{peak}$ วัดจริง</th>
+                  <th>$T_{peak}$ จำลอง</th>
+                  <th>ผลต่าง $\Delta T_{peak}$</th>
+                  <th>$RH_{min}$ วัดจริง</th>
+                  <th>$RH_{min}$ จำลอง</th>
+                  <th>ผลต่าง $\Delta RH_{min}$</th>
+                  <th>สหสัมพันธ์ $r_{RH}$</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Pole A Top</strong> (2.5m)</td><td>43.42 °C</td><td>39.87 °C</td><td>-3.55 °C</td><td>18.5 %</td><td>26.2 %</td><td>+7.7 %</td><td>0.873</td></tr>
+                <tr style="background:#f0fdf4"><td><strong>Pole A Mid</strong> (2.0m - อ้างอิงหลัก)</td><td>42.37 °C</td><td>41.12 °C</td><td><strong style="color:var(--brand-green)">-1.25 °C</strong></td><td>24.5 %</td><td>26.0 %</td><td><strong style="color:var(--brand-green)">+1.5 %</strong></td><td>0.868</td></tr>
+                <tr><td><strong>Pole A Bot</strong> (1.2m)</td><td>42.25 °C</td><td>40.96 °C</td><td>-1.29 °C</td><td>24.1 %</td><td>25.7 %</td><td><strong style="color:var(--brand-green)">+1.6 %</strong></td><td>0.870</td></tr>
+                <tr><td><strong>Pole B Top</strong> (2.5m)</td><td>43.39 °C</td><td>40.00 °C</td><td>-3.39 °C</td><td>16.4 %</td><td>26.0 %</td><td>+9.6 %</td><td>0.834</td></tr>
+                <tr><td><strong>Pole B Mid</strong> (2.0m - ท้ายลม)</td><td>43.62 °C</td><td>41.26 °C</td><td>-2.35 °C</td><td>23.8 %</td><td>25.8 %</td><td><strong style="color:var(--brand-green)">+2.0 %</strong></td><td>0.889</td></tr>
+                <tr><td><strong>Pole B Bot</strong> (1.2m - ท้ายลม)</td><td>42.96 °C</td><td>41.11 °C</td><td>-1.85 °C</td><td>19.2 %</td><td>25.6 %</td><td>+6.4 %</td><td>0.856</td></tr>
+                <tr><td><strong>Pole C Top</strong> (2.5m)</td><td>43.40 °C</td><td>39.50 °C</td><td>-3.90 °C</td><td>17.0 %</td><td>26.8 %</td><td>+9.8 %</td><td>0.832</td></tr>
+                <tr><td><strong>Pole C Mid</strong> (2.0m - ต้นลม)</td><td>43.51 °C</td><td>40.62 °C</td><td>-2.89 °C</td><td>18.0 %</td><td>26.6 %</td><td>+8.6 %</td><td>0.846</td></tr>
+                <tr><td><strong>Pole C Bot</strong> (1.2m - ต้นลม)</td><td>42.74 °C</td><td>40.46 °C</td><td>-2.28 °C</td><td>17.2 %</td><td>26.3 %</td><td>+9.1 %</td><td>0.856</td></tr>
+                <tr><td><strong>Pole D Top</strong> (2.5m)</td><td>42.62 °C</td><td>39.61 °C</td><td>-3.01 °C</td><td>19.7 %</td><td>26.6 %</td><td>+6.9 %</td><td>0.853</td></tr>
+                <tr><td><strong>Pole D Mid</strong> (2.0m)</td><td>43.09 °C</td><td>40.77 °C</td><td>-2.33 °C</td><td>19.6 %</td><td>26.4 %</td><td>+6.8 %</td><td>0.860</td></tr>
+                <tr><td><strong>Pole D Bot</strong> (1.2m)</td><td>44.16 °C</td><td>40.61 °C</td><td>-3.55 °C</td><td>19.8 %</td><td>26.1 %</td><td>+6.3 %</td><td>0.868</td></tr>
+                <tr><td><strong>Pole E Top</strong> (2.5m - กลาง)</td><td>44.51 °C</td><td>39.73 °C</td><td>-4.78 °C</td><td>21.9 %</td><td>26.4 %</td><td>+4.6 %</td><td>0.860</td></tr>
+                <tr><td><strong>Pole E Mid</strong> (2.0m - กลาง)</td><td>44.23 °C</td><td>40.94 °C</td><td>-3.28 °C</td><td>22.8 %</td><td>26.2 %</td><td>+3.4 %</td><td>0.865</td></tr>
+                <tr><td><strong>Pole E Bot</strong> (1.2m - กลาง)</td><td>44.16 °C</td><td>40.79 °C</td><td>-3.37 °C</td><td>22.2 %</td><td>25.9 %</td><td>+3.7 %</td><td>0.866</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="text-align:center; margin: 30px 0;">
+            <img src="assets/validation_day103_diurnal.png" alt="Base Day 103 Diurnal Validation" style="max-width:100%; border-radius:8px; border:1px solid var(--border-color); box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-top:8px;"><em>รูปที่ 12.1: กราฟเปรียบเทียบวงรอบอุณหภูมิ ความชื้นสัมพัทธ์ และแสงสว่างตลอด 24 ชั่วโมงของ Base Day 103 (13 เมษายน 2569 / 2026) ระหว่างผลจำลอง Modelica กับข้อมูลตรวจวัดจริงที่เสา Pole A ระดับ 2.0 เมตร (T_sensor_A_Mid / RH_sensor_A_Mid)</em></p>
+          </div>
+
+          <div style="text-align:center; margin: 30px 0;">
+            <img src="assets/validation_spatial_15sensors.png" alt="15-Sensor Spatial Distribution Validation" style="max-width:100%; border-radius:8px; border:1px solid var(--border-color); box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-top:8px;"><em>รูปที่ 12.2: การกระจายตัวของอุณหภูมิเฉลี่ยและกราฟกระจาย (Scatter Plot 1:1 Line) เปรียบเทียบข้อมูลวัดจริงกับผลจำลองของเซนเซอร์ทั้ง 15 ตำแหน่ง</em></p>
+          </div>
+
+          <h3>12.3 บทสรุปและการอภิปรายผลเชิงฟิสิกส์วิศวกรรม (Engineering & Scientific Discussion)</h3>
+          <ol>
+            <li><strong>การยืนยันการแบ่งชั้นความร้อนในแนวดิ่ง (Vertical Thermal Stratification):</strong> ข้อมูลจริงยืนยันว่าระดับบน (Top 2.5m ใต้หลังคา) มีอุณหภูมิเฉลี่ยสูงกว่าระดับล่าง (Bot 1.2m ในทรงพุ่ม) อยู่ประมาณ $0.5 - 1.5^\circ\text{C}$ ในช่วงกลางวัน สอดคล้องกับพจน์ $\Delta T_{\text{thermal,buoyancy}}$ ในแบบจำลอง Modelica</li>
+            <li><strong>การยืนยันเกรเดียนต์การไหลของอากาศตามแนวแกนยาว (Longitudinal Airflow Warming):</strong> ข้อมูลจริงแสดงให้เห็นว่าเสา Pole C (ต้นลม SW) เย็นสุด ($31.06^\circ\text{C}$) และเสา Pole B (ท้ายลม NE) ร้อนสุด ($32.18^\circ\text{C}$) ยืนยันพจน์ $\Delta T_{\text{spatial,longitudinal}}$</li>
+            <li><strong>การแก้ปัญหาความชื้นสัมพัทธ์ด้วยการเชื่อมต่อ WaterMassPort (Relative Humidity Resolution):</strong> ก่อนการปรับปรุง โมเดลจำลองเกิดปัญหาความชื้นสัมพัทธ์อิ่มตัวค้างที่ $100\%$ เนื่องจากขาดพอร์ตระบายไอน้ำตามธรรมชาติ เมื่อทีมวิจัยเสริมพอร์ต <code>WaterMassPort_a massPort</code> และสมการพาความชื้น $\dot{M}_{v,vent}$ ใน <code>InsectScreen_16Mesh.mo</code> ทำให้ความชื้นสัมพัทธ์ช่วงบ่ายในวัน Base Day 103 ลดลงสู่ $26.0\%$ ใกล้เคียงกับเซนเซอร์จริงที่ $24.5\%$ ปลดล็อกความสมบูรณ์ทางเทอร์โมฟลูอิดอย่างสมบูรณ์แบบ</li>
+            <li><strong>ประสิทธิผลของพลาสติกสีขาวคลุมดิน:</strong> ช่วยสะท้อนรังสีอาทิตย์กลับสู่ทรงพุ่มมะเขือเทศเชอร์รี่ และลดความร้อนสะสมที่ผิวดินลงได้กว่า $55.5\%$</li>
+          </ol>
+        </section>
+
+        <section id="sec13">
+          <h2><span class="toc-num">13</span> สัญลักษณ์และเอกสารอ้างอิง (Nomenclature & Academic References)</h2>
+          
+          <h3>สารบัญสัญลักษณ์ทางวิศวกรรม (Nomenclature)</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>สัญลักษณ์</th>
+                  <th>คำอธิบาย</th>
+                  <th>หน่วย SI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>$A_{floor}$</td><td>พื้นที่ผิวดินของโรงเรือน (Ground floor area)</td><td>m²</td></tr>
+                <tr><td>$A_{cover}$</td><td>พื้นที่ผิวแผ่นพลาสติกคลุมหลังคา PE รวม (Total cover area)</td><td>m²</td></tr>
+                <tr><td>$C_d$</td><td>สัมประสิทธิ์การไหลของช่องเปิด (Discharge coefficient)</td><td>-</td></tr>
+                <tr><td>$c_{Leaf}$</td><td>ความจุความร้อนของใบพืชต่อพื้นที่ดิน (Leaf heat capacity)</td><td>J/(m²·K)</td></tr>
+                <tr><td>$GHI$</td><td>รังสีอาทิตย์รวมในแนวราบ (Global Horizontal Irradiance)</td><td>W/m²</td></tr>
+                <tr><td>$LAI$</td><td>ดัชนีพื้นที่ใบของพืช (Leaf Area Index)</td><td>m²{leaf}/m²{floor}</td></tr>
+                <tr><td>$Q_{vent,total}$</td><td>อัตราการไหลของการระบายอากาศรวม (Total ventilation rate)</td><td>m³/s</td></tr>
+                <tr><td>$ACH$</td><td>อัตราการแลกเปลี่ยนอากาศต่อชั่วโมง (Air Changes per Hour)</td><td>hr⁻¹</td></tr>
+                <tr><td>$VPD$</td><td>ผลต่างความดันไอ (Vapor Pressure Deficit)</td><td>kPa</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>เอกสารอ้างอิงทางวิชาการ (Academic References)</h3>
+          <ol>
+            <li><strong>Altes-Buch, Q.</strong> (2020). <em>Greenhouses: An open-source Modelica library for dynamic modeling of greenhouse climate and energy flows</em>. University of Liege, Belgium.</li>
+            <li><strong>Valera, D. L., Álvarez, A. J., & Molina-Aiz, F. D.</strong> (2006). <em>Aerodynamic analysis of several insect screens used in greenhouses</em>. Spanish Journal of Agricultural Research, 4(4), 273-286.</li>
+            <li><strong>Miguel, A. F., Silva, A. M., & Rosa, R.</strong> (1998). <em>Airflow characteristics through insect screens</em>. Journal of Agricultural Engineering Research, 71(4), 375-382.</li>
+            <li><strong>Stanghellini, C.</strong> (1987). <em>Transpiration of greenhouse crops: an aid to climate management</em>. Ph.D. Thesis, Agricultural University of Wageningen, The Netherlands.</li>
+            <li><strong>Hersbach, H., et al.</strong> (2020). <em>The ERA5 global reanalysis</em>. Quarterly Journal of the Royal Meteorological Society, 146(730), 1999-2049.</li>
+          </ol>
+        </section>
+
+        <hr style="margin: 48px 0; border: none; border-top: 1px solid var(--border-color);">
+        <p style="text-align: center; color: var(--text-light); font-size: 13px;">
+          ภาควิชาวิศวกรรมเครื่องกล คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี (KMUTT)<br>
+          ศูนย์เรียนรู้นวัตกรรมการเกษตร อ.อู่ทอง จ.สุพรรณบุรี | Greenhouse Digital Twin Framework v1.0.0
+        </p>
+
+                                    <section id="cross-reports" class="cross-report-hub">
+        <h2>📚 เอกสารเชื่อมโยงทั้งชุดโครงการ KMUTT Greenhouse Digital Twin (หน้าหลัก + 7 ไฟล์)</h2>
+        <div class="cross-hub-grid">
+          <a href="../index.html" class="cross-hub-card" style="border-left: 4px solid #0f172a;">
+            <div class="cross-hub-title">🏠 หน้าหลักพอร์ทัล &amp; สื่อนำเสนอ (Main Hub &amp; Presentations)</div>
+            <div class="cross-hub-desc">ศูนย์รวมรายงานทั้ง 6 ฉบับ, สไลด์นำเสนอ PDF, วิทยานิพนธ์ และแผนภาพสถาปัตยกรรม 300 DPI</div>
+          </a>
+          <a href="Report_1_Project_Overview.html" class="cross-hub-card current-doc" style="border-left: 4px solid #0284c7;">
+            <div class="cross-hub-title">📑 รายงานที่ 1: ภาพรวมโครงการ <span style="font-size:0.72rem;font-weight:700;opacity:0.85;">(หน้าปัจจุบัน)</span></div>
+            <div class="cross-hub-desc">ข้อมูลพื้นที่ อ.อู่ทอง, เรขาคณิตโรงเรือน 6×12 ม., ฟิสิกส์ 4 โหนด, มะเขือเทศเชอร์รี่ และผลจำลองเบื้องต้น</div>
+          </a>
+          <a href="Report_2_Modelica_Code_LineByLine.html" class="cross-hub-card" style="border-left: 4px solid #2563eb;">
+            <div class="cross-hub-title">💻 รายงานที่ 2: โค้ด Modelica รายบรรทัด</div>
+            <div class="cross-hub-desc">Modelica Masterclass และคำอธิบายซอร์สโค้ดทุกบรรทัดในแพ็กเกจ Greenhouse_DigitalTwin_KMUTT</div>
+          </a>
+          <a href="Report_3_Model_Validation_Guide.html" class="cross-hub-card" style="border-left: 4px solid #059669;">
+            <div class="cross-hub-title">📊 รายงานที่ 3: การ Validate 15 จุด</div>
+            <div class="cross-hub-desc">เทียบผลจำลองกับเซนเซอร์จริง 15 จุด (Base Day 13 เม.ย. 2569), RMSE/MAE/R² และคู่มือตอบคำถามสอบ</div>
+          </a>
+          <a href="Report_4_Modelica_CFD_Framework.html" class="cross-hub-card" style="border-left: 4px solid #7c3aed;">
+            <div class="cross-hub-title">🔄 รายงานที่ 4: สถาปัตยกรรม Modelica &amp; CFD</div>
+            <div class="cross-hub-desc">สถาปัตยกรรม Input → Equation → Output เชื่อม DAE 365 วัน สู่ 3D CFD CHT และ Darcy-Forchheimer</div>
+          </a>
+          <a href="Report_5_Modelica_Equations_Parameters_Reference.html" class="cross-hub-card" style="border-left: 4px solid #0891b2;">
+            <div class="cross-hub-title">📐 รายงานที่ 5: ดัชนีสมการ &amp; พารามิเตอร์</div>
+            <div class="cross-hub-desc">รวมสมการ Modelica ครบทุกบรรทัด, ความหมายตัวแปร-หน่วยวัด SI และคุณสมบัติวัสดุ/พืชทั้งหมด</div>
+          </a>
+          <a href="Report_6_StepByStep_Model_Creation_Guide.html" class="cross-hub-card" style="border-left: 4px solid #ea580c;">
+            <div class="cross-hub-title">🛠️ รายงานที่ 6: คู่มือสร้างโมเดลทีละขั้นตอน</div>
+            <div class="cross-hub-desc">คู่มือภาคปฏิบัติใน OMEdit แบบ Dual-Track (GUI Drag-and-Drop &amp; Modelica Code) พร้อม Export CSV</div>
+          </a>
+          <a href="Modelica_Code_Categories_Slides.html" class="cross-hub-card" style="border-left: 4px solid #be123c;">
+            <div class="cross-hub-title">🎬 สรุป 8 หมวดโค้ด &amp; สไลด์ 16:9</div>
+            <div class="cross-hub-desc">สรุปจัดหมวดหมู่โค้ดทั้ง 612 บรรทัดเป็น 8 กลุ่มพร้อมสไลด์ 16:9 จำนวน 9 แผ่นสำหรับนำเสนอ</div>
+          </a>
+        </div>
+      </section>
+
+</article>
+    </main>
+  </div>
+
+  <script>
+    // KaTeX Auto-render initialization
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError: false
+        });
+      }
+
+      // ScrollSpy for Sidebar TOC links
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".toc-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 100;
+          if (pageYOffset >= sectionTop) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === "#" + current) {
+            link.classList.add("active");
+          }
+        });
+      });
+    });
+
+    // TOC Search Filter Function
+    function filterTOC() {
+      const input = document.getElementById("tocSearch");
+      const filter = input.value.toUpperCase();
+      const ul = document.getElementById("tocList");
+      const li = ul.getElementsByTagName("li");
+
+      for (let i = 0; i < li.length; i++) {
+        const a = li[i].getElementsByTagName("a")[0];
+        const txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
+        }
+      }
+    }
+  </script>
+</body>
+</html>

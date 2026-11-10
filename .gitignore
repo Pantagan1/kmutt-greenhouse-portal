@@ -1,0 +1,18 @@
+# Ignore everything in the workspace by default (excludes modelica_compiled/, validation/, modelica_models/, scripts/, docs/, .superpowers/)
+*
+
+# Whitelist ONLY the website portal, reports, presentations, and publisher script
+!.gitignore
+!index.html
+!publish_web.bat
+!reports/
+!reports/**
+!presentations/
+!presentations/**
+
+# Exclude any backup or temporary files inside whitelisted folders
+*.bak
+*.bak-mo
+*.tmp
+.DS_Store
+Thumbs.db
